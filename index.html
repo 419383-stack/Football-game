@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Pitch Master 27 — Complete Career & Match Engine</title>
+<title>Pitch Master 27 — Tactical AI Broadcast Edition</title>
 <style>
   :root {
     --bg: #0b111a;
@@ -29,91 +29,92 @@
   .btn-danger { background: var(--danger); color: #fff; padding: 10px 16px; }
   .btn-ghost { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 8px 13px; }
   .btn-ghost:hover:not(:disabled) { border-color: var(--accent); }
+  .btn-ghost.active-pill { border-color: var(--accent); color: var(--accent); background: rgba(34,197,94,0.14); }
 
   .screen { display: none; min-height: 100vh; }
   .screen.active { display: block; }
 
-  /* OG MENU LAYOUT */
-  #setup-screen { padding: 26px 16px; max-width: 980px; margin: 0 auto; }
-  .og-header { text-align: center; margin-bottom: 22px; }
-  .og-header h1 { font-size: 2.35rem; letter-spacing: 1.5px; color: var(--accent); font-weight: 900; }
-  .og-header p { color: var(--muted); font-size: 0.92rem; margin-top: 4px; }
+  /* MENU LAYOUT */
+  #setup-screen { padding: 24px 14px; max-width: 980px; margin: 0 auto; }
+  .og-header { text-align: center; margin-bottom: 20px; }
+  .og-header h1 { font-size: 2.25rem; letter-spacing: 1.5px; color: var(--accent); font-weight: 900; }
+  .og-header p { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
   .og-menu-card {
     background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
-    padding: 20px; box-shadow: 0 12px 32px rgba(0,0,0,0.45);
+    padding: 18px; box-shadow: 0 12px 32px rgba(0,0,0,0.45);
   }
   .og-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   @media (max-width: 780px) { .og-grid { grid-template-columns: 1fr; } }
-  .og-field { margin-bottom: 13px; }
-  .og-field label { display: block; font-size: 0.78rem; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 5px; }
+  .og-field { margin-bottom: 12px; }
+  .og-field label { display: block; font-size: 0.76rem; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 5px; }
   .og-field input, .og-field select {
     width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
-    padding: 9px 12px; border-radius: 7px; font-size: 0.94rem;
+    padding: 9px 12px; border-radius: 7px; font-size: 0.92rem;
   }
   .kit-preview {
     display: flex; align-items: center; gap: 10px; background: var(--panel-2);
-    border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; margin-bottom: 13px;
+    border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px;
   }
-  .swatch { width: 28px; height: 28px; border-radius: 6px; border: 2px solid #fff; }
+  .swatch { width: 28px; height: 28px; border-radius: 6px; border: 2px solid #fff; flex-shrink: 0; }
   .sheet-box {
     background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px;
-    padding: 12px; max-height: 360px; overflow-y: auto;
+    padding: 10px; max-height: 360px; overflow-y: auto;
   }
   .sheet-row {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 5px 4px; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.84rem;
+    padding: 5px 4px; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.82rem;
   }
-  .og-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  .og-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
 
   /* HUB LAYOUT */
   .topbar {
-    background: var(--panel); border-bottom: 1px solid var(--border); padding: 12px 18px;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+    background: var(--panel); border-bottom: 1px solid var(--border); padding: 10px 16px;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
     position: sticky; top: 0; z-index: 40;
   }
-  .club-title { font-size: 1.15rem; font-weight: 800; color: var(--accent); }
-  .sub-meta { font-size: 0.82rem; color: var(--muted); }
-  .hud-pills { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .pill { background: var(--panel-2); border: 1px solid var(--border); padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; }
+  .club-title { font-size: 1.12rem; font-weight: 800; color: var(--accent); }
+  .sub-meta { font-size: 0.8rem; color: var(--muted); }
+  .hud-pills { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .pill { background: var(--panel-2); border: 1px solid var(--border); padding: 4px 9px; border-radius: 20px; font-size: 0.78rem; }
   .pill.deadline { border-color: var(--warn); color: var(--warn); font-weight: 700; animation: pulse 1.4s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.55;} }
 
-  .nav-tabs { display: flex; flex-wrap: wrap; gap: 5px; padding: 10px 18px; background: #0e1622; border-bottom: 1px solid var(--border); }
-  .tab-btn { background: transparent; color: var(--muted); padding: 7px 11px; border-radius: 6px; font-size: 0.82rem; }
+  .nav-tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 14px; background: #0e1622; border-bottom: 1px solid var(--border); }
+  .tab-btn { background: transparent; color: var(--muted); padding: 7px 10px; border-radius: 6px; font-size: 0.8rem; }
   .tab-btn.active { background: var(--panel-2); color: var(--accent); border: 1px solid var(--border); }
 
-  .hub-content { max-width: 1360px; margin: 0 auto; padding: 18px; }
+  .hub-content { max-width: 1360px; margin: 0 auto; padding: 14px; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
-  .grid-2 { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 16px; }
-  .grid-2-eq { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .grid-2 { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 14px; }
+  .grid-2-eq { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   @media (max-width: 900px) { .grid-2, .grid-2-eq, .grid-3 { grid-template-columns: 1fr; } }
 
-  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
-  .card h3 { font-size: 1rem; margin-bottom: 12px; color: #e2e8f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+  .card h3 { font-size: 0.98rem; margin-bottom: 10px; color: #e2e8f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
 
-  .stat-tile { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
-  .stat-tile .st-val { font-size: 1.45rem; font-weight: 900; color: var(--accent); }
-  .stat-tile .st-lbl { font-size: 0.75rem; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+  .stat-tile { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+  .stat-tile .st-val { font-size: 1.35rem; font-weight: 900; color: var(--accent); }
+  .stat-tile .st-lbl { font-size: 0.72rem; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
 
   .obj-card {
     background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px;
-    padding: 12px 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    padding: 11px 13px; margin-bottom: 9px; display: flex; justify-content: space-between; align-items: center; gap: 10px;
   }
   .obj-card.met { border-left: 4px solid var(--accent); }
   .obj-card.pending { border-left: 4px solid var(--warn); }
 
-  table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
-  th, td { padding: 7px 6px; text-align: left; border-bottom: 1px solid var(--border); }
-  th { color: var(--muted); font-weight: 600; font-size: 0.74rem; text-transform: uppercase; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+  th, td { padding: 7px 5px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; }
   tr.my-row { background: rgba(34, 197, 94, 0.12); }
   .zone-ucl { border-left: 3px solid #3b82f6; }
   .zone-uel { border-left: 3px solid #f59e0b; }
   .zone-rel { border-left: 3px solid #ef4444; }
 
-  .badge { padding: 2px 7px; border-radius: 4px; font-size: 0.71rem; font-weight: 700; display: inline-block; }
+  .badge { padding: 2px 7px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
   .b-og { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.4); }
   .b-exp { background: rgba(239, 68, 68, 0.2); color: #f87171; }
   .b-inj { background: #7f1d1d; color: #fecaca; }
@@ -122,104 +123,80 @@
   .b-ok { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
   .b-loan { background: rgba(168, 85, 247, 0.22); color: #d8b4fe; border: 1px solid rgba(168,85,247,0.45); }
 
-  .arr-up { color: #22c55e; font-weight: 800; }
-  .arr-flat { color: #94a3b8; font-weight: 700; }
-  .arr-down { color: #ef4444; font-weight: 800; }
+  /* XP BAR FOR BALANCED TRAINING */
+  .xp-track { width: 100%; max-width: 110px; height: 8px; background: #0b111a; border-radius: 99px; overflow: hidden; border: 1px solid var(--border); display: inline-block; vertical-align: middle; }
+  .xp-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #22c55e); transition: width 0.25s; }
 
   /* PAGINATION BAR */
   .pager-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; flex-wrap: wrap; gap: 8px; }
 
-  /* DRAG & DROP TACTICS BOARD */
-  .tactics-wrap { display: grid; grid-template-columns: 430px 1fr; gap: 16px; }
+  /* DRAG & DROP TACTICS + INDIVIDUAL PLANS */
+  .tactics-wrap { display: grid; grid-template-columns: 420px 1fr; gap: 16px; }
   @media (max-width: 900px) { .tactics-wrap { grid-template-columns: 1fr; } }
   #tactics-pitch {
-    position: relative; width: 100%; max-width: 430px; height: 550px; margin: 0 auto;
+    position: relative; width: 100%; max-width: 420px; height: 530px; margin: 0 auto;
     background: linear-gradient(180deg, #14532d 0%, #166534 50%, #14532d 100%);
     border: 3px solid #cbd5e1; border-radius: 10px; overflow: hidden; touch-action: none;
   }
   .pitch-line-mid { position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.55); }
-  .pitch-circle { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; transform: translate(-50%,-50%); border: 2px solid rgba(255,255,255,0.55); border-radius: 50%; }
-  .pitch-box-top { position: absolute; top: 0; left: 22%; right: 22%; height: 82px; border: 2px solid rgba(255,255,255,0.55); border-top: none; }
-  .pitch-box-bot { position: absolute; bottom: 0; left: 22%; right: 22%; height: 82px; border: 2px solid rgba(255,255,255,0.55); border-bottom: none; }
+  .pitch-circle { position: absolute; top: 50%; left: 50%; width: 96px; height: 96px; transform: translate(-50%,-50%); border: 2px solid rgba(255,255,255,0.55); border-radius: 50%; }
+  .pitch-box-top { position: absolute; top: 0; left: 22%; right: 22%; height: 78px; border: 2px solid rgba(255,255,255,0.55); border-top: none; }
+  .pitch-box-bot { position: absolute; bottom: 0; left: 22%; right: 22%; height: 78px; border: 2px solid rgba(255,255,255,0.55); border-bottom: none; }
   .tactic-node {
-    position: absolute; width: 56px; height: 56px; transform: translate(-50%, -50%);
+    position: absolute; width: 58px; height: 58px; transform: translate(-50%, -50%);
     background: #0f172a; border: 2px solid var(--accent); border-radius: 50%;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     cursor: grab; z-index: 5; box-shadow: 0 4px 10px rgba(0,0,0,0.5); touch-action: none;
   }
-  .tactic-node:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.08); border-color: #fff; z-index: 10; }
-  .tactic-node .tn-pos { font-size: 0.64rem; color: var(--accent); font-weight: 800; }
-  .tactic-node .tn-name { font-size: 0.66rem; font-weight: 700; max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .tactic-node .tn-ovr { font-size: 0.63rem; color: #cbd5e1; }
+  .tactic-node.selected-node { border-color: #facc15; box-shadow: 0 0 0 3px rgba(250,204,21,0.35); }
+  .tactic-node:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.07); z-index: 10; }
+  .tactic-node .tn-pos { font-size: 0.62rem; color: var(--accent); font-weight: 800; }
+  .tactic-node .tn-name { font-size: 0.65rem; font-weight: 700; max-width: 52px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tactic-node .tn-role { font-size: 0.56rem; color: #fbbf24; max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   /* BRACKET CARDS */
-  .cup-rounds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 12px; }
-  .round-col { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; max-height: 520px; overflow-y: auto; }
-  .tie-card { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 8px; margin-bottom: 7px; font-size: 0.8rem; }
+  .cup-rounds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+  .round-col { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; max-height: 500px; overflow-y: auto; }
+  .tie-card { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 7px; margin-bottom: 6px; font-size: 0.79rem; }
   .tie-card.my-tie { border-color: var(--accent); background: rgba(34, 197, 94, 0.14); }
 
   /* MODAL */
-  .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.86); display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.86); display: none; align-items: center; justify-content: center; z-index: 100; padding: 14px; }
   .modal-backdrop.open { display: flex; }
-  .modal-box { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; max-width: 600px; width: 100%; padding: 20px; max-height: 90vh; overflow-y: auto; }
-  .modal-box h2 { color: var(--accent); margin-bottom: 8px; font-size: 1.25rem; }
-  .press-q { background: var(--panel-2); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent-2); margin: 12px 0; line-height: 1.45; }
-  .press-opt { display: block; width: 100%; text-align: left; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; }
+  .modal-box { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; max-width: 600px; width: 100%; padding: 18px; max-height: 90vh; overflow-y: auto; }
+  .modal-box h2 { color: var(--accent); margin-bottom: 8px; font-size: 1.2rem; }
+  .press-q { background: var(--panel-2); padding: 11px; border-radius: 8px; border-left: 3px solid var(--accent-2); margin: 10px 0; line-height: 1.42; font-size: 0.88rem; }
+  .press-opt { display: block; width: 100%; text-align: left; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; font-size: 0.86rem; }
   .press-opt:hover { border-color: var(--accent); background: #1e2d42; }
 
-  /* OG LIVE 2D MATCH ENGINE */
+  /* PURE AI VS AI WATCH MATCH BROADCAST SCREEN */
   #match-screen { background: #070d14; position: relative; height: 100vh; overflow: hidden; }
   .match-hud {
-    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-    background: rgba(15, 23, 42, 0.92); border: 1px solid var(--border); border-radius: 10px;
-    padding: 8px 14px; display: flex; gap: 12px; align-items: center; z-index: 20; font-size: 0.88rem; flex-wrap: wrap; justify-content: center;
+    position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 96%; max-width: 960px;
+    background: rgba(15, 23, 42, 0.93); border: 1px solid var(--border); border-radius: 10px;
+    padding: 7px 12px; display: flex; gap: 8px; align-items: center; z-index: 20; font-size: 0.82rem; flex-wrap: wrap; justify-content: space-between;
   }
-  .score-box { font-weight: 800; font-size: 1.08rem; color: var(--accent); }
-  #match-canvas { display: block; width: 100vw; height: 100vh; cursor: crosshair; }
-  .match-controls-hint {
-    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
-    background: rgba(15,23,42,0.82); padding: 6px 14px; border-radius: 20px; font-size: 0.76rem; color: var(--muted); z-index: 15; pointer-events: none;
+  .score-box { font-weight: 900; font-size: 1.05rem; color: var(--accent); }
+  #match-canvas { display: block; width: 100vw; height: 100vh; }
+  .touchline-bar {
+    position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 96%; max-width: 820px;
+    background: rgba(15, 23, 42, 0.92); border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 12px; display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; z-index: 20;
   }
   .match-banner {
     position: absolute; top: 68px; left: 50%; transform: translateX(-50%);
     background: rgba(34, 197, 94, 0.95); color: #052e16; font-weight: 800;
-    padding: 6px 18px; border-radius: 20px; display: none; z-index: 25; text-align: center;
+    padding: 6px 18px; border-radius: 20px; display: none; z-index: 25; text-align: center; font-size: 0.86rem;
   }
-
-  /* AUTO-HIDING MOBILE TOUCH CONTROLS */
-  #mobile-controls { display: none; position: fixed; inset: 0; pointer-events: none; z-index: 50; }
-  @media (pointer: coarse), (hover: none) {
-    #match-screen.active ~ #mobile-controls { display: block; }
-    .match-controls-hint { display: none; }
-  }
-  #joy-zone {
-    position: absolute; bottom: 26px; left: 26px; width: 130px; height: 130px;
-    border-radius: 50%; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.22);
-    pointer-events: auto; touch-action: none;
-  }
-  #joy-stick {
-    position: absolute; top: 50%; left: 50%; width: 52px; height: 52px;
-    transform: translate(-50%, -50%); border-radius: 50%;
-    background: rgba(34, 197, 94, 0.75); border: 2px solid #fff;
-  }
-  .m-btns {
-    position: absolute; bottom: 24px; right: 20px; display: grid; grid-template-columns: repeat(2, 74px); gap: 10px;
-    pointer-events: auto;
-  }
-  .m-btn {
-    height: 58px; border-radius: 14px; background: rgba(15, 23, 42, 0.82); color: #fff;
-    border: 2px solid rgba(255,255,255,0.28); font-size: 0.74rem; font-weight: 800; touch-action: none;
-  }
-  .m-btn:active, .m-btn.pressed { background: var(--accent); color: #052e16; border-color: #fff; }
 </style>
 </head>
 <body>
 
-<!-- 1. OG MENU LAYOUT -->
+<!-- 1. START MENU LAYOUT -->
 <div id="setup-screen" class="screen active">
   <div class="og-header">
     <h1>PITCH MASTER 27</h1>
-    <p>168-Club Global Database • Multi-Round Contract Negotiations • Loans & Free Agents • Ballon d'Or & Stats • Full 92-Club Cups & Europe</p>
+    <p>AI vs. AI Tactical Broadcast • Individual Player Roles • Balanced XP Training • 168-Club World & Ballon d'Or</p>
   </div>
 
   <div class="og-menu-card">
@@ -255,18 +232,18 @@
           </div>
         </div>
         <div class="og-field">
-          <label>Live Match Half-Length Speed</label>
+          <label>Watch Match Base Duration (Adjustable 1x/2x/4x Live)</label>
           <select id="og-duration">
-            <option value="60">Fast (60s Full Match)</option>
-            <option value="90" selected>Standard (90s Full Match)</option>
-            <option value="140">Extended (140s Full Match)</option>
+            <option value="60">Fast Broadcast (60s at 1x)</option>
+            <option value="90" selected>Standard Broadcast (90s at 1x)</option>
+            <option value="130">Extended Broadcast (130s at 1x)</option>
           </select>
         </div>
       </div>
 
       <div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <label style="font-size:0.78rem; text-transform:uppercase; color:var(--muted); font-weight:700;">2026/27 Starting XI Team Sheet</label>
+          <label style="font-size:0.76rem; text-transform:uppercase; color:var(--muted); font-weight:700;">2026/27 Starting XI Team Sheet</label>
           <span class="badge b-youth" id="preview-league-badge">PREMIER LEAGUE</span>
         </div>
         <div class="sheet-box" id="og-team-sheet"></div>
@@ -275,8 +252,9 @@
 
     <div class="og-actions">
       <button class="btn-primary" onclick="startNewCareer()">Start Manager Career</button>
-      <button class="btn-warn" onclick="startQuickExhibition()">Quick Kick-Off Match</button>
+      <button class="btn-warn" onclick="startQuickExhibition()">Watch Quick AI Exhibition</button>
       <button class="btn-blue" id="load-save-btn" style="display:none" onclick="loadCareer()">Continue Saved Career</button>
+      <button class="btn-ghost" id="recover-save-btn" style="display:none" onclick="recoverBackupCareer()">Recover Crash Backup</button>
     </div>
   </div>
 </div>
@@ -292,7 +270,7 @@
       <span class="pill" id="hud-budget">Budget: £50.0M</span>
       <span class="pill" id="hud-wages">Wages: £450k/wk</span>
       <span class="pill" id="hud-board-obj">Board: 0/6 (Req: 2)</span>
-      <span class="pill" id="hud-sim">Quick Sims: 2</span>
+      <span class="pill" id="hud-sim">Quick Sims: ∞</span>
       <span class="pill" id="hud-window">Window: OPEN</span>
       <button class="btn-ghost" onclick="saveCareer(true)">Save</button>
       <button class="btn-ghost" onclick="resetCareer()">Main Menu</button>
@@ -303,7 +281,8 @@
     <button class="tab-btn active" onclick="switchTab('tab-home', this)">Calendar & Schedule</button>
     <button class="tab-btn" onclick="switchTab('tab-board', this)">Board Objectives</button>
     <button class="tab-btn" onclick="switchTab('tab-squad', this)">Squad & Loans</button>
-    <button class="tab-btn" onclick="switchTab('tab-tactics', this)">Tactics</button>
+    <button class="tab-btn" onclick="switchTab('tab-tactics', this)">Tactics & Player Plans</button>
+    <button class="tab-btn" onclick="switchTab('tab-training', this)">Manual Training</button>
     <button class="tab-btn" onclick="switchTab('tab-transfers', this)">Full Transfer Market</button>
     <button class="tab-btn" onclick="switchTab('tab-leagues', this)">League Tables</button>
     <button class="tab-btn" onclick="switchTab('tab-cups', this)">FA & Carabao Cups (92)</button>
@@ -320,11 +299,11 @@
         <div>
           <div class="card">
             <h3>Current Schedule Event <span id="next-comp-badge" class="badge b-youth">MATCHDAY</span></h3>
-            <div id="next-match-box" style="margin-bottom:14px; font-size:1.02rem; line-height:1.5;"></div>
+            <div id="next-match-box" style="margin-bottom:14px; font-size:0.98rem; line-height:1.5;"></div>
             <div style="display:flex; flex-wrap:wrap; gap:10px;" id="schedule-actions"></div>
           </div>
           <div class="card">
-            <h3>Sporadic Season Calendar (No Back-to-Back Repeat Opponents)</h3>
+            <h3>Season Calendar (Infinite Quick Sims + Mandatory Media Days)</h3>
             <div style="max-height:380px; overflow-y:auto;">
               <table>
                 <thead><tr><th>Day</th><th>Type</th><th>Event / Opponent</th><th>Venue</th><th>Status</th></tr></thead>
@@ -359,7 +338,7 @@
         <h3>First Team Roster <span class="sub-meta">Players retire by age 52 max • Red cards trigger 1-match suspensions</span></h3>
         <div style="overflow-x:auto;">
           <table>
-            <thead><tr><th>Pos</th><th>Name</th><th>Age</th><th>OVR</th><th>Wage</th><th>G / A</th><th>Cards</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th>Pos</th><th>Name</th><th>Age</th><th>OVR</th><th>Plan</th><th>Wage</th><th>G / A</th><th>Cards</th><th>Status</th><th>Action</th></tr></thead>
             <tbody id="squad-tbody"></tbody>
           </table>
         </div>
@@ -373,10 +352,10 @@
       </div>
     </div>
 
-    <!-- 4. DRAG AND DROP TACTICS -->
+    <!-- 4. DRAG AND DROP TACTICS + INDIVIDUAL PLAYER PLANS -->
     <div id="tab-tactics" class="tab-panel">
       <div class="card">
-        <h3>Custom Drag & Drop Tactics Board <span class="sub-meta">Hold & drag any of your 11 starters anywhere on the pitch</span></h3>
+        <h3>Drag & Drop Tactics + Individual Player Plans <span class="sub-meta">Drag nodes to position • Tap any starter to set their AI role</span></h3>
         <div class="tactics-wrap">
           <div>
             <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
@@ -401,15 +380,40 @@
             </div>
           </div>
           <div>
+            <div id="player-plan-editor" class="card" style="background:var(--panel-2); margin-bottom:12px;">
+              <h3>Individual Player Plan <span class="badge b-og" id="plan-target-name">SELECT A STARTER</span></h3>
+              <p class="sub-meta" style="margin-bottom:8px;">Assigned plans directly change how this player moves, presses, passes, and shoots in Watch Match AI.</p>
+              <div id="plan-options-box"></div>
+            </div>
             <h4 style="margin-bottom:8px;">Starting XI & Bench Swap</h4>
-            <p class="sub-meta" style="margin-bottom:10px;">Select a starter, then click a bench player to swap them into your custom formation.</p>
             <div id="tactics-swap-ui"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 5. FULL PAGINATED TRANSFER MARKET, LOANS & FREE AGENTS -->
+    <!-- 5. BALANCED MANUAL TRAINING TAB -->
+    <div id="tab-training" class="tab-panel">
+      <div class="card">
+        <h3>Balanced Squad & Individual Training <span class="badge b-youth" id="training-status-badge">SESSION AVAILABLE</span></h3>
+        <p class="sub-meta" style="margin-bottom:12px;">
+          Run <strong>1 training session per matchday</strong> so player growth stays realistic. Players earn XP toward their next +1 OVR based on age (16–22: fast growth • 23–29: steady • 30+: sharpness maintenance).
+        </p>
+        <div class="grid-3" style="margin-bottom:14px;">
+          <button class="btn-primary" id="tr-btn-att" onclick="runTeamTraining('ATT')">⚽ Attacking & Finishing Drill (+XP Forwards/Mids)</button>
+          <button class="btn-blue" id="tr-btn-def" onclick="runTeamTraining('DEF')">🛡️ Defensive Shape & Pressing (+XP Defenders/GK)</button>
+          <button class="btn-warn" id="tr-btn-fit" onclick="runTeamTraining('FIT')">⚡ Tactical Rondo & Fitness (+XP All & +1 Morale)</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Pos</th><th>Player</th><th>Age</th><th>OVR</th><th>Growth Curve</th><th>Progress to Next OVR</th><th>1-on-1 Focus</th></tr></thead>
+            <tbody id="training-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. FULL PAGINATED TRANSFER MARKET, LOANS & FREE AGENTS -->
     <div id="tab-transfers" class="tab-panel">
       <div class="grid-2">
         <div class="card">
@@ -448,7 +452,7 @@
       </div>
     </div>
 
-    <!-- 6. LEAGUE TABLES -->
+    <!-- 7. LEAGUE TABLES -->
     <div id="tab-leagues" class="tab-panel">
       <div class="card">
         <h3>Domestic League Standings <span class="sub-meta">Top-Flight: 1st–5th = UCL | 6th–7th = UEL • EFL Tiers: Europe via FA/Carabao Cup Win</span></h3>
@@ -469,7 +473,7 @@
       </div>
     </div>
 
-    <!-- 7. FULL 92-CLUB FA CUP & CARABAO CUP PAGE -->
+    <!-- 8. FULL 92-CLUB FA CUP & CARABAO CUP PAGE -->
     <div id="tab-cups" class="tab-panel">
       <div class="card">
         <h3>FA Cup & Carabao Cup (All 92 English Clubs — Full 7-Round Simulation) <span class="badge b-og">GIANT-KILLING +2 MORALE</span></h3>
@@ -484,11 +488,11 @@
       </div>
     </div>
 
-    <!-- 8. CHAMPIONS LEAGUE & EUROPA LEAGUE PAGE -->
+    <!-- 9. CHAMPIONS LEAGUE & EUROPA LEAGUE PAGE -->
     <div id="tab-europe" class="tab-panel">
       <div class="card">
         <h3>UEFA Champions League & UEFA Europa League <span class="badge b-youth">SIMULATED GLOBALLY EVERY SEASON</span></h3>
-        <p class="sub-meta" style="margin-bottom:12px;">All 36 Champions League and 36 Europa League clubs play their full 8-matchday League Phase every season regardless of what division you manage in.</p>
+        <p class="sub-meta" style="margin-bottom:12px;">All 36 Champions League and 36 Europa League clubs play their full League Phase every season regardless of what division you manage in.</p>
         <div class="grid-2-eq">
           <div>
             <h4 style="color:#60a5fa; margin-bottom:10px;">UEFA Champions League Table</h4>
@@ -502,10 +506,10 @@
       </div>
     </div>
 
-    <!-- 9. DEDICATED PLAYER STATS PAGE (GOALS, ASSISTS, YELLOW & RED CARDS) -->
+    <!-- 10. DEDICATED PLAYER STATS PAGE -->
     <div id="tab-stats" class="tab-panel">
       <div class="card">
-        <h3>Competition Player Statistics & Discipline <span class="badge b-youth" id="stats-scope-badge">ALL COMPETITIONS</span></h3>
+        <h3>Competition Player Statistics & Discipline <span class="badge b-youth">LIVE LEADERBOARDS</span></h3>
         <div style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;">
           <select id="stats-comp-filter" onchange="renderPlayerStatsPage()" style="background:var(--panel-2); color:var(--text); border:1px solid var(--border); padding:8px 12px; border-radius:6px;">
             <option value="ALL">All Competitions Combined (Global)</option>
@@ -548,12 +552,12 @@
       </div>
     </div>
 
-    <!-- 10. BALLON D'OR & MANAGER OF THE YEAR AWARDS PAGE -->
+    <!-- 11. BALLON D'OR & MANAGER OF THE YEAR AWARDS PAGE -->
     <div id="tab-ballondor" class="tab-panel">
       <div class="card">
         <h3>Ballon d'Or & World Manager of the Year <span class="badge b-og">LIVE GLOBAL RANKINGS</span></h3>
         <p class="sub-meta" style="margin-bottom:14px;">
-          Evaluates every player and manager across all 8 leagues, FA & Carabao Cups, Champions League, and Europa League based on Goals, Assists, Match Ratings, Clean Sheets, and Trophies won. Awarded at the end of every season!
+          Evaluates every player and manager across all 8 leagues, FA & Carabao Cups, Champions League, and Europa League based on Goals, Assists, Match Ratings, Clean Sheets, and Trophies won.
         </p>
         <div class="grid-2-eq">
           <div class="card" style="margin-bottom:0; background:var(--panel-2);">
@@ -578,7 +582,7 @@
       </div>
     </div>
 
-    <!-- 11. MANAGER STATS, AI MANAGERS & OPEN JOB VACANCIES -->
+    <!-- 12. MANAGER STATS, AI MANAGERS & OPEN JOB VACANCIES -->
     <div id="tab-mgr" class="tab-panel">
       <div class="card">
         <h3>Manager Career Stats, Job Market & Club Managers</h3>
@@ -610,42 +614,40 @@
   </div>
 </div>
 
-<!-- 3. OG LIVE 2D MATCH ENGINE WITH DIRECTIONAL AIM ARROW, FOULS, CARDS & KEEPER AI -->
+<!-- 3. PURE AI VS AI WATCH MATCH BROADCAST SCREEN -->
 <div id="match-screen" class="screen">
   <div class="match-hud">
     <span id="m-comp" class="badge b-youth">LEAGUE</span>
     <span id="m-teams" style="font-weight:700;">HOME vs AWAY</span>
     <span id="m-score" class="score-box">0 - 0</span>
-    <span id="m-clock" style="font-family:monospace; font-size:1rem;">00'</span>
-    <button class="btn-warn" style="padding:4px 10px; font-size:0.78rem;" onclick="openMatchSubModal()">Subs / Tactics</button>
-    <button class="btn-danger" style="padding:4px 10px; font-size:0.78rem;" onclick="finishMatchEarly()">Finish Match</button>
+    <span id="m-clock" style="font-family:monospace; font-size:0.98rem;">00'</span>
+    <span id="m-poss" class="sub-meta">Poss: 50% - 50%</span>
   </div>
   <div id="match-banner" class="match-banner">GOAL!</div>
   <canvas id="match-canvas"></canvas>
-  <div class="match-controls-hint">
-    PC Controls: WASD / Arrows = Move • Mouse = Aim Arrow • Click / Space = Shoot or Standing Tackle • E = Pass • R = Through Ball • Q = Switch • Shift + Space = Slide Tackle
+  <div class="touchline-bar">
+    <span style="font-size:0.75rem; color:var(--muted); font-weight:700;">SPEED:</span>
+    <button class="btn-ghost active-pill" id="spd-1" style="padding:5px 10px; font-size:0.76rem;" onclick="setWatchSpeed(1)">1x</button>
+    <button class="btn-ghost" id="spd-2" style="padding:5px 10px; font-size:0.76rem;" onclick="setWatchSpeed(2)">2x</button>
+    <button class="btn-ghost" id="spd-4" style="padding:5px 10px; font-size:0.76rem;" onclick="setWatchSpeed(4)">4x</button>
+    <select id="live-mentality" onchange="changeLiveMentality(this.value)" style="background:var(--panel-2); color:var(--text); border:1px solid var(--border); padding:5px 8px; border-radius:6px; font-size:0.76rem;">
+      <option value="Balanced">Mentality: Balanced</option>
+      <option value="Attacking">All-Out Attack</option>
+      <option value="Defensive">Park the Bus</option>
+    </select>
+    <button class="btn-warn" style="padding:5px 11px; font-size:0.76rem;" onclick="openMatchSubModal()">Tactical Subs</button>
+    <button class="btn-danger" style="padding:5px 11px; font-size:0.76rem;" onclick="finishMatchEarly()">Instant Result</button>
   </div>
 </div>
 
-<!-- AUTO-HIDING MOBILE TOUCH CONTROLS -->
-<div id="mobile-controls">
-  <div id="joy-zone"><div id="joy-stick"></div></div>
-  <div class="m-btns">
-    <button class="m-btn" id="mb-pass">PASS</button>
-    <button class="m-btn" id="mb-shoot">SHOOT / TACKLE</button>
-    <button class="m-btn" id="mb-sprint">SPRINT</button>
-    <button class="m-btn" id="mb-slide">SLIDE / SWITCH</button>
-  </div>
-</div>
-
-<!-- MODAL FOR MULTI-ROUND NEGOTIATIONS / PENALTY SHOOTOUT / MEDIA / POST-MATCH RATINGS -->
+<!-- MODAL -->
 <div id="modal-backdrop" class="modal-backdrop">
   <div class="modal-box" id="modal-box"></div>
 </div>
 
 <script>
 /* ============================================================================
-   1. COMPLETE 168-CLUB DATABASE + NAMED MANAGERS + FREE AGENTS + STATS
+   1. 168-CLUB DATABASE + NAMED MANAGERS + INDIVIDUAL PLAYER PLANS + STATS
    ============================================================================ */
 const LEAGUES_META = {
   ENG1: { name: "Premier League", country: "England", tier: 1, topFlight: true },
@@ -674,6 +676,28 @@ const REAL_MANAGERS = {
   ata: "Gian Piero Gasperini", rom: "Claudio Ranieri", laz: "Marco Baroni",
   psg: "Luis Enrique", mon: "Adi Hutter", mar: "Roberto De Zerbi", lil: "Bruno Genesio"
 };
+
+const PLAYER_PLANS = {
+  GK:  ["Traditional Keeper", "Sweeper Keeper"],
+  DEF: ["Stay Back", "Ball-Playing Defender", "Overlap Wingback"],
+  MID: ["Anchor Hold", "Box-to-Box", "Playmaker Roam"],
+  FWD: ["Get In Behind", "Target Man", "Cut Inside & Shoot"]
+};
+
+function getPlanCategory(pos) {
+  if (pos === "GK") return "GK";
+  if (["CB","LB","RB"].includes(pos)) return "DEF";
+  if (["CDM","CM","CAM","LM","RM"].includes(pos)) return "MID";
+  return "FWD";
+}
+
+function defaultPlanForPos(pos) {
+  const cat = getPlanCategory(pos);
+  if (cat === "GK") return "Traditional Keeper";
+  if (cat === "DEF") return (pos === "LB" || pos === "RB") ? "Overlap Wingback" : "Stay Back";
+  if (cat === "MID") return pos === "CAM" ? "Playmaker Roam" : pos === "CDM" ? "Anchor Hold" : "Box-to-Box";
+  return pos === "ST" ? "Get In Behind" : "Cut Inside & Shoot";
+}
 
 const LEAGUE_CLUB_DEFS = {
   ENG1: [
@@ -772,18 +796,18 @@ const LEAGUE_CLUB_DEFS = {
 };
 
 const INITIAL_FREE_AGENTS = [
-  { id: "fa_1", name: "Sergio Ramos", pos: "CB", ovr: 82, age: 40, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 65, posCoord: {x:50,y:75} },
-  { id: "fa_2", name: "Paul Pogba", pos: "CM", ovr: 81, age: 33, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 75, posCoord: {x:50,y:52} },
-  { id: "fa_3", name: "Mats Hummels", pos: "CB", ovr: 82, age: 37, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 55, posCoord: {x:40,y:75} },
-  { id: "fa_4", name: "Keylor Navas", pos: "GK", ovr: 81, age: 39, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 48, posCoord: {x:50,y:91} },
-  { id: "fa_5", name: "Dele Alli", pos: "CAM", ovr: 75, age: 30, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 28, posCoord: {x:50,y:38} },
-  { id: "fa_6", name: "Memphis Depay", pos: "ST", ovr: 81, age: 32, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 68, posCoord: {x:50,y:18} },
-  { id: "fa_7", name: "Ben Chilwell", pos: "LB", ovr: 78, age: 29, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 45, posCoord: {x:16,y:72} },
-  { id: "fa_8", name: "Kelechi Iheanacho", pos: "ST", ovr: 75, age: 29, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 30, posCoord: {x:50,y:18} },
-  { id: "fa_9", name: "Callum Wilson", pos: "ST", ovr: 77, age: 34, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 42, posCoord: {x:50,y:18} },
-  { id: "fa_10", name: "Ryan Kent", pos: "LW", ovr: 73, age: 29, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 18, posCoord: {x:18,y:24} },
-  { id: "fa_11", name: "Jadon Reid", pos: "CM", ovr: 66, age: 21, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 5, posCoord: {x:50,y:52} },
-  { id: "fa_12", name: "Alfie Holloway", pos: "CB", ovr: 64, age: 20, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 4, posCoord: {x:40,y:75} }
+  { id: "fa_1", name: "Sergio Ramos", pos: "CB", ovr: 82, age: 40, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 65, xp: 0, plan: "Stay Back", posCoord: {x:50,y:75} },
+  { id: "fa_2", name: "Paul Pogba", pos: "CM", ovr: 81, age: 33, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 75, xp: 0, plan: "Playmaker Roam", posCoord: {x:50,y:52} },
+  { id: "fa_3", name: "Mats Hummels", pos: "CB", ovr: 82, age: 37, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 55, xp: 0, plan: "Ball-Playing Defender", posCoord: {x:40,y:75} },
+  { id: "fa_4", name: "Keylor Navas", pos: "GK", ovr: 81, age: 39, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 48, xp: 0, plan: "Traditional Keeper", posCoord: {x:50,y:91} },
+  { id: "fa_5", name: "Dele Alli", pos: "CAM", ovr: 75, age: 30, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 28, xp: 0, plan: "Playmaker Roam", posCoord: {x:50,y:38} },
+  { id: "fa_6", name: "Memphis Depay", pos: "ST", ovr: 81, age: 32, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 68, xp: 0, plan: "Target Man", posCoord: {x:50,y:18} },
+  { id: "fa_7", name: "Ben Chilwell", pos: "LB", ovr: 78, age: 29, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 45, xp: 0, plan: "Overlap Wingback", posCoord: {x:16,y:72} },
+  { id: "fa_8", name: "Kelechi Iheanacho", pos: "ST", ovr: 75, age: 29, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 30, xp: 0, plan: "Get In Behind", posCoord: {x:50,y:18} },
+  { id: "fa_9", name: "Callum Wilson", pos: "ST", ovr: 77, age: 34, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 42, xp: 0, plan: "Get In Behind", posCoord: {x:50,y:18} },
+  { id: "fa_10", name: "Ryan Kent", pos: "LW", ovr: 73, age: 29, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 18, xp: 0, plan: "Cut Inside & Shoot", posCoord: {x:18,y:24} },
+  { id: "fa_11", name: "Jadon Reid", pos: "CM", ovr: 66, age: 21, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 5, xp: 0, plan: "Box-to-Box", posCoord: {x:50,y:52} },
+  { id: "fa_12", name: "Alfie Holloway", pos: "CB", ovr: 64, age: 20, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 4, xp: 0, plan: "Stay Back", posCoord: {x:40,y:75} }
 ];
 
 const FIRST_NAMES = ["Liam","Noah","Lucas","Mason","Ethan","Leo","Hugo","Mateo","Jude","Theo","Cole","Declan","Kai","Enzo","Lamine","Gavi","Nico","Arda","Julian","Marco","Luca","Matteo","Sandro","Antoine","Ousmane","Warren","Bradley","Harry","Sebastien","Rayan"];
@@ -810,7 +834,7 @@ const DEFAULT_COORDS = {
 };
 
 let state = null;
-let selectedStarterIdx = null;
+let selectedStarterIdx = 8;
 let quickMatchMode = false;
 let activeCupView = "fa";
 let marketPage = 1;
@@ -851,7 +875,7 @@ function buildAllClubsMap() {
           squad.push({
             id: `${id}_xi_${idx}`, name: p[0], pos: p[1], ovr: p[2], age: p[3],
             ogClubId: id, morale: 1, contractMonths: rand(12, 48), injuryWeeks: 0, suspendedMatches: 0,
-            isLoan: false, loanFromClubId: null,
+            isLoan: false, loanFromClubId: null, xp: 0, plan: defaultPlanForPos(p[1]),
             wageK: calcWageK(p[2]),
             stats: makeFreshSeasonStats(),
             posCoord: { ...DEFAULT_COORDS["433"][idx] }
@@ -868,7 +892,7 @@ function buildAllClubsMap() {
           name: `${pick(FIRST_NAMES)} ${pick(LAST_NAMES)}`,
           pos, ovr, age,
           ogClubId: id, morale: 0, contractMonths: rand(6, 36), injuryWeeks: 0, suspendedMatches: 0,
-          isLoan: false, loanFromClubId: null,
+          isLoan: false, loanFromClubId: null, xp: 0, plan: defaultPlanForPos(pos),
           wageK: calcWageK(ovr),
           stats: makeFreshSeasonStats(),
           posCoord: { ...DEFAULT_COORDS["433"][idx % 11] }
@@ -889,7 +913,7 @@ function buildAllClubsMap() {
 let PREVIEW_CLUBS = buildAllClubsMap();
 
 /* ============================================================================
-   2. OG MENU POPULATE & PREVIEW
+   2. MENU POPULATE & PREVIEW
    ============================================================================ */
 function populateOgClubs() {
   const lg = document.getElementById("og-league-select").value;
@@ -920,10 +944,13 @@ function updateOgPreview() {
   if (localStorage.getItem("pm27_save")) {
     document.getElementById("load-save-btn").style.display = "inline-block";
   }
+  if (localStorage.getItem("pm27_save_backup")) {
+    document.getElementById("recover-save-btn").style.display = "inline-block";
+  }
 }
 
 /* ============================================================================
-   3. CAREER INITIALIZATION, FULL 92-CLUB CUPS & SPORADIC SCHEDULE
+   3. CAREER INIT, ROLLING CRASH-RECOVERY SAVES, 92-CLUB CUPS & CALENDAR
    ============================================================================ */
 function startNewCareer() {
   quickMatchMode = false;
@@ -951,7 +978,7 @@ function startNewCareer() {
     clubs,
     freeAgents,
     mentality: "Balanced",
-    quickSimsRemaining: 2,
+    trainingAvailable: true,
     academy: generateAcademyProspects(clubs[userClubId].league),
     youthPromotionsThisSeason: 0,
     transfersSignedThisSeason: 0,
@@ -972,8 +999,8 @@ function startNewCareer() {
     ],
     inbox: [
       `Welcome to ${clubs[userClubId].name}, ${mgrName}!`,
-      `BOARD MANDATE: Season 1 requires completing at least 2/6 objectives (rising to 3/6 in Season 2, 4/6 in Season 3, and 5/6 in Season 4+).`,
-      `GLOBAL COMPETITIONS: All 92 English clubs compete in the FA Cup & Carabao Cup, and all 36 UCL & 36 UEL clubs play every season regardless of your division.`
+      `AI BROADCAST ENGINE ACTIVE: Assign Individual Player Plans in Tactics and watch both AI teams battle on the pitch with live 1x/2x/4x speed and touchline adjustments.`,
+      `INFINITE QUICK SIMS + MEDIA DAYS: You can Quick Sim any matchday, while mandatory Media Days keep dressing room morale and press storylines alive.`
     ],
     calendar: []
   };
@@ -1177,18 +1204,46 @@ function generateAcademyProspects(leagueId) {
   return list;
 }
 
+// ROLLING DUAL-SLOT CRASH-SAFE SAVE SYSTEM
 function saveCareer(notify) {
   if (quickMatchMode || !state) return;
-  localStorage.setItem("pm27_save", JSON.stringify(state));
-  if (notify) alert("Career saved!");
+  try {
+    const prev = localStorage.getItem("pm27_save");
+    if (prev) localStorage.setItem("pm27_save_backup", prev);
+    localStorage.setItem("pm27_save", JSON.stringify(state));
+    if (notify) alert("Career saved (with crash-recovery backup)!");
+  } catch (err) {
+    console.warn("Storage warning:", err);
+  }
 }
+
 function loadCareer() {
-  const raw = localStorage.getItem("pm27_save");
+  const raw = localStorage.getItem("pm27_save") || localStorage.getItem("pm27_save_backup");
   if (!raw) return;
-  quickMatchMode = false;
-  state = JSON.parse(raw);
-  enterHub();
+  try {
+    quickMatchMode = false;
+    state = JSON.parse(raw);
+    if (state.trainingAvailable === undefined) state.trainingAvailable = true;
+    enterHub();
+  } catch (e) {
+    recoverBackupCareer();
+  }
 }
+
+function recoverBackupCareer() {
+  const raw = localStorage.getItem("pm27_save_backup");
+  if (!raw) return alert("No crash backup found yet.");
+  try {
+    quickMatchMode = false;
+    state = JSON.parse(raw);
+    localStorage.setItem("pm27_save", raw);
+    alert("Recovered your career from the crash-recovery backup!");
+    enterHub();
+  } catch (e) {
+    alert("Backup file could not be read.");
+  }
+}
+
 function resetCareer() {
   document.getElementById("hub-screen").classList.remove("active");
   document.getElementById("setup-screen").classList.add("active");
@@ -1212,6 +1267,7 @@ function switchTab(tabId, btn) {
   if (btn) btn.classList.add("active");
   if (tabId === "tab-board") renderBoardObjectives();
   if (tabId === "tab-tactics") renderTacticsBoard();
+  if (tabId === "tab-training") renderTrainingTab();
   if (tabId === "tab-transfers") { renderTransferMarket(); renderTransferFeed(); }
   if (tabId === "tab-leagues") renderStandings();
   if (tabId === "tab-cups") renderCupBrackets();
@@ -1250,7 +1306,7 @@ function refreshHub() {
     document.getElementById("hud-board-obj").textContent = `Board: ${boardEval.metCount}/6 (Req: ${boardEval.req})`;
   }
 
-  document.getElementById("hud-sim").textContent = `Quick Sims: ${state.quickSimsRemaining}/2`;
+  document.getElementById("hud-sim").textContent = `Quick Sims: ∞`;
   const winEl = document.getElementById("hud-window");
   if (isDeadlineDay()) {
     winEl.textContent = "TRANSFER DEADLINE DAY!";
@@ -1281,18 +1337,16 @@ function refreshHub() {
     badge.textContent = "UNEMPLOYED SPECTATOR MODE";
     nextBox.innerHTML = `<strong>Day ${ev.day} (${ev.comp}):</strong> You are currently unemployed after being sacked. Sim world fixtures to watch leagues/cups progress and wait for managerial sackings!`;
     actBox.innerHTML = `
-      <button class="btn-blue" onclick="simUnemployedDay()">Sim World Matchday (Unlimited While Unemployed)</button>
-      <button class="btn-warn" onclick="switchTab('tab-mgr', document.querySelectorAll('.tab-btn')[10])">Check Open Job Vacancies (${state.jobVacancies.length})</button>
+      <button class="btn-blue" onclick="simUnemployedDay()">Sim World Matchday</button>
+      <button class="btn-warn" onclick="switchTab('tab-mgr', document.querySelectorAll('.tab-btn')[11])">Check Open Job Vacancies (${state.jobVacancies.length})</button>
     `;
   } else if (ev.type === "MATCH") {
     const opp = state.clubs[ev.oppId];
     badge.textContent = ev.comp.toUpperCase();
     nextBox.innerHTML = `<strong>Day ${ev.day}:</strong> ${ev.home ? club.name : opp.name} vs ${ev.home ? opp.name : club.name} <span class="sub-meta">(${ev.home ? "Home" : "Away"} • ${ev.comp} • Opp Mgr: ${opp.managerName})</span>`;
     actBox.innerHTML = `
-      <button class="btn-primary" onclick="startLiveMatch()">Play Live Match (+1 Quick Sim)</button>
-      <button class="btn-blue" ${state.quickSimsRemaining <= 0 ? "disabled" : ""} onclick="simNextMatch()">
-        ${state.quickSimsRemaining > 0 ? `Quick Sim (${state.quickSimsRemaining} left)` : "Quick Sim Locked (Play Match or Reach Break)"}
-      </button>
+      <button class="btn-primary" onclick="startWatchMatch()">📺 Watch Match (AI vs. AI)</button>
+      <button class="btn-blue" onclick="simNextMatch()">⚡ Quick Sim Match</button>
     `;
   } else if (ev.type === "MEDIA") {
     badge.textContent = "MANDATORY MEDIA DAY";
@@ -1300,7 +1354,7 @@ function refreshHub() {
     actBox.innerHTML = `<button class="btn-warn" onclick="openMediaEvent()">Attend Media Day</button>`;
   } else if (ev.type === "BREAK") {
     badge.textContent = "INTERNATIONAL BREAK";
-    nextBox.innerHTML = `<strong>Day ${ev.day} — ${ev.title}:</strong> Players recover from knocks, youth prospects train, and +1 Quick Sim token is restored.`;
+    nextBox.innerHTML = `<strong>Day ${ev.day} — ${ev.title}:</strong> Players recover from knocks, youth prospects train, and a fresh Training Session unlocks.`;
     actBox.innerHTML = `<button class="btn-blue" onclick="processBreakEvent()">Complete Break & Advance</button>`;
   }
 
@@ -1323,11 +1377,11 @@ function refreshHub() {
   }).join("");
 
   document.getElementById("inbox-list").innerHTML = state.inbox.slice().reverse().map(msg =>
-    `<div style="background:var(--panel-2); padding:9px 12px; border-radius:6px; font-size:0.85rem; border-left:3px solid var(--accent);">${msg}</div>`
+    `<div style="background:var(--panel-2); padding:9px 12px; border-radius:6px; font-size:0.84rem; border-left:3px solid var(--accent);">${msg}</div>`
   ).join("");
 
   if (isUnemployed) {
-    document.getElementById("squad-tbody").innerHTML = `<tr><td colspan="9" class="sub-meta">You are currently unemployed. Accept a job offer in 'Manager & Job Market' to manage a squad!</td></tr>`;
+    document.getElementById("squad-tbody").innerHTML = `<tr><td colspan="10" class="sub-meta">You are currently unemployed. Accept a job offer in 'Manager & Job Market' to manage a squad!</td></tr>`;
     document.getElementById("academy-tbody").innerHTML = "";
     return;
   }
@@ -1345,15 +1399,16 @@ function refreshHub() {
       <td>${p.name} ${isOg ? '<span class="badge b-og">OG</span>' : ''} ${p.isLoan ? '<span class="badge b-loan">LOAN</span>' : ''} ${i < 11 ? '<span class="badge b-youth">XI</span>' : ''}</td>
       <td>${p.age}</td>
       <td><strong>${p.ovr}</strong></td>
+      <td class="sub-meta">${p.plan || defaultPlanForPos(p.pos)}</td>
       <td>£${p.wageK || 15}k/wk</td>
       <td>${totG}G / ${totA}A</td>
       <td>🟨${totY} 🟥${totR}</td>
       <td>${p.suspendedMatches > 0 ? `<span class="badge b-exp">SUSP (${p.suspendedMatches})</span>` : p.injuryWeeks > 0 ? `<span class="badge b-inj">Inj (${p.injuryWeeks}w)</span>` : 'Fit'}</td>
       <td>
         ${p.isLoan ? '<span class="sub-meta">On Loan</span>' : `
-          <button class="btn-ghost" style="padding:3px 7px; font-size:0.72rem;" onclick="renewContract('${p.id}')">Renew</button>
-          ${p.age <= 22 ? `<button class="btn-blue" style="padding:3px 7px; font-size:0.72rem;" onclick="loanOutMyYouth('${p.id}')">Loan Out</button>` : ''}
-          <button class="btn-danger" style="padding:3px 7px; font-size:0.72rem;" onclick="sellMyPlayer('${p.id}')">Sell (£${(val*0.85).toFixed(1)}M)</button>
+          <button class="btn-ghost" style="padding:3px 7px; font-size:0.71rem;" onclick="renewContract('${p.id}')">Renew</button>
+          ${p.age <= 22 ? `<button class="btn-blue" style="padding:3px 7px; font-size:0.71rem;" onclick="loanOutMyYouth('${p.id}')">Loan Out</button>` : ''}
+          <button class="btn-danger" style="padding:3px 7px; font-size:0.71rem;" onclick="sellMyPlayer('${p.id}')">Sell (£${(val*0.85).toFixed(1)}M)</button>
         `}
       </td>
     </tr>`;
@@ -1371,6 +1426,249 @@ function refreshHub() {
   `).join("");
 }
 
+/* ============================================================================
+   5. BALANCED MANUAL TRAINING TAB (AGE-SCALED XP SO OVR GROWS REALISTICALLY)
+   ============================================================================ */
+function getAgeGrowthRate(age) {
+  if (age <= 20) return { label: "Wonderkid (Fast)", mult: 1.5 };
+  if (age <= 24) return { label: "Developing (Good)", mult: 1.15 };
+  if (age <= 29) return { label: "Peak (Steady)", mult: 0.85 };
+  return { label: "Veteran (Sharpness)", mult: 0.45 };
+}
+
+function awardPlayerTrainingXp(p, rawXp) {
+  if (!p.xp) p.xp = 0;
+  const rate = getAgeGrowthRate(p.age);
+  const cap = p.ovr >= 92 ? 96 : 95;
+  if (p.ovr >= cap) return false;
+  p.xp += Math.round(rawXp * rate.mult);
+  if (p.xp >= 100) {
+    p.xp -= 100;
+    p.ovr = Math.min(cap, p.ovr + 1);
+    return true;
+  }
+  return false;
+}
+
+function runTeamTraining(drillType) {
+  if (state.unemployed || !state.userClubId) return;
+  if (!state.trainingAvailable) return alert("You already ran today's training session! Play or Quick Sim the next matchday to unlock another session.");
+  const club = state.clubs[state.userClubId];
+  const levelUps = [];
+
+  club.squad.forEach(p => {
+    const cat = getPlanCategory(p.pos);
+    let gain = 10;
+    if (drillType === "ATT" && (cat === "FWD" || cat === "MID")) gain = 24;
+    if (drillType === "DEF" && (cat === "DEF" || cat === "GK")) gain = 24;
+    if (drillType === "FIT") {
+      gain = 16;
+      p.morale = Math.min(2, p.morale + 1);
+    }
+    if (awardPlayerTrainingXp(p, gain)) {
+      levelUps.push(`${p.name} (${p.ovr} OVR)`);
+    }
+  });
+
+  state.trainingAvailable = false;
+  const drillLabel = drillType === "ATT" ? "Attacking & Finishing" : drillType === "DEF" ? "Defensive Shape" : "Tactical Rondo & Fitness";
+  state.inbox.push(`TRAINING COMPLETE (${drillLabel}): Squad gained realistic training XP.${levelUps.length ? ` Level-Ups: ${levelUps.join(", ")}!` : ""}`);
+  saveCareer(false);
+  renderTrainingTab();
+  refreshHub();
+}
+
+function runIndividualTraining(playerId) {
+  if (state.unemployed || !state.userClubId) return;
+  if (!state.trainingAvailable) return alert("You already ran today's training session! Advance a matchday to train again.");
+  const club = state.clubs[state.userClubId];
+  const p = club.squad.find(x => x.id === playerId);
+  if (!p) return;
+
+  const leveledUp = awardPlayerTrainingXp(p, 38);
+  club.squad.forEach(other => {
+    if (other.id !== p.id) awardPlayerTrainingXp(other, 8);
+  });
+
+  state.trainingAvailable = false;
+  state.inbox.push(`1-ON-1 COACHING: Focused session with ${p.name}.${leveledUp ? ` ${p.name} improved to ${p.ovr} OVR!` : ` Progress is now ${p.xp}%.`}`);
+  saveCareer(false);
+  renderTrainingTab();
+  refreshHub();
+}
+
+function renderTrainingTab() {
+  if (state.unemployed || !state.userClubId) {
+    document.getElementById("training-tbody").innerHTML = `<tr><td colspan="7" class="sub-meta">Accept a club job to run squad training sessions.</td></tr>`;
+    return;
+  }
+  const club = state.clubs[state.userClubId];
+  const badge = document.getElementById("training-status-badge");
+  badge.textContent = state.trainingAvailable ? "1 SESSION READY" : "COMPLETED FOR THIS MATCHDAY";
+  badge.className = `badge ${state.trainingAvailable ? 'b-ok' : 'b-warn'}`;
+
+  ["tr-btn-att", "tr-btn-def", "tr-btn-fit"].forEach(id => {
+    document.getElementById(id).disabled = !state.trainingAvailable;
+  });
+
+  document.getElementById("training-tbody").innerHTML = club.squad.map(p => {
+    const rate = getAgeGrowthRate(p.age);
+    const xp = p.xp || 0;
+    return `<tr>
+      <td><strong>${p.pos}</strong></td>
+      <td>${p.name}</td>
+      <td>${p.age}</td>
+      <td><strong>${p.ovr}</strong></td>
+      <td class="sub-meta">${rate.label}</td>
+      <td>
+        <div class="xp-track"><div class="xp-fill" style="width:${xp}%"></div></div>
+        <span class="sub-meta" style="margin-left:6px;">${xp}%</span>
+      </td>
+      <td>
+        <button class="btn-ghost" style="padding:3px 9px; font-size:0.73rem;" ${state.trainingAvailable ? '' : 'disabled'} onclick="runIndividualTraining('${p.id}')">1-on-1 Focus</button>
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+/* ============================================================================
+   6. DRAG & DROP TACTICS + INDIVIDUAL PLAYER PLANS
+   ============================================================================ */
+function renderTacticsBoard() {
+  if (state.unemployed || !state.userClubId) return;
+  const club = state.clubs[state.userClubId];
+  const pitch = document.getElementById("tactics-pitch");
+  pitch.querySelectorAll(".tactic-node").forEach(n => n.remove());
+
+  club.squad.slice(0, 11).forEach((p, idx) => {
+    if (!p.posCoord) p.posCoord = { ...DEFAULT_COORDS["433"][idx] };
+    if (!p.plan) p.plan = defaultPlanForPos(p.pos);
+    const node = document.createElement("div");
+    node.className = `tactic-node ${selectedStarterIdx === idx ? 'selected-node' : ''}`;
+    node.style.left = p.posCoord.x + "%";
+    node.style.top = p.posCoord.y + "%";
+    node.innerHTML = `
+      <span class="tn-pos">${inferRoleFromCoords(p.posCoord.x, p.posCoord.y)} (${p.ovr})</span>
+      <span class="tn-name">${p.name.split(" ").pop()}</span>
+      <span class="tn-role">${p.plan.split(" ")[0]}</span>
+    `;
+    node.onpointerdown = (e) => {
+      e.preventDefault();
+      selectedStarterIdx = idx;
+      renderIndividualPlanEditor();
+      renderTacticsSwapList();
+      pitch.querySelectorAll(".tactic-node").forEach((el, nIdx) => {
+        el.classList.toggle("selected-node", nIdx === idx);
+      });
+
+      node.setPointerCapture(e.pointerId);
+      const rect = pitch.getBoundingClientRect();
+      node.onpointermove = (ev) => {
+        const nx = Math.max(8, Math.min(92, ((ev.clientX - rect.left) / rect.width) * 100));
+        const ny = Math.max(8, Math.min(94, ((ev.clientY - rect.top) / rect.height) * 100));
+        p.posCoord.x = Math.round(nx);
+        p.posCoord.y = Math.round(ny);
+        node.style.left = p.posCoord.x + "%";
+        node.style.top = p.posCoord.y + "%";
+        node.querySelector(".tn-pos").textContent = `${inferRoleFromCoords(p.posCoord.x, p.posCoord.y)} (${p.ovr})`;
+      };
+      node.onpointerup = () => {
+        node.onpointermove = null;
+        node.onpointerup = null;
+        saveCareer(false);
+        renderTacticsSwapList();
+      };
+    };
+    pitch.appendChild(node);
+  });
+  renderIndividualPlanEditor();
+  renderTacticsSwapList();
+}
+
+function renderIndividualPlanEditor() {
+  if (state.unemployed || !state.userClubId) return;
+  const club = state.clubs[state.userClubId];
+  const idx = selectedStarterIdx !== null && selectedStarterIdx < 11 ? selectedStarterIdx : 0;
+  const p = club.squad[idx];
+  if (!p) return;
+  if (!p.plan) p.plan = defaultPlanForPos(p.pos);
+
+  document.getElementById("plan-target-name").textContent = `${p.name} (${p.pos})`;
+  const cat = getPlanCategory(p.pos);
+  const plans = PLAYER_PLANS[cat];
+
+  document.getElementById("plan-options-box").innerHTML = `
+    <div style="display:flex; flex-wrap:wrap; gap:6px;">
+      ${plans.map(planName => `
+        <button class="btn-ghost ${p.plan === planName ? 'active-pill' : ''}" style="padding:6px 10px; font-size:0.78rem;" onclick="setPlayerIndividualPlan(${idx}, '${planName}')">
+          ${p.plan === planName ? '✓ ' : ''}${planName}
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
+function setPlayerIndividualPlan(starterIdx, planName) {
+  const club = state.clubs[state.userClubId];
+  const p = club.squad[starterIdx];
+  if (!p) return;
+  p.plan = planName;
+  saveCareer(false);
+  renderTacticsBoard();
+}
+
+function inferRoleFromCoords(x, y) {
+  if (y >= 84) return "GK";
+  if (y >= 64) return x < 28 ? "LB" : x > 72 ? "RB" : "CB";
+  if (y >= 42) return x < 25 ? "LM" : x > 75 ? "RM" : y > 54 ? "CDM" : "CM";
+  if (y >= 28) return x < 28 ? "LW" : x > 72 ? "RW" : "CAM";
+  return x < 28 ? "LW" : x > 72 ? "RW" : "ST";
+}
+
+function applyPresetFormation(key) {
+  if (!key || !DEFAULT_COORDS[key]) return;
+  const club = state.clubs[state.userClubId];
+  club.squad.slice(0, 11).forEach((p, idx) => { p.posCoord = { ...DEFAULT_COORDS[key][idx] }; });
+  saveCareer(false);
+  renderTacticsBoard();
+}
+
+function renderTacticsSwapList() {
+  const club = state.clubs[state.userClubId];
+  document.getElementById("tactics-swap-ui").innerHTML = club.squad.map((p, idx) => {
+    const isXI = idx < 11;
+    const isSel = selectedStarterIdx === idx;
+    return `<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; margin-bottom:5px; border-radius:6px; background:${isSel ? 'rgba(59,130,246,0.28)' : 'var(--panel-2)'}; border:1px solid ${isSel ? '#3b82f6' : 'var(--border)'};">
+      <span><strong>${isXI ? inferRoleFromCoords(p.posCoord.x, p.posCoord.y) : p.pos}</strong> — ${p.name} (${p.ovr}) <span class="sub-meta">[${p.plan || defaultPlanForPos(p.pos)}]</span></span>
+      <button class="${isXI ? 'btn-ghost' : 'btn-blue'}" style="padding:3px 9px; font-size:0.74rem;" onclick="handleSquadSwap(${idx})">
+        ${isXI ? (isSel ? 'Selected' : 'Select XI') : 'Sub In'}
+      </button>
+    </div>`;
+  }).join("");
+}
+
+function handleSquadSwap(idx) {
+  const club = state.clubs[state.userClubId];
+  if (idx < 11) {
+    selectedStarterIdx = idx;
+    renderTacticsBoard();
+  } else if (selectedStarterIdx !== null && selectedStarterIdx < 11) {
+    const savedCoord = { ...club.squad[selectedStarterIdx].posCoord };
+    const temp = club.squad[selectedStarterIdx];
+    club.squad[selectedStarterIdx] = club.squad[idx];
+    club.squad[idx] = temp;
+    club.squad[selectedStarterIdx].posCoord = savedCoord;
+    if (!club.squad[selectedStarterIdx].plan) club.squad[selectedStarterIdx].plan = defaultPlanForPos(club.squad[selectedStarterIdx].pos);
+    saveCareer(false);
+    renderTacticsBoard();
+  } else {
+    alert("Click 'Select XI' on a starter first, then click 'Sub In' on a bench player.");
+  }
+}
+
+/* ============================================================================
+   7. BOARD OBJECTIVES, CUPS, EUROPE, STATS, BALLON D'OR & MANAGER MARKET
+   ============================================================================ */
 function renderBoardObjectives() {
   if (state.unemployed || !state.userClubId) {
     document.getElementById("board-objectives-list").innerHTML = `<p class="sub-meta">You are currently unemployed and have no Board objectives until you accept a new managerial vacancy.</p>`;
@@ -1399,7 +1697,7 @@ function renderCupBrackets() {
 
   container.innerHTML = `<div class="cup-rounds-grid">${cupObj.rounds.map((rList, rIdx) => {
     return `<div class="round-col">
-      <div style="font-weight:800; font-size:0.82rem; color:var(--accent); margin-bottom:8px;">${cupObj.roundNames[rIdx]}</div>
+      <div style="font-weight:800; font-size:0.8rem; color:var(--accent); margin-bottom:8px;">${cupObj.roundNames[rIdx]}</div>
       ${rList.length ? rList.map(t => {
         const isMine = t.a === state.userClubId || t.b === state.userClubId;
         return `<div class="tie-card ${isMine ? 'my-tie' : ''}">
@@ -1427,9 +1725,6 @@ function renderEuropeTables() {
   buildTable("UEL", "uel-table-box");
 }
 
-/* ============================================================================
-   5. DEDICATED PLAYER STATS & BALLON D'OR / AWARDS PAGES
-   ============================================================================ */
 function renderPlayerStatsPage() {
   const scope = document.getElementById("stats-comp-filter").value;
   const userLg = state.userClubId ? state.clubs[state.userClubId].league : "ENG1";
@@ -1550,9 +1845,6 @@ function renderBallonDorPage() {
     : `<p class="sub-meta">Awards are officially presented at the end of every season.</p>`;
 }
 
-/* ============================================================================
-   6. MANAGER STATS, JOB MARKET & MEDIA EVENTS
-   ============================================================================ */
 function renderManagerStats() {
   const ms = state.mgrStats;
   const winPct = ms.played > 0 ? Math.round((ms.wins / ms.played) * 100) : 0;
@@ -1659,11 +1951,11 @@ function processBreakEvent() {
     if (p.injuryWeeks > 0) p.injuryWeeks = Math.max(0, p.injuryWeeks - 2);
     p.morale = Math.min(2, p.morale + 1);
   });
-  state.quickSimsRemaining = Math.min(2, state.quickSimsRemaining + 1);
+  state.trainingAvailable = true;
   ev.done = true;
   ev.result = "Completed";
   state.dayIndex++;
-  state.inbox.push("INTERNATIONAL BREAK: Squad rested, injuries healed faster, and +1 Quick Sim token restored.");
+  state.inbox.push("INTERNATIONAL BREAK: Squad rested, injuries healed faster, and a fresh Training Session unlocked.");
   saveCareer(false);
   refreshHub();
 }
@@ -1734,7 +2026,7 @@ function closeModal() {
 }
 
 /* ============================================================================
-   7. PAGINATED TRANSFER MARKET, LOANS & MULTI-ROUND NEGOTIATIONS
+   8. PAGINATED TRANSFER MARKET, LOANS & MULTI-ROUND NEGOTIATIONS
    ============================================================================ */
 function renewContract(playerId) {
   const club = state.clubs[state.userClubId];
@@ -1802,7 +2094,7 @@ function promoteProspect(acadId) {
   club.squad.push({
     id: a.id, name: a.name, pos: a.pos, ovr: a.ovr, age: a.age,
     ogClubId: club.id, morale: 2, contractMonths: 36, injuryWeeks: 0, suspendedMatches: 0,
-    isLoan: false, loanFromClubId: null,
+    isLoan: false, loanFromClubId: null, xp: 0, plan: defaultPlanForPos(a.pos),
     wageK: calcWageK(a.ovr),
     stats: makeFreshSeasonStats(),
     posCoord: { x: 50, y: 50 }
@@ -1811,97 +2103,6 @@ function promoteProspect(acadId) {
   state.inbox.push(`ACADEMY GRADUATE: ${a.name} (${a.age}, ${a.ovr} OVR) promoted to the senior squad!`);
   saveCareer(false);
   refreshHub();
-}
-
-function renderTacticsBoard() {
-  if (state.unemployed || !state.userClubId) return;
-  const club = state.clubs[state.userClubId];
-  const pitch = document.getElementById("tactics-pitch");
-  pitch.querySelectorAll(".tactic-node").forEach(n => n.remove());
-
-  club.squad.slice(0, 11).forEach((p, idx) => {
-    if (!p.posCoord) p.posCoord = { ...DEFAULT_COORDS["433"][idx] };
-    const node = document.createElement("div");
-    node.className = "tactic-node";
-    node.style.left = p.posCoord.x + "%";
-    node.style.top = p.posCoord.y + "%";
-    node.innerHTML = `
-      <span class="tn-pos">${inferRoleFromCoords(p.posCoord.x, p.posCoord.y)}</span>
-      <span class="tn-name">${p.name.split(" ").pop()}</span>
-      <span class="tn-ovr">${p.ovr}</span>
-    `;
-    node.onpointerdown = (e) => {
-      e.preventDefault();
-      node.setPointerCapture(e.pointerId);
-      const rect = pitch.getBoundingClientRect();
-      node.onpointermove = (ev) => {
-        const nx = Math.max(8, Math.min(92, ((ev.clientX - rect.left) / rect.width) * 100));
-        const ny = Math.max(8, Math.min(94, ((ev.clientY - rect.top) / rect.height) * 100));
-        p.posCoord.x = Math.round(nx);
-        p.posCoord.y = Math.round(ny);
-        node.style.left = p.posCoord.x + "%";
-        node.style.top = p.posCoord.y + "%";
-        node.querySelector(".tn-pos").textContent = inferRoleFromCoords(p.posCoord.x, p.posCoord.y);
-      };
-      node.onpointerup = () => {
-        node.onpointermove = null;
-        node.onpointerup = null;
-        saveCareer(false);
-        renderTacticsSwapList();
-      };
-    };
-    pitch.appendChild(node);
-  });
-  renderTacticsSwapList();
-}
-
-function inferRoleFromCoords(x, y) {
-  if (y >= 84) return "GK";
-  if (y >= 64) return x < 28 ? "LB" : x > 72 ? "RB" : "CB";
-  if (y >= 42) return x < 25 ? "LM" : x > 75 ? "RM" : y > 54 ? "CDM" : "CM";
-  if (y >= 28) return x < 28 ? "LW" : x > 72 ? "RW" : "CAM";
-  return x < 28 ? "LW" : x > 72 ? "RW" : "ST";
-}
-
-function applyPresetFormation(key) {
-  if (!key || !DEFAULT_COORDS[key]) return;
-  const club = state.clubs[state.userClubId];
-  club.squad.slice(0, 11).forEach((p, idx) => { p.posCoord = { ...DEFAULT_COORDS[key][idx] }; });
-  saveCareer(false);
-  renderTacticsBoard();
-}
-
-function renderTacticsSwapList() {
-  const club = state.clubs[state.userClubId];
-  document.getElementById("tactics-swap-ui").innerHTML = club.squad.map((p, idx) => {
-    const isXI = idx < 11;
-    const isSel = selectedStarterIdx === idx;
-    return `<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; margin-bottom:5px; border-radius:6px; background:${isSel ? 'rgba(59,130,246,0.28)' : 'var(--panel-2)'}; border:1px solid ${isSel ? '#3b82f6' : 'var(--border)'};">
-      <span><strong>${isXI ? inferRoleFromCoords(p.posCoord.x, p.posCoord.y) : p.pos}</strong> — ${p.name} (${p.ovr} OVR) ${p.suspendedMatches > 0 ? '<span class="badge b-exp">SUSP</span>' : ''}</span>
-      <button class="${isXI ? 'btn-ghost' : 'btn-blue'}" style="padding:3px 9px; font-size:0.75rem;" onclick="handleSquadSwap(${idx})">
-        ${isXI ? (isSel ? 'Selected' : 'Select XI') : 'Sub In'}
-      </button>
-    </div>`;
-  }).join("");
-}
-
-function handleSquadSwap(idx) {
-  const club = state.clubs[state.userClubId];
-  if (idx < 11) {
-    selectedStarterIdx = selectedStarterIdx === idx ? null : idx;
-    renderTacticsSwapList();
-  } else if (selectedStarterIdx !== null) {
-    const savedCoord = { ...club.squad[selectedStarterIdx].posCoord };
-    const temp = club.squad[selectedStarterIdx];
-    club.squad[selectedStarterIdx] = club.squad[idx];
-    club.squad[idx] = temp;
-    club.squad[selectedStarterIdx].posCoord = savedCoord;
-    selectedStarterIdx = null;
-    saveCareer(false);
-    renderTacticsBoard();
-  } else {
-    alert("Click 'Select XI' on a starter first, then click 'Sub In' on a bench player.");
-  }
 }
 
 function changeMarketPage(delta) {
@@ -1942,7 +2143,7 @@ function renderTransferMarket() {
   const pageItems = targets.slice(start, start + MARKET_PER_PAGE);
 
   document.getElementById("market-total-badge").textContent = `${targets.length} PLAYERS`;
-  document.getElementById("mk-page-info").textContent = `Page ${marketPage} of ${totalPages} (Showing ${start + 1}–${Math.min(targets.length, start + MARKET_PER_PAGE)})`;
+  document.getElementById("mk-page-info").textContent = `Page ${marketPage} of ${totalPages} (${start + 1}–${Math.min(targets.length, start + MARKET_PER_PAGE)})`;
   document.getElementById("mk-prev").disabled = marketPage <= 1;
   document.getElementById("mk-next").disabled = marketPage >= totalPages;
 
@@ -1996,7 +2197,6 @@ function submitClubTransferBid(sellerClubId, playerId, askFee, isLoanDeal) {
   openContractModal(sellerClubId, playerId, askFee, isLoanDeal);
 }
 
-// MULTI-ROUND NEGOTIATION MODAL (PLAYER COUNTER-OFFERS INSTEAD OF INSTANTLY DECLINING)
 function openContractModal(sellerClubId, playerId, agreedFee, isLoanDeal) {
   if (state.unemployed || !state.userClubId) return;
   const isFree = !sellerClubId;
@@ -2090,7 +2290,6 @@ function finalizeContractOffer() {
 
   if (score < 0.95) {
     if (deal.round < deal.maxRounds) {
-      // Agent makes a realistic counter-offer instead of walking out!
       deal.round++;
       deal.desiredWage = Math.max(offerWage + 2, Math.round((deal.desiredWage + offerWage) / 2));
       const roleHint = (p.ovr >= 80 && offerRole === "ROT") ? " and at least Important First Team status" : "";
@@ -2103,7 +2302,6 @@ function finalizeContractOffer() {
     }
   }
 
-  // Deal Agreed!
   if (isFree) {
     state.freeAgents = state.freeAgents.filter(x => x.id !== p.id);
   } else {
@@ -2117,6 +2315,7 @@ function finalizeContractOffer() {
   p.wageK = offerWage;
   p.contractMonths = offerMonths;
   p.morale = 2;
+  if (!p.plan) p.plan = defaultPlanForPos(p.pos);
   if (deal.isLoanDeal) {
     p.isLoan = true;
     p.loanFromClubId = seller.id;
@@ -2171,9 +2370,6 @@ function simulateAiTransfers() {
   state.transferFeed.unshift({ player: p.name, ovr: p.ovr, from: seller.name, to: buyer.name, fee: `£${fee.toFixed(1)}M` });
 }
 
-/* ============================================================================
-   8. LEAGUE STANDINGS
-   ============================================================================ */
 function renderStandings() {
   let sel = document.getElementById("table-select").value;
   if (sel === "MY") sel = state.userClubId ? state.clubs[state.userClubId].league : "ENG1";
@@ -2206,14 +2402,14 @@ function renderStandings() {
 }
 
 /* ============================================================================
-   9. GLOBAL MATCH SIMULATION, PLAYER STATS RECORDING & PENALTY SHOOTOUTS
+   9. GLOBAL MATCH SIMULATION, INFINITE QUICK SIMS & PENALTY SHOOTOUTS
    ============================================================================ */
 function creditTeamMatchStats(club, gf, ga, compBucket) {
   const xi = club.squad.slice(0, 11);
   if (!xi.length) return;
   const bucketKey = compBucket === "UCL" ? "ucl" : compBucket === "UEL" ? "uel" : (compBucket === "FACUP" || compBucket === "CARABAO") ? "cups" : "league";
 
-  xi.forEach((p, idx) => {
+  xi.forEach(p => {
     if (!p.stats) p.stats = makeFreshSeasonStats();
     const b = p.stats[bucketKey];
     b.apps++;
@@ -2224,7 +2420,6 @@ function creditTeamMatchStats(club, gf, ga, compBucket) {
     if (Math.random() < 0.006) b.reds++;
   });
 
-  // Distribute goals & assists realistically among attackers/midfielders
   const attackers = xi.slice(5);
   for (let g = 0; g < gf; g++) {
     const scorer = pick(attackers.length ? attackers : xi);
@@ -2279,7 +2474,6 @@ function advance92CupRound(cupObj, userClubId, userWon, scoreStr) {
 }
 
 function simulateGlobalWorldMatchday(activeCompType) {
-  // Always simulate domestic leagues on matchdays
   Object.values(state.clubs).forEach(c => {
     if (c.id === state.userClubId && activeCompType === "LEAGUE") return;
     const gf = rand(0, 3), ga = rand(0, 3);
@@ -2287,7 +2481,6 @@ function simulateGlobalWorldMatchday(activeCompType) {
     creditTeamMatchStats(c, gf, ga, "LEAGUE");
   });
 
-  // Always simulate UCL & UEL globally every 3 matchdays even if user is in League Two or Championship!
   if (state.dayIndex % 3 === 0) {
     ["UCL", "UEL"].forEach(compKey => {
       const teams = Object.values(state.clubs).filter(c => c.euComp === compKey && !(c.id === state.userClubId && activeCompType === compKey));
@@ -2300,7 +2493,6 @@ function simulateGlobalWorldMatchday(activeCompType) {
     });
   }
 
-  // Always advance FA Cup & Carabao Cup rounds globally even if user is eliminated or non-English!
   const cupCheckpoints = [2, 6, 10, 14, 18, 22, 26];
   const cpIdx = cupCheckpoints.indexOf(state.dayIndex);
   if (cpIdx !== -1) {
@@ -2319,7 +2511,7 @@ function recordMatchOutcome(ev, myGoals, oppGoals, wasLiveMatch, livePlayerEvent
   ev.done = true;
   ev.result = ev.home ? `${myGoals} - ${oppGoals}` : `${oppGoals} - ${myGoals}`;
 
-  // Decrement existing suspensions
+  state.trainingAvailable = true;
   myClub.squad.forEach(p => { if (p.suspendedMatches > 0) p.suspendedMatches--; });
 
   const ms = state.mgrStats;
@@ -2330,13 +2522,6 @@ function recordMatchOutcome(ev, myGoals, oppGoals, wasLiveMatch, livePlayerEvent
   else if (myGoals === oppGoals) { ms.draws++; }
   else { ms.losses++; ms.reputation = Math.max(10, ms.reputation - 1); }
 
-  if (wasLiveMatch) {
-    state.quickSimsRemaining = Math.min(2, state.quickSimsRemaining + 1);
-  } else {
-    state.quickSimsRemaining = Math.max(0, state.quickSimsRemaining - 1);
-  }
-
-  // Credit player stats for both teams
   const bucketKey = ev.compType === "UCL" ? "ucl" : ev.compType === "UEL" ? "uel" : (ev.compType === "FACUP" || ev.compType === "CARABAO") ? "cups" : "league";
   if (livePlayerEvents && livePlayerEvents.length) {
     myClub.squad.slice(0, 11).forEach(p => {
@@ -2406,8 +2591,11 @@ function recordMatchOutcome(ev, myGoals, oppGoals, wasLiveMatch, livePlayerEvent
   state.dayIndex++;
   saveCareer(false);
 
-  // Show Post-Match Ratings & MOTM Modal
-  showPostMatchRatingsModal(myClub, oppClub, myGoals, oppGoals);
+  if (wasLiveMatch) {
+    showPostMatchRatingsModal(myClub, oppClub, myGoals, oppGoals);
+  } else {
+    state.inbox.push(`QUICK SIM (${ev.comp}): ${myClub.name} ${myGoals} – ${oppGoals} ${oppClub.name}`);
+  }
 }
 
 function showPostMatchRatingsModal(myClub, oppClub, myGoals, oppGoals) {
@@ -2516,7 +2704,6 @@ function advanceToNextSeason() {
 }
 
 function rolloverSeasonData() {
-  // Present Annual Ballon d'Or & Manager of the Year before resetting season stats
   const bWinner = computeBallonDorStandings()[0];
   const mWinner = computeManagerAwardsStandings()[0];
   if (bWinner && mWinner) {
@@ -2534,6 +2721,7 @@ function rolloverSeasonData() {
   state.youthPromotionsThisSeason = 0;
   state.transfersSignedThisSeason = 0;
   state.mediaCompletedThisSeason = 0;
+  state.trainingAvailable = true;
   const retirements = [];
 
   ["ENG1","ENG2","ENG3"].forEach((topLg, idx) => {
@@ -2557,7 +2745,6 @@ function rolloverSeasonData() {
     carabao: buildFull92CupBracket(state.clubs, state.userClubId)
   };
 
-  // Return loaned players to parent clubs with +2 to +4 OVR development
   Object.values(state.clubs).forEach(c => {
     for (let i = c.squad.length - 1; i >= 0; i--) {
       const p = c.squad[i];
@@ -2598,13 +2785,13 @@ function rolloverSeasonData() {
     while (c.squad.length < 16) {
       const base = c.league === "ENG4" ? 58 : c.league === "ENG3" ? 64 : c.league === "ENG2" ? 70 : 75;
       const ovr = base + rand(-2, 4);
+      const pos = pick(["GK","CB","LB","RB","CM","CAM","LW","RW","ST"]);
       c.squad.push({
         id: "regen_" + Math.random().toString(36).slice(2,7),
         name: `${pick(FIRST_NAMES)} ${pick(LAST_NAMES)}`,
-        pos: pick(["GK","CB","LB","RB","CM","CAM","LW","RW","ST"]),
-        ovr, age: 16,
+        pos, ovr, age: 16,
         ogClubId: c.id, morale: 1, contractMonths: 36, injuryWeeks: 0, suspendedMatches: 0,
-        isLoan: false, loanFromClubId: null,
+        isLoan: false, loanFromClubId: null, xp: 0, plan: defaultPlanForPos(pos),
         wageK: calcWageK(ovr),
         stats: makeFreshSeasonStats(),
         posCoord: { x: 50, y: 50 }
@@ -2619,122 +2806,58 @@ function rolloverSeasonData() {
     state.inbox.push(`RETIREMENTS (${state.year}): ${retirements.join(", ")} hung up their boots.`);
   }
 
-  state.quickSimsRemaining = 2;
   generateSporadicSeasonCalendar();
   saveCareer(false);
   refreshHub();
 }
 
+// INFINITE QUICK SIM WITH REALISTIC RATING CURVE & UPSET PROBABILITY
 function simNextMatch() {
   const ev = state.calendar[state.dayIndex];
-  if (!ev || ev.type !== "MATCH" || state.quickSimsRemaining <= 0) return;
+  if (!ev || ev.type !== "MATCH") return;
   const myClub = state.clubs[state.userClubId];
   const oppClub = state.clubs[ev.oppId];
   const myPow = myClub.squad.slice(0,11).reduce((s,p) => s + p.ovr + p.morale, 0) / 11;
   const oppPow = oppClub.squad.slice(0,11).reduce((s,p) => s + p.ovr, 0) / 11;
-  const diff = (myPow - oppPow) / 6;
-  let myGoals = Math.max(0, Math.round(rand(0, 3) + Math.max(0, diff)));
-  let oppGoals = Math.max(0, Math.round(rand(0, 3) + Math.max(0, -diff)));
+
+  // Realistic rating edge with upset variance (82 OVR can beat 90 OVR ~18% of the time)
+  const ratingEdge = (myPow - oppPow) * 0.14;
+  const upsetRoll = (Math.random() - 0.5) * 2.4;
+  const net = ratingEdge + upsetRoll;
+
+  let myGoals = Math.max(0, Math.round(1.15 + Math.max(-0.8, net) + (Math.random() * 1.4 - 0.5)));
+  let oppGoals = Math.max(0, Math.round(1.15 + Math.max(-0.8, -net) + (Math.random() * 1.4 - 0.5)));
+
   if ((ev.compType === "FACUP" || ev.compType === "CARABAO") && myGoals === oppGoals) {
-    if (Math.random() < 0.5) myGoals++; else oppGoals++;
+    if (Math.random() < (0.5 + ratingEdge * 0.1)) myGoals++; else oppGoals++;
   }
   recordMatchOutcome(ev, myGoals, oppGoals, false, null);
   refreshHub();
 }
 
 /* ============================================================================
-   10. OVERHAULED OG 2D MATCH ENGINE:
-       - Directional Aim Arrow + Reliable Passing (E/R/Mobile)
-       - Zero Swarming / Sporadic Off-the-Ball Runs
-       - Diving & Parrying Goalkeepers
-       - AI Tackling + Fouls + Free Kicks + Penalties + Yellow/Red Cards
-       - Working Throw-Ins, Goal Kicks, Corners & Knockout Penalty Shootouts
+   10. WATCH MATCH — PURE AI VS AI BROADCAST ENGINE
+       - Zero manual player controls or aim arrows
+       - Rating-weighted AI decisions (90 OVR controls tempo; 82 OVR can upset)
+       - Individual Player Plans actively shape AI runs, passes & shots
+       - Live 1x / 2x / 4x Speed, Mentality Switch, Subs & Instant Result
    ============================================================================ */
 let match = null;
-const keys = {};
-const joyVec = { x: 0, y: 0, active: false };
-const mousePitch = { x: 650, y: 310, active: false };
 
-const matchCanvas = document.getElementById("match-canvas");
-matchCanvas.addEventListener("mousemove", e => {
-  if (!match || !match.running) return;
-  const scale = Math.min(matchCanvas.width / match.P_W, matchCanvas.height / match.P_H);
-  const offX = (matchCanvas.width - match.P_W * scale) / 2;
-  const offY = (matchCanvas.height - match.P_H * scale) / 2;
-  mousePitch.x = (e.clientX - offX) / scale;
-  mousePitch.y = (e.clientY - offY) / scale;
-  mousePitch.active = true;
-});
-
-matchCanvas.addEventListener("mousedown", e => {
-  if (!match || !match.running) return;
-  if (match.ball.owner && match.ball.owner.team === "home") {
-    handleUserShoot();
-  } else {
-    performTackle(Boolean(keys["ShiftLeft"] || keys["ShiftRight"]));
-  }
-});
-
-window.addEventListener("keydown", e => {
-  keys[e.code] = true;
-  if (!match || !match.running) return;
-  if (e.code === "KeyE") handleUserPass(false);
-  if (e.code === "KeyR") handleUserPass(true);
-  if (e.code === "KeyQ") switchControlledPlayer();
-  if (e.code === "Space") {
-    e.preventDefault();
-    if (match.ball.owner && match.ball.owner.team === "home") {
-      handleUserShoot();
-    } else {
-      performTackle(Boolean(keys["ShiftLeft"] || keys["ShiftRight"]));
-    }
-  }
-});
-window.addEventListener("keyup", e => { keys[e.code] = false; });
-
-(function initMobileTouch() {
-  const joyZone = document.getElementById("joy-zone");
-  const joyStick = document.getElementById("joy-stick");
-  if (!joyZone) return;
-
-  joyZone.addEventListener("touchstart", e => { e.preventDefault(); joyVec.active = true; updateJoy(e.touches[0]); }, { passive: false });
-  joyZone.addEventListener("touchmove", e => { e.preventDefault(); if (joyVec.active) updateJoy(e.touches[0]); }, { passive: false });
-  joyZone.addEventListener("touchend", () => {
-    joyVec.active = false; joyVec.x = 0; joyVec.y = 0;
-    joyStick.style.transform = "translate(-50%, -50%)";
+function setWatchSpeed(spd) {
+  if (!match) return;
+  match.speedMult = spd;
+  [1, 2, 4].forEach(s => {
+    const el = document.getElementById(`spd-${s}`);
+    if (el) el.classList.toggle("active-pill", s === spd);
   });
+}
 
-  function updateJoy(touch) {
-    const r = joyZone.getBoundingClientRect();
-    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-    let dx = touch.clientX - cx, dy = touch.clientY - cy;
-    const dist = Math.hypot(dx, dy);
-    const maxR = 44;
-    if (dist > maxR) { dx = (dx / dist) * maxR; dy = (dy / dist) * maxR; }
-    joyStick.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-    joyVec.x = dx / maxR;
-    joyVec.y = dy / maxR;
-  }
-
-  const bindBtn = (id, downFn, upFn) => {
-    const el = document.getElementById(id);
-    el.addEventListener("touchstart", e => { e.preventDefault(); el.classList.add("pressed"); downFn(); }, { passive: false });
-    el.addEventListener("touchend", e => { e.preventDefault(); el.classList.remove("pressed"); if (upFn) upFn(); }, { passive: false });
-  };
-
-  bindBtn("mb-pass", () => { if (match) handleUserPass(false); });
-  bindBtn("mb-shoot", () => {
-    if (!match) return;
-    if (match.ball.owner && match.ball.owner.team === "home") handleUserShoot();
-    else performTackle(false);
-  });
-  bindBtn("mb-sprint", () => { keys["ShiftLeft"] = true; }, () => { keys["ShiftLeft"] = false; });
-  bindBtn("mb-slide", () => {
-    if (!match) return;
-    if (!match.ball.owner || match.ball.owner.team !== "home") performTackle(true);
-    else switchControlledPlayer();
-  });
-})();
+function changeLiveMentality(val) {
+  if (state) state.mentality = val;
+  if (match) match.homeMentality = val;
+  showMatchBanner(`TOUCHLINE ORDER: ${val.toUpperCase()}`);
+}
 
 function startQuickExhibition() {
   quickMatchMode = true;
@@ -2743,10 +2866,10 @@ function startQuickExhibition() {
   const rivals = Object.values(PREVIEW_CLUBS).filter(c => c.id !== myId && c.league === myClub.league);
   const oppClub = pick(rivals);
   const dur = parseInt(document.getElementById("og-duration").value, 10) || 90;
-  launchMatchCanvas({ comp: "Exhibition Match", compType: "EXH" }, myClub, oppClub, dur);
+  launchMatchCanvas({ comp: "AI Broadcast Exhibition", compType: "EXH" }, myClub, oppClub, dur);
 }
 
-function startLiveMatch() {
+function startWatchMatch() {
   const ev = state.calendar[state.dayIndex];
   if (!ev || ev.type !== "MATCH") return;
   quickMatchMode = false;
@@ -2767,10 +2890,11 @@ function launchMatchCanvas(ev, myClub, oppClub, durationSec) {
     const hy = 55 + (coord.x / 100) * (P_H - 110);
     players.push({
       id: p.id, name: p.name, ovr: p.ovr + (p.morale || 0) * 1.5, team: "home", isGK: idx === 0,
+      plan: p.plan || defaultPlanForPos(p.pos),
       x: hx, y: hy, homeX: hx, homeY: hy, vx: 0, vy: 0,
       wanderX: 0, wanderY: 0, wanderTimer: Math.random() * 2,
       tackleTimer: 0, tackleCooldown: 0, isSliding: false, stunTimer: 0,
-      yellows: 0, sentOff: false, gkDiveY: 0, gkDiveTimer: 0
+      yellows: 0, sentOff: false, gkDiveTimer: 0
     });
   });
 
@@ -2780,40 +2904,35 @@ function launchMatchCanvas(ev, myClub, oppClub, durationSec) {
     const ay = 55 + (coord.x / 100) * (P_H - 110);
     players.push({
       id: p.id, name: p.name, ovr: p.ovr, team: "away", isGK: idx === 0,
+      plan: defaultPlanForPos(p.pos),
       x: ax, y: ay, homeX: ax, homeY: ay, vx: 0, vy: 0,
       wanderX: 0, wanderY: 0, wanderTimer: Math.random() * 2,
       tackleTimer: 0, tackleCooldown: 0, isSliding: false, stunTimer: 0,
-      yellows: 0, sentOff: false, gkDiveY: 0, gkDiveTimer: 0
+      yellows: 0, sentOff: false, gkDiveTimer: 0
     });
   });
 
+  const starter = players[9];
   match = {
     ev, myClub, oppClub, P_W, P_H,
     players,
-    controlled: players[9],
-    aimAngle: 0,
-    ball: { x: P_W / 2, y: P_H / 2, vx: 0, vy: 0, owner: players[9], lastTouchTeam: "home", lastPasserId: null, passGrace: 0 },
+    speedMult: 1,
+    homeMentality: state ? state.mentality : "Balanced",
+    homePossSec: 1, awayPossSec: 1,
+    ball: { x: P_W / 2, y: P_H / 2, vx: 0, vy: 0, owner: starter, lastTouchTeam: "home", lastPasserId: null, passGrace: 0 },
     homeGoals: 0, awayGoals: 0,
     liveEvents: [],
     elapsed: 0, duration: durationSec,
     running: true, lastTs: performance.now()
   };
 
+  setWatchSpeed(1);
+  const mentSel = document.getElementById("live-mentality");
+  if (mentSel) mentSel.value = match.homeMentality;
   document.getElementById("m-comp").textContent = ev.comp.toUpperCase();
   document.getElementById("m-teams").textContent = `${myClub.name} vs ${oppClub.name}`;
   updateMatchHud();
   requestAnimationFrame(matchLoop);
-}
-
-function getAimAngle() {
-  const p = match.controlled;
-  if (!p) return 0;
-  if (joyVec.active && (Math.abs(joyVec.x) > 0.1 || Math.abs(joyVec.y) > 0.1)) {
-    match.aimAngle = Math.atan2(joyVec.y, joyVec.x);
-  } else if (mousePitch.active) {
-    match.aimAngle = Math.atan2(mousePitch.y - p.y, mousePitch.x - p.x);
-  }
-  return match.aimAngle;
 }
 
 function showMatchBanner(text) {
@@ -2821,134 +2940,34 @@ function showMatchBanner(text) {
   b.textContent = text;
   b.style.display = "block";
   clearTimeout(window._bannerTo);
-  window._bannerTo = setTimeout(() => { b.style.display = "none"; }, 1900);
-}
-
-// RELIABLE PASSING: FINDS BEST TEAMMATE IN AIM DIRECTION OR FALLS BACK TO NEAREST OPEN TEAMMATE
-function handleUserPass(isThroughBall) {
-  if (!match || !match.running) return;
-  const p = match.controlled;
-  if (!p || match.ball.owner !== p) return;
-
-  const ang = getAimAngle();
-  const mates = match.players.filter(m => m.team === "home" && m !== p && !m.sentOff);
-  if (!mates.length) return;
-
-  let best = null, bestScore = -99999;
-  mates.forEach(m => {
-    const dx = m.x - p.x, dy = m.y - p.y;
-    const dist = Math.hypot(dx, dy);
-    if (dist < 22) return;
-    const mAng = Math.atan2(dy, dx);
-    let diff = Math.abs(mAng - ang);
-    if (diff > Math.PI) diff = 2 * Math.PI - diff;
-    if (diff < 1.15) {
-      const score = (1.15 - diff) * 420 - dist * 0.18;
-      if (score > bestScore) { bestScore = score; best = m; }
-    }
-  });
-
-  // Fallback to closest teammate if aiming away from everyone
-  if (!best) {
-    mates.sort((a,b) => Math.hypot(a.x - p.x, a.y - p.y) - Math.hypot(b.x - p.x, b.y - p.y));
-    best = mates[0];
-  }
-
-  const leadX = isThroughBall ? Math.min(match.P_W - 45, best.x + 75) : best.x;
-  const leadY = best.y;
-  const passAng = Math.atan2(leadY - p.y, leadX - p.x);
-  const spd = isThroughBall ? 600 : 550;
-
-  match.ball.owner = null;
-  match.ball.lastTouchTeam = "home";
-  match.ball.lastPasserId = p.id;
-  match.ball.passGrace = 0.22;
-  match.ball.x = p.x + Math.cos(passAng) * 18;
-  match.ball.y = p.y + Math.sin(passAng) * 18;
-  match.ball.vx = Math.cos(passAng) * spd;
-  match.ball.vy = Math.sin(passAng) * spd;
-
-  if (!best.isGK) match.controlled = best;
-}
-
-function handleUserShoot() {
-  const p = match.controlled;
-  if (!p || match.ball.owner !== p) return;
-  const ang = getAimAngle();
-  const power = 690 + (p.ovr - 70) * 4.5;
-  match.ball.owner = null;
-  match.ball.lastTouchTeam = "home";
-  match.ball.passGrace = 0.18;
-  match.ball.x = p.x + Math.cos(ang) * 18;
-  match.ball.y = p.y + Math.sin(ang) * 18;
-  match.ball.vx = Math.cos(ang) * power;
-  match.ball.vy = Math.sin(ang) * power;
-}
-
-function switchControlledPlayer() {
-  if (!match) return;
-  const homeField = match.players.filter(p => p.team === "home" && !p.isGK && !p.sentOff);
-  homeField.sort((a,b) => Math.hypot(a.x - match.ball.x, a.y - match.ball.y) - Math.hypot(b.x - match.ball.x, b.y - match.ball.y));
-  match.controlled = homeField[0] === match.controlled && homeField[1] ? homeField[1] : homeField[0];
-}
-
-// TACKLING + REFEREE FOULS + YELLOW/RED CARDS + FREE KICKS / PENALTIES
-function performTackle(isSlide) {
-  if (!match || !match.running) return;
-  const ball = match.ball;
-  let nearest = match.controlled;
-  let bestDist = nearest ? Math.hypot(nearest.x - ball.x, nearest.y - ball.y) : 9999;
-  match.players.filter(pl => pl.team === "home" && !pl.isGK && !pl.sentOff).forEach(pl => {
-    const d = Math.hypot(pl.x - ball.x, pl.y - ball.y);
-    if (d < bestDist) { bestDist = d; nearest = pl; }
-  });
-  if (!nearest || nearest.tackleCooldown > 0 || nearest.stunTimer > 0) return;
-  match.controlled = nearest;
-
-  const targetX = ball.owner ? ball.owner.x : ball.x;
-  const targetY = ball.owner ? ball.owner.y : ball.y;
-  const ang = Math.atan2(targetY - nearest.y, targetX - nearest.x);
-
-  const lungeSpeed = isSlide ? 460 : 320;
-  nearest.vx = Math.cos(ang) * lungeSpeed;
-  nearest.vy = Math.sin(ang) * lungeSpeed;
-  nearest.tackleTimer = isSlide ? 0.34 : 0.22;
-  nearest.tackleCooldown = isSlide ? 0.85 : 0.55;
-  nearest.isSliding = isSlide;
-
-  resolveTackleCollision(nearest);
+  window._bannerTo = setTimeout(() => { b.style.display = "none"; }, 1850);
 }
 
 function resolveTackleCollision(tackler) {
   const ball = match.ball;
-  const reach = tackler.isSliding ? 44 : 33;
+  const reach = tackler.isSliding ? 42 : 31;
   const victim = ball.owner;
 
   if (victim && victim.team !== tackler.team) {
     const dist = Math.hypot(tackler.x - victim.x, tackler.y - victim.y);
     if (dist <= reach) {
-      // Foul probability (higher on slide tackles)
-      const foulChance = tackler.isSliding ? 0.34 : 0.14;
+      // Higher OVR defenders time tackles cleaner; lower OVR defenders foul slightly more
+      const skillMod = Math.max(-0.08, Math.min(0.08, (victim.ovr - tackler.ovr) * 0.008));
+      const foulChance = (tackler.isSliding ? 0.30 : 0.13) + skillMod;
       if (Math.random() < foulChance) {
         triggerFoulAndCard(tackler, victim);
         return;
       }
-      victim.stunTimer = tackler.isSliding ? 1.1 : 0.7;
+      victim.stunTimer = tackler.isSliding ? 1.0 : 0.65;
       ball.owner = tackler;
       ball.lastTouchTeam = tackler.team;
       ball.vx = 0; ball.vy = 0;
-      if (tackler.team === "home") {
-        match.controlled = tackler;
-        showMatchBanner(tackler.isSliding ? "CLEAN SLIDE TACKLE!" : "STANDING TACKLE WON!");
-      } else {
-        showMatchBanner(`${tackler.name} TACKLED YOU!`);
-      }
+      showMatchBanner(tackler.isSliding ? `${tackler.name} SLIDE TACKLE!` : `${tackler.name} WINS BALL!`);
     }
   } else if (!victim && Math.hypot(tackler.x - ball.x, tackler.y - ball.y) <= reach) {
     ball.owner = tackler;
     ball.lastTouchTeam = tackler.team;
     ball.vx = 0; ball.vy = 0;
-    if (tackler.team === "home") match.controlled = tackler;
   }
 }
 
@@ -2957,12 +2976,11 @@ function triggerFoulAndCard(fouler, victim) {
   let cardText = "FOUL! FREE KICK";
   const cardRoll = Math.random();
 
-  if (fouler.isSliding && cardRoll < 0.14) {
-    // Straight Red Card!
+  if (fouler.isSliding && cardRoll < 0.12) {
     fouler.sentOff = true;
     cardText = `🟥 STRAIGHT RED CARD! ${fouler.name} SENT OFF!`;
     if (fouler.team === "home") match.liveEvents.push({ type: "RED", playerId: fouler.id });
-  } else if (cardRoll < 0.68) {
+  } else if (cardRoll < 0.65) {
     fouler.yellows++;
     if (fouler.yellows >= 2) {
       fouler.sentOff = true;
@@ -2974,7 +2992,6 @@ function triggerFoulAndCard(fouler, victim) {
     }
   }
 
-  // Check if inside 18-yard penalty area!
   const inHomeBox = victim.team === "away" && victim.x <= 150 && Math.abs(victim.y - match.P_H/2) <= 120;
   const inAwayBox = victim.team === "home" && victim.x >= match.P_W - 150 && Math.abs(victim.y - match.P_H/2) <= 120;
 
@@ -2987,21 +3004,13 @@ function triggerFoulAndCard(fouler, victim) {
     ball.y = victim.y;
   }
 
-  // Ensure user still has a valid controlled player if sent off
-  if (fouler === match.controlled && fouler.sentOff) {
-    switchControlledPlayer();
-  }
-
-  // Award dead-ball restart to fouled team
   const taker = match.players.find(p => p.team === victim.team && !p.isGK && !p.sentOff) || victim;
   taker.x = ball.x;
   taker.y = ball.y;
   ball.owner = taker;
   ball.lastTouchTeam = taker.team;
   ball.vx = 0; ball.vy = 0;
-  if (taker.team === "home") match.controlled = taker;
 
-  // Push defenders back 80px for set-piece space
   match.players.filter(p => p.team === fouler.team && !p.isGK && !p.sentOff).forEach(d => {
     const dx = d.x - ball.x, dy = d.y - ball.y;
     const dist = Math.hypot(dx, dy);
@@ -3014,14 +3023,12 @@ function triggerFoulAndCard(fouler, victim) {
   showMatchBanner(cardText);
 }
 
-// WORKING THROW-INS, GOAL KICKS & CORNERS WHEN BALL CROSSES PITCH BOUNDARIES
 function handleOutOfBoundsRestart() {
   const { P_W, P_H, ball, players } = match;
   const restartTeam = ball.lastTouchTeam === "home" ? "away" : "home";
   const fieldPlayers = players.filter(p => p.team === restartTeam && !p.isGK && !p.sentOff);
   const gk = players.find(p => p.team === restartTeam && p.isGK);
 
-  // Top or Bottom Touchline -> THROW-IN
   if (ball.y <= 20 || ball.y >= P_H - 20) {
     const ty = ball.y <= 20 ? 28 : P_H - 28;
     const tx = Math.max(40, Math.min(P_W - 40, ball.x));
@@ -3030,23 +3037,19 @@ function handleOutOfBoundsRestart() {
       thrower.x = tx; thrower.y = ty;
       ball.x = tx; ball.y = ty; ball.vx = 0; ball.vy = 0;
       ball.owner = thrower; ball.lastTouchTeam = restartTeam;
-      if (restartTeam === "home") match.controlled = thrower;
       showMatchBanner(`THROW-IN (${restartTeam === "home" ? match.myClub.name : match.oppClub.name})`);
     }
     return;
   }
 
-  // Left Goal Line (Home Defending)
   if (ball.x <= 20) {
     if (ball.lastTouchTeam === "away") {
-      // Goal Kick to Home GK
       const taker = gk || fieldPlayers[0];
       taker.x = 65; taker.y = P_H / 2;
       ball.x = 65; ball.y = P_H / 2; ball.vx = 0; ball.vy = 0;
       ball.owner = taker; ball.lastTouchTeam = "home";
       showMatchBanner(`GOAL KICK (${match.myClub.name})`);
     } else {
-      // Corner Kick to Away
       const cornerY = ball.y < P_H / 2 ? 28 : P_H - 28;
       const taker = fieldPlayers[0];
       taker.x = 28; taker.y = cornerY;
@@ -3057,23 +3060,19 @@ function handleOutOfBoundsRestart() {
     return;
   }
 
-  // Right Goal Line (Away Defending)
   if (ball.x >= P_W - 20) {
     if (ball.lastTouchTeam === "home") {
-      // Goal Kick to Away GK
       const taker = gk || fieldPlayers[0];
       taker.x = P_W - 65; taker.y = P_H / 2;
       ball.x = P_W - 65; ball.y = P_H / 2; ball.vx = 0; ball.vy = 0;
       ball.owner = taker; ball.lastTouchTeam = "away";
       showMatchBanner(`GOAL KICK (${match.oppClub.name})`);
     } else {
-      // Corner Kick to Home
       const cornerY = ball.y < P_H / 2 ? 28 : P_H - 28;
       const taker = fieldPlayers[0];
       taker.x = P_W - 28; taker.y = cornerY;
       ball.x = P_W - 28; ball.y = cornerY; ball.vx = 0; ball.vy = 0;
       ball.owner = taker; ball.lastTouchTeam = "home";
-      match.controlled = taker;
       showMatchBanner(`CORNER KICK (${match.myClub.name})`);
     }
   }
@@ -3092,54 +3091,41 @@ function resetKickoff(scoringTeam) {
     : match.players.find(p => p.team === "home" && !p.isGK && !p.sentOff);
   match.ball.owner = receiver;
   match.ball.lastTouchTeam = receiver.team;
-  if (receiver.team === "home") match.controlled = receiver;
 }
 
 function matchLoop(ts) {
   if (!match || !match.running) return;
-  const dt = Math.min(0.05, (ts - match.lastTs) / 1000);
+  const rawDt = Math.min(0.05, (ts - match.lastTs) / 1000);
   match.lastTs = ts;
-  match.elapsed += dt;
 
-  if (match.elapsed >= match.duration) {
-    endLiveMatch();
-    return;
+  const steps = match.speedMult || 1;
+  for (let s = 0; s < steps; s++) {
+    match.elapsed += rawDt;
+    if (match.elapsed >= match.duration) {
+      endLiveMatch();
+      return;
+    }
+    updateAiBroadcastPhysics(rawDt);
   }
 
-  updateMatchPhysics(dt);
   renderMatchCanvas();
   updateMatchHud();
   requestAnimationFrame(matchLoop);
 }
 
-function updateMatchPhysics(dt) {
+function updateAiBroadcastPhysics(dt) {
   const { P_W, P_H, players, ball } = match;
-  const ctrl = match.controlled;
   if (ball.passGrace > 0) ball.passGrace -= dt;
 
-  let mx = 0, my = 0;
-  if (keys["KeyW"] || keys["ArrowUp"]) my -= 1;
-  if (keys["KeyS"] || keys["ArrowDown"]) my += 1;
-  if (keys["KeyA"] || keys["ArrowLeft"]) mx -= 1;
-  if (keys["KeyD"] || keys["ArrowRight"]) mx += 1;
-  if (joyVec.active) { mx = joyVec.x; my = joyVec.y; }
+  if (ball.lastTouchTeam === "home") match.homePossSec += dt;
+  else match.awayPossSec += dt;
 
-  const mag = Math.hypot(mx, my);
-  if (mag > 0) {
-    mx /= Math.max(1, mag);
-    my /= Math.max(1, mag);
-    if (!mousePitch.active || joyVec.active) {
-      match.aimAngle = Math.atan2(my, mx);
-    }
-  }
-  getAimAngle();
-
-  // Identify ONLY the 1 nearest AI presser so teams NEVER crowd/swarm the ball
-  let activeAwayPresser = null;
-  let bestAwayDist = 9999;
-  players.filter(p => p.team === "away" && !p.isGK && !p.sentOff).forEach(p => {
+  // Designate ONLY 1 active presser per defending team so neither AI team crowds the ball
+  const defendingTeam = ball.lastTouchTeam === "home" ? "away" : "home";
+  let activePresser = null, bestPressDist = 9999;
+  players.filter(p => p.team === defendingTeam && !p.isGK && !p.sentOff).forEach(p => {
     const d = Math.hypot(p.x - ball.x, p.y - ball.y);
-    if (d < bestAwayDist) { bestAwayDist = d; activeAwayPresser = p; }
+    if (d < bestPressDist) { bestPressDist = d; activePresser = p; }
   });
 
   players.forEach(p => {
@@ -3157,14 +3143,11 @@ function updateMatchPhysics(dt) {
       return;
     }
 
-    const baseSpd = 158 + (p.ovr - 65) * 1.3;
-    if (p === ctrl) {
-      const sprint = (keys["ShiftLeft"] || keys["ShiftRight"]) ? 1.36 : 1.0;
-      p.x += mx * baseSpd * sprint * dt;
-      p.y += my * baseSpd * sprint * dt;
-    } else if (p.isGK) {
-      // UPGRADED GOALKEEPER AI: Shot trajectory prediction + diving saves + 1v1 rush-out
+    const baseSpd = 152 + (p.ovr - 65) * 1.45;
+
+    if (p.isGK) {
       const goalX = p.team === "home" ? 40 : P_W - 40;
+      const isSweeper = p.plan === "Sweeper Keeper";
       let targetX = goalX;
       let targetY = Math.max(P_H/2 - 58, Math.min(P_H/2 + 58, ball.y));
 
@@ -3173,17 +3156,15 @@ function updateMatchPhysics(dt) {
         const timeToGoal = Math.abs((goalX - ball.x) / ball.vx);
         const predictedY = ball.y + ball.vy * timeToGoal;
         targetY = Math.max(P_H/2 - 62, Math.min(P_H/2 + 62, predictedY));
-        if (Math.abs(targetY - p.y) > 22 && p.gkDiveTimer <= 0) {
-          p.gkDiveTimer = 0.45;
-          p.gkDiveY = targetY > p.y ? 1 : -1;
+        if (Math.abs(targetY - p.y) > 20 && p.gkDiveTimer <= 0) {
+          p.gkDiveTimer = 0.48;
         }
-      } else if (ball.owner && ball.owner.team !== p.team && Math.abs(ball.owner.x - goalX) < 135) {
-        // 1v1 Rush out
-        targetX = goalX + (p.team === "home" ? 38 : -38);
+      } else if (ball.owner && ball.owner.team !== p.team && Math.abs(ball.owner.x - goalX) < (isSweeper ? 185 : 130)) {
+        targetX = goalX + (p.team === "home" ? (isSweeper ? 68 : 36) : (isSweeper ? -68 : -36));
         targetY = ball.owner.y;
       }
 
-      const gkSpd = (185 + (p.ovr - 70) * 2.4) * (p.gkDiveTimer > 0 ? 1.55 : 1.0);
+      const gkSpd = (182 + (p.ovr - 70) * 2.5) * (p.gkDiveTimer > 0 ? 1.6 : 1.0);
       const dx = targetX - p.x, dy = targetY - p.y;
       const d = Math.hypot(dx, dy);
       if (d > 2) {
@@ -3191,56 +3172,86 @@ function updateMatchPhysics(dt) {
         p.y += (dy / d) * gkSpd * dt;
       }
     } else {
-      // SPORADIC, NON-SWARMING OFF-THE-BALL MOVEMENT
+      // SPORADIC OFF-THE-BALL MOVEMENT GOVERNED BY INDIVIDUAL PLAYER PLAN & MENTALITY
       p.wanderTimer -= dt;
       if (p.wanderTimer <= 0) {
-        p.wanderTimer = 1.2 + Math.random() * 1.8;
-        p.wanderX = rand(-48, 55);
+        p.wanderTimer = 1.1 + Math.random() * 1.6;
+        p.wanderX = rand(-46, 54);
         p.wanderY = rand(-42, 42);
       }
 
       const isAttacking = ball.lastTouchTeam === p.team;
-      const pushDir = p.team === "home" ? 1 : -1;
-      let tx = p.homeX + (isAttacking ? pushDir * 85 : -pushDir * 35) + p.wanderX;
-      let ty = p.homeY + p.wanderY;
+      const dir = p.team === "home" ? 1 : -1;
+      let planPush = 0;
+      if (p.plan === "Stay Back" || p.plan === "Anchor Hold") planPush = -45;
+      if (p.plan === "Overlap Wingback" || p.plan === "Box-to-Box") planPush = isAttacking ? 80 : -20;
+      if (p.plan === "Get In Behind") planPush = isAttacking ? 125 : 15;
+      if (p.plan === "Playmaker Roam") planPush = isAttacking ? 55 : 0;
 
-      // Only the 1 designated presser chases the ball; others hold lanes!
-      if (p === activeAwayPresser && ball.owner !== p) {
+      const mentShift = p.team === "home"
+        ? (match.homeMentality === "Attacking" ? 65 : match.homeMentality === "Defensive" ? -60 : 0)
+        : 0;
+
+      let tx = p.homeX + (isAttacking ? dir * (70 + planPush + mentShift) : -dir * 35) + p.wanderX;
+      let ty = p.homeY + (p.plan === "Cut Inside & Shoot" && isAttacking ? (P_H/2 - p.homeY) * 0.45 : 0) + p.wanderY;
+
+      // Active AI Presser closes down the ball carrier and tackles
+      if (p === activePresser && ball.owner !== p) {
         tx = ball.x;
         ty = ball.y;
-        // AI Defender attempts standing or sliding tackle when close!
-        if (ball.owner && ball.owner.team === "home" && bestAwayDist < 42 && p.tackleCooldown <= 0) {
-          const isSlide = bestAwayDist > 26 && Math.random() < 0.35;
+        if (ball.owner && ball.owner.team !== p.team && bestPressDist < 42 && p.tackleCooldown <= 0) {
+          const isSlide = bestPressDist > 26 && Math.random() < 0.34;
           const ang = Math.atan2(ball.owner.y - p.y, ball.owner.x - p.x);
-          p.vx = Math.cos(ang) * (isSlide ? 430 : 300);
-          p.vy = Math.sin(ang) * (isSlide ? 430 : 300);
+          p.vx = Math.cos(ang) * (isSlide ? 435 : 305);
+          p.vy = Math.sin(ang) * (isSlide ? 435 : 305);
           p.tackleTimer = isSlide ? 0.32 : 0.2;
-          p.tackleCooldown = 1.35;
+          p.tackleCooldown = 1.25;
           p.isSliding = isSlide;
         }
       }
 
-      // AI Ball Carrier Decision-Making
-      if (ball.owner === p && p.team === "away") {
-        tx = 115;
-        ty = P_H / 2 + p.wanderY * 1.4;
-        if (p.x < 245 && Math.random() < 0.038) {
-          const ang = Math.atan2((P_H/2 + rand(-46,46)) - p.y, 0 - p.x);
+      // AI BALL CARRIER LOGIC (BOTH HOME & AWAY TEAMS)
+      if (ball.owner === p) {
+        const oppGoalX = p.team === "home" ? P_W - 20 : 20;
+        const distToGoal = Math.abs(oppGoalX - p.x);
+        tx = oppGoalX - dir * 95;
+        ty = P_H / 2 + p.wanderY * 1.1;
+
+        // Higher OVR players make sharper pass & shot decisions, while lower OVR can still finish clinical chances
+        const shootRange = p.plan === "Cut Inside & Shoot" ? 290 : 245;
+        const shootChance = (0.032 + (p.ovr - 75) * 0.0012);
+        const passChance = (0.028 + (p.ovr - 75) * 0.0015);
+
+        if (distToGoal < shootRange && Math.random() < shootChance) {
+          // Clinical Shot toward goal corners scaled by OVR
+          const accuracy = Math.max(24, 66 - (p.ovr - 65) * 1.2);
+          const aimY = P_H / 2 + rand(-accuracy, accuracy);
+          const ang = Math.atan2(aimY - p.y, oppGoalX - p.x);
+          const shotSpd = 620 + (p.ovr - 70) * 4.5;
           ball.owner = null;
-          ball.lastTouchTeam = "away";
+          ball.lastTouchTeam = p.team;
+          ball.lastPasserId = p.id;
           ball.passGrace = 0.18;
-          ball.vx = Math.cos(ang) * 590;
-          ball.vy = Math.sin(ang) * 590;
-        } else if (Math.random() < 0.025) {
-          const mates = players.filter(m => m.team === "away" && m !== p && !m.sentOff && m.x < p.x + 20);
+          ball.x = p.x + Math.cos(ang) * 18;
+          ball.y = p.y + Math.sin(ang) * 18;
+          ball.vx = Math.cos(ang) * shotSpd;
+          ball.vy = Math.sin(ang) * shotSpd;
+        } else if (Math.random() < passChance) {
+          const mates = players.filter(m => m.team === p.team && m !== p && !m.sentOff && Math.hypot(m.x - p.x, m.y - p.y) > 45);
           if (mates.length) {
-            const mate = pick(mates);
+            // Prefer forward/open teammates
+            mates.sort((a,b) => ((b.x - a.x) * dir) - (Math.random() * 120));
+            const mate = mates[0];
             const ang = Math.atan2(mate.y - p.y, mate.x - p.x);
+            const passSpd = 490 + (p.ovr - 70) * 3;
             ball.owner = null;
-            ball.lastTouchTeam = "away";
-            ball.passGrace = 0.2;
-            ball.vx = Math.cos(ang) * 470;
-            ball.vy = Math.sin(ang) * 470;
+            ball.lastTouchTeam = p.team;
+            ball.lastPasserId = p.id;
+            ball.passGrace = 0.22;
+            ball.x = p.x + Math.cos(ang) * 18;
+            ball.y = p.y + Math.sin(ang) * 18;
+            ball.vx = Math.cos(ang) * passSpd;
+            ball.vy = Math.sin(ang) * passSpd;
           }
         }
       }
@@ -3248,8 +3259,8 @@ function updateMatchPhysics(dt) {
       const dx = tx - p.x, dy = ty - p.y;
       const d = Math.hypot(dx, dy);
       if (d > 5) {
-        p.x += (dx / d) * (baseSpd * 0.84) * dt;
-        p.y += (dy / d) * (baseSpd * 0.84) * dt;
+        p.x += (dx / d) * (baseSpd * 0.86) * dt;
+        p.y += (dy / d) * (baseSpd * 0.86) * dt;
       }
     }
 
@@ -3257,27 +3268,25 @@ function updateMatchPhysics(dt) {
     p.y = Math.max(24, Math.min(P_H - 24, p.y));
   });
 
-  // Ball Physics & Goalkeeper Saves / Out-of-Bounds Restarts
   if (ball.owner) {
     ball.x = ball.owner.x + (ball.owner.team === "home" ? 12 : -12);
     ball.y = ball.owner.y;
   } else {
     ball.x += ball.vx * dt;
     ball.y += ball.vy * dt;
-    ball.vx *= 0.984;
-    ball.vy *= 0.984;
+    ball.vx *= 0.985;
+    ball.vy *= 0.985;
 
     for (const p of players) {
       if (p.sentOff || p.stunTimer > 0) continue;
       if (ball.passGrace > 0 && p.id === ball.lastPasserId) continue;
 
-      const catchRadius = p.isGK ? (p.gkDiveTimer > 0 ? 30 : 24) : 20;
+      const catchRadius = p.isGK ? (p.gkDiveTimer > 0 ? 31 : 24) : 20;
       if (Math.hypot(p.x - ball.x, p.y - ball.y) < catchRadius) {
-        // Goalkeeper parry vs clean catch on high-speed shots
         const shotSpeed = Math.hypot(ball.vx, ball.vy);
-        if (p.isGK && shotSpeed > 480 && Math.random() < 0.35) {
-          ball.vx = (p.team === "home" ? 1 : -1) * rand(140, 240);
-          ball.vy = rand(-180, 180);
+        if (p.isGK && shotSpeed > 470 && Math.random() < 0.34) {
+          ball.vx = (p.team === "home" ? 1 : -1) * rand(140, 230);
+          ball.vy = rand(-175, 175);
           ball.lastTouchTeam = p.team;
           showMatchBanner(`${p.name} PARRIES THE SHOT!`);
         } else {
@@ -3285,7 +3294,6 @@ function updateMatchPhysics(dt) {
           ball.owner = p;
           ball.lastTouchTeam = p.team;
           ball.vx = 0; ball.vy = 0;
-          if (p.team === "home" && !p.isGK) match.controlled = p;
         }
         break;
       }
@@ -3342,44 +3350,13 @@ function renderMatchCanvas() {
   ctx.fillRect(4, match.P_H/2 - 65, 16, 130);
   ctx.fillRect(match.P_W - 20, match.P_H/2 - 65, 16, 130);
 
-  // OG DIRECTIONAL AIM ARROW
-  const ctrl = match.controlled;
-  if (ctrl && !ctrl.sentOff) {
-    const ang = match.aimAngle;
-    const sx = ctrl.x + Math.cos(ang) * 22;
-    const sy = ctrl.y + Math.sin(ang) * 22;
-    const ex = ctrl.x + Math.cos(ang) * 66;
-    const ey = ctrl.y + Math.sin(ang) * 66;
-
-    ctx.save();
-    ctx.strokeStyle = match.ball.owner === ctrl ? "#facc15" : "rgba(250, 204, 21, 0.55)";
-    ctx.fillStyle = match.ball.owner === ctrl ? "#facc15" : "rgba(250, 204, 21, 0.55)";
-    ctx.lineWidth = 3.5;
-    ctx.setLineDash([6, 4]);
-    ctx.beginPath();
-    ctx.moveTo(sx, sy);
-    ctx.lineTo(ex, ey);
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    const headLen = 11;
-    ctx.beginPath();
-    ctx.moveTo(ex, ey);
-    ctx.lineTo(ex - headLen * Math.cos(ang - 0.45), ey - headLen * Math.sin(ang - 0.45));
-    ctx.lineTo(ex - headLen * Math.cos(ang + 0.45), ey - headLen * Math.sin(ang + 0.45));
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-  }
-
-  // Players
   match.players.forEach(p => {
     if (p.sentOff) return;
-    if (p === match.controlled) {
+    if (match.ball.owner === p) {
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.isSliding ? 24 : 19, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, 18, 0, Math.PI * 2);
       ctx.strokeStyle = "#facc15";
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 2.5;
       ctx.stroke();
     }
     ctx.beginPath();
@@ -3390,7 +3367,6 @@ function renderMatchCanvas() {
     ctx.lineWidth = 2.5;
     ctx.stroke();
 
-    // Yellow Card indicator above booked player
     if (p.yellows > 0) {
       ctx.fillStyle = "#facc15";
       ctx.fillRect(p.x + 10, p.y - 24, 6, 8);
@@ -3402,7 +3378,6 @@ function renderMatchCanvas() {
     ctx.fillText(p.name.split(" ").pop(), p.x, p.y - 16);
   });
 
-  // Ball
   ctx.beginPath();
   ctx.arc(match.ball.x, match.ball.y, 6, 0, Math.PI * 2);
   ctx.fillStyle = "#ffffff";
@@ -3416,8 +3391,11 @@ function renderMatchCanvas() {
 
 function updateMatchHud() {
   const min = Math.min(90, Math.floor((match.elapsed / match.duration) * 90));
+  const totPoss = match.homePossSec + match.awayPossSec;
+  const hPct = Math.round((match.homePossSec / totPoss) * 100);
   document.getElementById("m-score").textContent = `${match.homeGoals} - ${match.awayGoals}`;
   document.getElementById("m-clock").textContent = `${String(min).padStart(2, "0")}'`;
+  document.getElementById("m-poss").textContent = `Poss: ${hPct}% - ${100 - hPct}%`;
 }
 
 function openMatchSubModal() {
@@ -3426,7 +3404,7 @@ function openMatchSubModal() {
   const club = match.myClub;
   const box = document.getElementById("modal-box");
   box.innerHTML = `
-    <h2>In-Match Substitutions</h2>
+    <h2>In-Match Tactical Substitutions</h2>
     <p class="sub-meta">Swap a bench player onto the pitch without losing your custom formation.</p>
     <div style="margin:12px 0; max-height:300px; overflow-y:auto;">
       ${club.squad.slice(11).map((benchP, bIdx) => `
@@ -3436,7 +3414,7 @@ function openMatchSubModal() {
         </div>
       `).join("")}
     </div>
-    <button class="btn-blue" onclick="resumeLiveMatch()">Resume Match</button>
+    <button class="btn-blue" onclick="resumeLiveMatch()">Resume Broadcast</button>
   `;
   document.getElementById("modal-backdrop").classList.add("open");
 }
@@ -3456,6 +3434,7 @@ function execLiveSub(benchSquadIdx) {
 
   match.players[targetIdx].name = subOn.name;
   match.players[targetIdx].ovr = subOn.ovr;
+  match.players[targetIdx].plan = subOn.plan || defaultPlanForPos(subOn.pos);
   resumeLiveMatch();
   showMatchBanner(`SUB: ${subOn.name} ENTERS THE PITCH!`);
 }
@@ -3472,8 +3451,11 @@ function resumeLiveMatch() {
 function finishMatchEarly() {
   if (!match) return;
   const remRatio = Math.max(0, (match.duration - match.elapsed) / match.duration);
-  if (Math.random() < remRatio * 0.6) match.homeGoals += rand(0, 1);
-  if (Math.random() < remRatio * 0.6) match.awayGoals += rand(0, 1);
+  const myPow = match.myClub.squad.slice(0,11).reduce((s,p)=>s+p.ovr,0)/11;
+  const oppPow = match.oppClub.squad.slice(0,11).reduce((s,p)=>s+p.ovr,0)/11;
+  const edge = (myPow - oppPow) * 0.03;
+  if (Math.random() < remRatio * (0.55 + edge)) match.homeGoals += rand(0, 1);
+  if (Math.random() < remRatio * (0.55 - edge)) match.awayGoals += rand(0, 1);
   endLiveMatch();
 }
 
@@ -3488,7 +3470,6 @@ function endLiveMatch() {
     return;
   }
 
-  // KNOCKOUT PENALTY SHOOTOUT IF TIED IN FA CUP OR CARABAO CUP!
   if ((ev.compType === "FACUP" || ev.compType === "CARABAO") && homeGoals === awayGoals) {
     openPenaltyShootoutModal(ev, homeGoals, awayGoals, liveEvents);
     return;
@@ -3498,7 +3479,6 @@ function endLiveMatch() {
   enterHub();
 }
 
-// INTERACTIVE PENALTY SHOOTOUT MINI-GAME FOR TIED KNOCKOUT CUP MATCHES
 function openPenaltyShootoutModal(ev, homeGoals, awayGoals, liveEvents) {
   enterHub();
   window._pkState = {
@@ -3519,7 +3499,7 @@ function renderPenaltyShootoutModal() {
     <h2>Knockout Penalty Shootout!</h2>
     <span class="badge b-warn">FULL TIME: ${pk.homeGoals} – ${pk.awayGoals} • PENALTIES: ${pk.myPens} – ${pk.oppPens}</span>
     <div class="press-q">
-      <strong>Round ${pk.round} — ${pk.phase === "SHOOT" ? `YOUR TURN TO SHOOT (${myClub.name})` : `DIVE AS GOALKEEPER (${oppClub.name} Shooting)`}:</strong>
+      <strong>Round ${pk.round} — ${pk.phase === "SHOOT" ? `SELECT PENALTY DIRECTION (${myClub.name})` : `DIRECT KEEPER DIVE (${oppClub.name} Shooting)`}:</strong>
       <div style="margin-top:8px; font-size:0.84rem; color:var(--muted);">${pk.log.slice(-4).join("<br>") || "Choose a corner below!"}</div>
     </div>
     <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;">
@@ -3549,7 +3529,7 @@ function stepPenaltyShootout(choice) {
     const saved = choice === aiChoice && Math.random() < 0.72;
     if (!saved) {
       pk.oppPens++;
-      pk.log.push(`❌ Round ${pk.round} (${state.clubs[pk.ev.oppId].name}): SCORED (Shot ${aiChoice}, You dove ${choice})`);
+      pk.log.push(`❌ Round ${pk.round} (${state.clubs[pk.ev.oppId].name}): SCORED (Shot ${aiChoice}, Keeper dove ${choice})`);
     } else {
       pk.log.push(`🧤 Round ${pk.round} (${state.clubs[pk.ev.oppId].name}): SAVED BY YOUR KEEPER! (${choice})`);
     }
@@ -3568,7 +3548,7 @@ function stepPenaltyShootout(choice) {
   }
 }
 
-// Boot OG Menu
+// Boot Menu
 populateOgClubs();
 </script>
 </body>
