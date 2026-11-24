@@ -3,210 +3,255 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Pitch Master 27 — Tactical AI Broadcast Edition</title>
+<title>Pitch Master 27 — Manager Edition</title>
 <style>
   :root {
-    --bg: #0b111a;
-    --panel: #131c29;
-    --panel-2: #192536;
-    --border: #26354d;
-    --accent: #22c55e;
-    --accent-2: #3b82f6;
-    --warn: #f59e0b;
-    --danger: #ef4444;
-    --text: #f1f5f9;
+    --bg: #090d16;
+    --surface: #111827;
+    --surface-2: #1a2333;
+    --surface-3: #232f44;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --accent: #10b981;
+    --blue: #3b82f6;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --purple: #a855f7;
+    --text: #f8fafc;
     --muted: #94a3b8;
+    --radius: 12px;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-  body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; user-select: none; }
-  button { cursor: pointer; border: none; border-radius: 6px; font-weight: 600; transition: 0.15s; }
-  button:disabled { opacity: 0.42; cursor: not-allowed; }
-  .btn-primary { background: var(--accent); color: #052e16; padding: 10px 16px; }
-  .btn-primary:hover:not(:disabled) { filter: brightness(1.1); }
-  .btn-blue { background: var(--accent-2); color: #fff; padding: 10px 16px; }
-  .btn-blue:hover:not(:disabled) { filter: brightness(1.1); }
-  .btn-warn { background: var(--warn); color: #1c1917; padding: 10px 16px; }
-  .btn-danger { background: var(--danger); color: #fff; padding: 10px 16px; }
-  .btn-ghost { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 8px 13px; }
-  .btn-ghost:hover:not(:disabled) { border-color: var(--accent); }
-  .btn-ghost.active-pill { border-color: var(--accent); color: var(--accent); background: rgba(34,197,94,0.14); }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+  button {
+    cursor: pointer; border: none; border-radius: 8px; font-weight: 600; font-size: 0.84rem;
+    transition: all 0.15s ease; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary { background: var(--accent); color: #042f1e; padding: 10px 18px; font-weight: 700; }
+  .btn-primary:hover:not(:disabled) { background: #34d399; }
+  .btn-blue { background: var(--blue); color: #fff; padding: 10px 18px; }
+  .btn-blue:hover:not(:disabled) { filter: brightness(1.12); }
+  .btn-warn { background: var(--amber); color: #1c1917; padding: 10px 18px; font-weight: 700; }
+  .btn-danger { background: var(--red); color: #fff; padding: 10px 18px; }
+  .btn-ghost { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); padding: 8px 14px; }
+  .btn-ghost:hover:not(:disabled) { border-color: var(--accent); background: var(--surface-3); }
+  .btn-ghost.active-pill { border-color: var(--accent); color: var(--accent); background: rgba(16, 185, 129, 0.14); }
 
   .screen { display: none; min-height: 100vh; }
   .screen.active { display: block; }
 
-  /* MENU LAYOUT */
-  #setup-screen { padding: 24px 14px; max-width: 980px; margin: 0 auto; }
-  .og-header { text-align: center; margin-bottom: 20px; }
-  .og-header h1 { font-size: 2.25rem; letter-spacing: 1.5px; color: var(--accent); font-weight: 900; }
-  .og-header p { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
-  .og-menu-card {
-    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
-    padding: 18px; box-shadow: 0 12px 32px rgba(0,0,0,0.45);
+  /* MODERN START MENU */
+  #setup-screen { padding: 30px 16px; max-width: 960px; margin: 0 auto; }
+  .brand-header { text-align: center; margin-bottom: 22px; }
+  .brand-pill {
+    display: inline-block; padding: 4px 12px; border-radius: 99px; font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.8px; text-transform: uppercase; background: rgba(16, 185, 129, 0.15); color: var(--accent);
+    border: 1px solid rgba(16, 185, 129, 0.3); margin-bottom: 8px;
   }
-  .og-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-  @media (max-width: 780px) { .og-grid { grid-template-columns: 1fr; } }
-  .og-field { margin-bottom: 12px; }
-  .og-field label { display: block; font-size: 0.76rem; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 5px; }
-  .og-field input, .og-field select {
-    width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
-    padding: 9px 12px; border-radius: 7px; font-size: 0.92rem;
-  }
-  .kit-preview {
-    display: flex; align-items: center; gap: 10px; background: var(--panel-2);
-    border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px;
-  }
-  .swatch { width: 28px; height: 28px; border-radius: 6px; border: 2px solid #fff; flex-shrink: 0; }
-  .sheet-box {
-    background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px;
-    padding: 10px; max-height: 360px; overflow-y: auto;
-  }
-  .sheet-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 5px 4px; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.82rem;
-  }
-  .og-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .brand-header h1 { font-size: 2.3rem; font-weight: 900; letter-spacing: -0.5px; color: #fff; }
+  .brand-header p { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
 
-  /* HUB LAYOUT */
+  .menu-shell {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 22px; box-shadow: 0 20px 45px rgba(0,0,0,0.5);
+  }
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 780px) { .menu-grid { grid-template-columns: 1fr; } }
+
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
+  .field input, .field select, select, input[type="text"], input[type="number"] {
+    width: 100%; background: var(--surface-2); color: var(--text); border: 1px solid var(--border-strong);
+    padding: 10px 12px; border-radius: 8px; font-size: 0.9rem; outline: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--accent); }
+
+  .club-banner {
+    display: flex; align-items: center; gap: 12px; background: var(--surface-2);
+    border: 1px solid var(--border); padding: 12px 14px; border-radius: 10px; margin-bottom: 14px;
+  }
+  .kit-dot { width: 32px; height: 32px; border-radius: 8px; border: 2px solid rgba(255,255,255,0.85); flex-shrink: 0; }
+  .roster-preview {
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; max-height: 365px; overflow-y: auto;
+  }
+  .roster-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 4px; border-bottom: 1px solid var(--border); font-size: 0.83rem;
+  }
+  .roster-row:last-child { border-bottom: none; }
+  .menu-footer { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+  /* TOP BAR & TIDY PILL NAV */
   .topbar {
-    background: var(--panel); border-bottom: 1px solid var(--border); padding: 10px 16px;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
+    background: rgba(17, 24, 39, 0.94); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border); padding: 12px 18px;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
     position: sticky; top: 0; z-index: 40;
   }
-  .club-title { font-size: 1.12rem; font-weight: 800; color: var(--accent); }
+  .club-title { font-size: 1.15rem; font-weight: 800; color: #fff; }
   .sub-meta { font-size: 0.8rem; color: var(--muted); }
-  .hud-pills { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-  .pill { background: var(--panel-2); border: 1px solid var(--border); padding: 4px 9px; border-radius: 20px; font-size: 0.78rem; }
-  .pill.deadline { border-color: var(--warn); color: var(--warn); font-weight: 700; animation: pulse 1.4s infinite; }
+  .hud-stats { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+  .stat-chip {
+    background: var(--surface-2); border: 1px solid var(--border); padding: 5px 11px;
+    border-radius: 99px; font-size: 0.77rem; font-weight: 600; color: #e2e8f0;
+  }
+  .stat-chip.deadline { border-color: var(--amber); color: var(--amber); animation: pulse 1.4s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.55;} }
 
-  .nav-tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 14px; background: #0e1622; border-bottom: 1px solid var(--border); }
-  .tab-btn { background: transparent; color: var(--muted); padding: 7px 10px; border-radius: 6px; font-size: 0.8rem; }
-  .tab-btn.active { background: var(--panel-2); color: var(--accent); border: 1px solid var(--border); }
+  .nav-strip {
+    display: flex; gap: 6px; padding: 10px 16px; background: var(--bg);
+    border-bottom: 1px solid var(--border); overflow-x: auto; white-space: nowrap;
+    scrollbar-width: none;
+  }
+  .nav-strip::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    background: transparent; color: var(--muted); padding: 7px 13px; border-radius: 99px;
+    font-size: 0.8rem; font-weight: 600; flex-shrink: 0;
+  }
+  .tab-btn:hover { color: #fff; background: var(--surface-2); }
+  .tab-btn.active { background: var(--accent); color: #042f1e; font-weight: 700; }
 
-  .hub-content { max-width: 1360px; margin: 0 auto; padding: 14px; }
+  .hub-wrap { max-width: 1280px; margin: 0 auto; padding: 18px 16px; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
-  .grid-2 { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 14px; }
-  .grid-2-eq { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-2 { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; }
+  .grid-2-eq { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   @media (max-width: 900px) { .grid-2, .grid-2-eq, .grid-3 { grid-template-columns: 1fr; } }
 
-  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
-  .card h3 { font-size: 0.98rem; margin-bottom: 10px; color: #e2e8f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
-
-  .stat-tile { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
-  .stat-tile .st-val { font-size: 1.35rem; font-weight: 900; color: var(--accent); }
-  .stat-tile .st-lbl { font-size: 0.72rem; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
-
-  .obj-card {
-    background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px;
-    padding: 11px 13px; margin-bottom: 9px; display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px; margin-bottom: 16px;
   }
-  .obj-card.met { border-left: 4px solid var(--accent); }
-  .obj-card.pending { border-left: 4px solid var(--warn); }
+  .card h3 {
+    font-size: 0.98rem; font-weight: 700; margin-bottom: 12px; color: #f1f5f9;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+  }
 
-  table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
-  th, td { padding: 7px 5px; text-align: left; border-bottom: 1px solid var(--border); }
-  th { color: var(--muted); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; }
-  tr.my-row { background: rgba(34, 197, 94, 0.12); }
-  .zone-ucl { border-left: 3px solid #3b82f6; }
-  .zone-uel { border-left: 3px solid #f59e0b; }
-  .zone-rel { border-left: 3px solid #ef4444; }
+  .hero-event {
+    background: linear-gradient(135deg, #132238 0%, #0f172a 100%);
+    border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 14px; padding: 18px; margin-bottom: 16px;
+  }
+  .hero-matchup { font-size: 1.2rem; font-weight: 800; margin: 8px 0 4px; color: #fff; }
 
-  .badge { padding: 2px 7px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
-  .b-og { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.4); }
-  .b-exp { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+  .kpi-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
+  .kpi-val { font-size: 1.35rem; font-weight: 900; color: var(--accent); }
+  .kpi-lbl { font-size: 0.72rem; text-transform: uppercase; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
+
+  .obj-row {
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .obj-row.met { border-left: 4px solid var(--accent); }
+  .obj-row.pending { border-left: 4px solid var(--amber); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th, td { padding: 9px 6px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 700; font-size: 0.71rem; text-transform: uppercase; letter-spacing: 0.4px; }
+  tbody tr:hover { background: rgba(255, 255, 255, 0.02); }
+  tr.my-row { background: rgba(16, 185, 129, 0.11); }
+  .zone-ucl { border-left: 3px solid var(--blue); }
+  .zone-uel { border-left: 3px solid var(--amber); }
+  .zone-rel { border-left: 3px solid var(--red); }
+
+  .badge { padding: 3px 8px; border-radius: 6px; font-size: 0.69rem; font-weight: 700; display: inline-block; letter-spacing: 0.3px; }
+  .b-og { background: rgba(245, 158, 11, 0.18); color: #fbbf24; }
+  .b-exp { background: rgba(239, 68, 68, 0.18); color: #f87171; }
   .b-inj { background: #7f1d1d; color: #fecaca; }
-  .b-youth { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
-  .b-warn { background: rgba(245, 158, 11, 0.25); color: #fcd34d; }
-  .b-ok { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-  .b-loan { background: rgba(168, 85, 247, 0.22); color: #d8b4fe; border: 1px solid rgba(168,85,247,0.45); }
+  .b-youth { background: rgba(59, 130, 246, 0.18); color: #93c5fd; }
+  .b-warn { background: rgba(245, 158, 11, 0.22); color: #fcd34d; }
+  .b-ok { background: rgba(16, 185, 129, 0.18); color: #34d399; }
+  .b-loan { background: rgba(168, 85, 247, 0.2); color: #d8b4fe; }
 
-  /* XP BAR FOR BALANCED TRAINING */
-  .xp-track { width: 100%; max-width: 110px; height: 8px; background: #0b111a; border-radius: 99px; overflow: hidden; border: 1px solid var(--border); display: inline-block; vertical-align: middle; }
-  .xp-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #22c55e); transition: width 0.25s; }
+  .xp-track { width: 100%; max-width: 110px; height: 7px; background: var(--bg); border-radius: 99px; overflow: hidden; display: inline-block; vertical-align: middle; }
+  .xp-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--accent)); transition: width 0.25s; }
 
-  /* PAGINATION BAR */
   .pager-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; flex-wrap: wrap; gap: 8px; }
 
-  /* DRAG & DROP TACTICS + INDIVIDUAL PLANS */
-  .tactics-wrap { display: grid; grid-template-columns: 420px 1fr; gap: 16px; }
+  /* TACTICS PITCH */
+  .tactics-wrap { display: grid; grid-template-columns: 400px 1fr; gap: 18px; }
   @media (max-width: 900px) { .tactics-wrap { grid-template-columns: 1fr; } }
   #tactics-pitch {
-    position: relative; width: 100%; max-width: 420px; height: 530px; margin: 0 auto;
-    background: linear-gradient(180deg, #14532d 0%, #166534 50%, #14532d 100%);
-    border: 3px solid #cbd5e1; border-radius: 10px; overflow: hidden; touch-action: none;
+    position: relative; width: 100%; max-width: 400px; height: 510px; margin: 0 auto;
+    background: linear-gradient(180deg, #0f5132 0%, #146c43 50%, #0f5132 100%);
+    border: 2px solid rgba(255,255,255,0.65); border-radius: 12px; overflow: hidden; touch-action: none;
   }
-  .pitch-line-mid { position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.55); }
-  .pitch-circle { position: absolute; top: 50%; left: 50%; width: 96px; height: 96px; transform: translate(-50%,-50%); border: 2px solid rgba(255,255,255,0.55); border-radius: 50%; }
-  .pitch-box-top { position: absolute; top: 0; left: 22%; right: 22%; height: 78px; border: 2px solid rgba(255,255,255,0.55); border-top: none; }
-  .pitch-box-bot { position: absolute; bottom: 0; left: 22%; right: 22%; height: 78px; border: 2px solid rgba(255,255,255,0.55); border-bottom: none; }
+  .pitch-line-mid { position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.45); }
+  .pitch-circle { position: absolute; top: 50%; left: 50%; width: 92px; height: 92px; transform: translate(-50%,-50%); border: 2px solid rgba(255,255,255,0.45); border-radius: 50%; }
+  .pitch-box-top { position: absolute; top: 0; left: 22%; right: 22%; height: 74px; border: 2px solid rgba(255,255,255,0.45); border-top: none; }
+  .pitch-box-bot { position: absolute; bottom: 0; left: 22%; right: 22%; height: 74px; border: 2px solid rgba(255,255,255,0.45); border-bottom: none; }
   .tactic-node {
     position: absolute; width: 58px; height: 58px; transform: translate(-50%, -50%);
     background: #0f172a; border: 2px solid var(--accent); border-radius: 50%;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    cursor: grab; z-index: 5; box-shadow: 0 4px 10px rgba(0,0,0,0.5); touch-action: none;
+    cursor: grab; z-index: 5; box-shadow: 0 6px 14px rgba(0,0,0,0.45); touch-action: none;
   }
   .tactic-node.selected-node { border-color: #facc15; box-shadow: 0 0 0 3px rgba(250,204,21,0.35); }
-  .tactic-node:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.07); z-index: 10; }
-  .tactic-node .tn-pos { font-size: 0.62rem; color: var(--accent); font-weight: 800; }
+  .tactic-node .tn-pos { font-size: 0.61rem; color: var(--accent); font-weight: 800; }
   .tactic-node .tn-name { font-size: 0.65rem; font-weight: 700; max-width: 52px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .tactic-node .tn-role { font-size: 0.56rem; color: #fbbf24; max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tactic-node .tn-role { font-size: 0.55rem; color: #fbbf24; max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  /* BRACKET CARDS */
-  .cup-rounds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
-  .round-col { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; max-height: 500px; overflow-y: auto; }
-  .tie-card { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 7px; margin-bottom: 6px; font-size: 0.79rem; }
-  .tie-card.my-tie { border-color: var(--accent); background: rgba(34, 197, 94, 0.14); }
+  /* CUP ROUNDS */
+  .cup-rounds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 12px; }
+  .round-col { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px; max-height: 500px; overflow-y: auto; }
+  .tie-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px; margin-bottom: 6px; font-size: 0.79rem; }
+  .tie-card.my-tie { border-color: var(--accent); background: rgba(16, 185, 129, 0.14); }
 
   /* MODAL */
-  .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.86); display: none; align-items: center; justify-content: center; z-index: 100; padding: 14px; }
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
   .modal-backdrop.open { display: flex; }
-  .modal-box { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; max-width: 600px; width: 100%; padding: 18px; max-height: 90vh; overflow-y: auto; }
-  .modal-box h2 { color: var(--accent); margin-bottom: 8px; font-size: 1.2rem; }
-  .press-q { background: var(--panel-2); padding: 11px; border-radius: 8px; border-left: 3px solid var(--accent-2); margin: 10px 0; line-height: 1.42; font-size: 0.88rem; }
-  .press-opt { display: block; width: 100%; text-align: left; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; font-size: 0.86rem; }
-  .press-opt:hover { border-color: var(--accent); background: #1e2d42; }
+  .modal-box { background: var(--surface); border: 1px solid var(--border-strong); border-radius: 14px; max-width: 560px; width: 100%; padding: 20px; max-height: 90vh; overflow-y: auto; }
+  .modal-box h2 { color: #fff; margin-bottom: 8px; font-size: 1.2rem; }
+  .press-q { background: var(--surface-2); padding: 12px; border-radius: 8px; border-left: 3px solid var(--blue); margin: 12px 0; line-height: 1.45; font-size: 0.88rem; }
+  .press-opt { display: block; width: 100%; text-align: left; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); padding: 11px 14px; border-radius: 8px; margin-bottom: 8px; font-size: 0.86rem; }
+  .press-opt:hover { border-color: var(--accent); background: var(--surface-3); }
 
-  /* PURE AI VS AI WATCH MATCH BROADCAST SCREEN */
-  #match-screen { background: #070d14; position: relative; height: 100vh; overflow: hidden; }
+  /* WATCH MATCH AI BROADCAST SCREEN */
+  #match-screen { background: #060a11; position: relative; height: 100vh; overflow: hidden; }
   .match-hud {
-    position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 96%; max-width: 960px;
-    background: rgba(15, 23, 42, 0.93); border: 1px solid var(--border); border-radius: 10px;
-    padding: 7px 12px; display: flex; gap: 8px; align-items: center; z-index: 20; font-size: 0.82rem; flex-wrap: wrap; justify-content: space-between;
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 920px;
+    background: rgba(17, 24, 39, 0.92); backdrop-filter: blur(8px);
+    border: 1px solid var(--border-strong); border-radius: 12px;
+    padding: 8px 14px; display: flex; gap: 10px; align-items: center; z-index: 20; font-size: 0.84rem; flex-wrap: wrap; justify-content: space-between;
   }
-  .score-box { font-weight: 900; font-size: 1.05rem; color: var(--accent); }
+  .score-box { font-weight: 900; font-size: 1.15rem; color: var(--accent); letter-spacing: 0.5px; }
   #match-canvas { display: block; width: 100vw; height: 100vh; }
   .touchline-bar {
-    position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 96%; max-width: 820px;
-    background: rgba(15, 23, 42, 0.92); border: 1px solid var(--border); border-radius: 10px;
+    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 780px;
+    background: rgba(17, 24, 39, 0.92); backdrop-filter: blur(8px);
+    border: 1px solid var(--border-strong); border-radius: 12px;
     padding: 8px 12px; display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; z-index: 20;
   }
   .match-banner {
     position: absolute; top: 68px; left: 50%; transform: translateX(-50%);
-    background: rgba(34, 197, 94, 0.95); color: #052e16; font-weight: 800;
-    padding: 6px 18px; border-radius: 20px; display: none; z-index: 25; text-align: center; font-size: 0.86rem;
+    background: var(--accent); color: #042f1e; font-weight: 800;
+    padding: 6px 18px; border-radius: 99px; display: none; z-index: 25; text-align: center; font-size: 0.84rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.45);
   }
 </style>
 </head>
 <body>
 
-<!-- 1. START MENU LAYOUT -->
+<!-- 1. CLEAN START MENU -->
 <div id="setup-screen" class="screen active">
-  <div class="og-header">
+  <div class="brand-header">
+    <span class="brand-pill">2026/27 Season Edition</span>
     <h1>PITCH MASTER 27</h1>
-    <p>AI vs. AI Tactical Broadcast • Individual Player Roles • Balanced XP Training • 168-Club World & Ballon d'Or</p>
+    <p>AI Tactical Broadcast • 168 Clubs • Dynamic Cups & Europe • Ballon d'Or</p>
   </div>
 
-  <div class="og-menu-card">
-    <div class="og-grid">
+  <div class="menu-shell">
+    <div class="menu-grid">
       <div>
-        <div class="og-field">
+        <div class="field">
           <label>Manager Name</label>
           <input type="text" id="mgr-name" value="Alex Sterling" placeholder="Enter Manager Name" />
         </div>
-        <div class="og-field">
+        <div class="field">
           <label>Select League (168 Total Clubs)</label>
           <select id="og-league-select" onchange="populateOgClubs()">
             <option value="ENG1">England — Premier League (20 Clubs)</option>
@@ -219,132 +264,122 @@
             <option value="FRA1">France — Ligue 1 (18 Clubs)</option>
           </select>
         </div>
-        <div class="og-field">
-          <label>Select Club (Replaces Current Manager)</label>
+        <div class="field">
+          <label>Select Club</label>
           <select id="og-club-select" onchange="updateOgPreview()"></select>
         </div>
-        <div class="kit-preview" id="og-kit-preview">
-          <div class="swatch" id="swatch-1"></div>
-          <div class="swatch" id="swatch-2"></div>
+        <div class="club-banner">
+          <div class="kit-dot" id="swatch-1"></div>
+          <div class="kit-dot" id="swatch-2"></div>
           <div>
-            <div style="font-weight:800;" id="preview-club-name">Arsenal</div>
+            <div style="font-weight:800; font-size:1rem;" id="preview-club-name">Arsenal</div>
             <div class="sub-meta" id="preview-club-meta">Current Mgr: Mikel Arteta • Budget: £120M • Avg OVR: 86</div>
           </div>
         </div>
-        <div class="og-field">
-          <label>Watch Match Base Duration (Adjustable 1x/2x/4x Live)</label>
+        <div class="field">
+          <label>Watch Match Base Duration (1x / 2x / 4x Live)</label>
           <select id="og-duration">
             <option value="60">Fast Broadcast (60s at 1x)</option>
             <option value="90" selected>Standard Broadcast (90s at 1x)</option>
-            <option value="130">Extended Broadcast (130s at 1x)</option>
+            <option value="120">Extended Broadcast (120s at 1x)</option>
           </select>
         </div>
       </div>
 
       <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <label style="font-size:0.76rem; text-transform:uppercase; color:var(--muted); font-weight:700;">2026/27 Starting XI Team Sheet</label>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <label style="font-size:0.74rem; text-transform:uppercase; color:var(--muted); font-weight:700;">Starting XI Preview</label>
           <span class="badge b-youth" id="preview-league-badge">PREMIER LEAGUE</span>
         </div>
-        <div class="sheet-box" id="og-team-sheet"></div>
+        <div class="roster-preview" id="og-team-sheet"></div>
       </div>
     </div>
 
-    <div class="og-actions">
+    <div class="menu-footer">
       <button class="btn-primary" onclick="startNewCareer()">Start Manager Career</button>
       <button class="btn-warn" onclick="startQuickExhibition()">Watch Quick AI Exhibition</button>
-      <button class="btn-blue" id="load-save-btn" style="display:none" onclick="loadCareer()">Continue Saved Career</button>
-      <button class="btn-ghost" id="recover-save-btn" style="display:none" onclick="recoverBackupCareer()">Recover Crash Backup</button>
+      <button class="btn-blue" id="load-save-btn" style="display:none" onclick="loadCareer()">Continue Career</button>
+      <button class="btn-ghost" id="recover-save-btn" style="display:none" onclick="recoverBackupCareer()">Recover Backup</button>
     </div>
   </div>
 </div>
 
-<!-- 2. MANAGER HUB SCREEN -->
+<!-- 2. MODERN MANAGER HUB -->
 <div id="hub-screen" class="screen">
   <div class="topbar">
     <div>
       <div class="club-title" id="hud-club">Club Name</div>
       <div class="sub-meta" id="hud-sub">Manager • League • Season 2026/27</div>
     </div>
-    <div class="hud-pills">
-      <span class="pill" id="hud-budget">Budget: £50.0M</span>
-      <span class="pill" id="hud-wages">Wages: £450k/wk</span>
-      <span class="pill" id="hud-board-obj">Board: 0/6 (Req: 2)</span>
-      <span class="pill" id="hud-sim">Quick Sims: ∞</span>
-      <span class="pill" id="hud-window">Window: OPEN</span>
-      <button class="btn-ghost" onclick="saveCareer(true)">Save</button>
-      <button class="btn-ghost" onclick="resetCareer()">Main Menu</button>
+    <div class="hud-stats">
+      <span class="stat-chip" id="hud-budget">Budget: £50.0M</span>
+      <span class="stat-chip" id="hud-wages">Wages: £450k/wk</span>
+      <span class="stat-chip" id="hud-board-obj">Board: 0/6</span>
+      <span class="stat-chip" id="hud-window">Window: OPEN</span>
+      <button class="btn-ghost" style="padding:6px 11px; font-size:0.78rem;" onclick="saveCareer(true)">Save</button>
+      <button class="btn-ghost" style="padding:6px 11px; font-size:0.78rem;" onclick="resetCareer()">Menu</button>
     </div>
   </div>
 
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('tab-home', this)">Calendar & Schedule</button>
-    <button class="tab-btn" onclick="switchTab('tab-board', this)">Board Objectives</button>
-    <button class="tab-btn" onclick="switchTab('tab-squad', this)">Squad & Loans</button>
-    <button class="tab-btn" onclick="switchTab('tab-tactics', this)">Tactics & Player Plans</button>
-    <button class="tab-btn" onclick="switchTab('tab-training', this)">Manual Training</button>
-    <button class="tab-btn" onclick="switchTab('tab-transfers', this)">Full Transfer Market</button>
-    <button class="tab-btn" onclick="switchTab('tab-leagues', this)">League Tables</button>
-    <button class="tab-btn" onclick="switchTab('tab-cups', this)">FA & Carabao Cups (92)</button>
-    <button class="tab-btn" onclick="switchTab('tab-europe', this)">Champions & Europa</button>
-    <button class="tab-btn" onclick="switchTab('tab-stats', this)">Player Stats</button>
-    <button class="tab-btn" onclick="switchTab('tab-ballondor', this)">Ballon d'Or & Awards</button>
-    <button class="tab-btn" onclick="switchTab('tab-mgr', this)">Manager & Job Market</button>
+  <div class="nav-strip">
+    <button class="tab-btn active" onclick="switchTab('tab-home', this)">Schedule</button>
+    <button class="tab-btn" onclick="switchTab('tab-squad', this)">Squad & Youth</button>
+    <button class="tab-btn" onclick="switchTab('tab-tactics', this)">Tactics & Plans</button>
+    <button class="tab-btn" onclick="switchTab('tab-training', this)">Training</button>
+    <button class="tab-btn" onclick="switchTab('tab-transfers', this)">Transfers</button>
+    <button class="tab-btn" onclick="switchTab('tab-leagues', this)">Leagues</button>
+    <button class="tab-btn" onclick="switchTab('tab-cups', this)">FA & Carabao Cups</button>
+    <button class="tab-btn" onclick="switchTab('tab-europe', this)">UCL & UEL</button>
+    <button class="tab-btn" onclick="switchTab('tab-stats', this)">Stats</button>
+    <button class="tab-btn" onclick="switchTab('tab-ballondor', this)">Ballon d'Or</button>
+    <button class="tab-btn" onclick="switchTab('tab-board', this)">Board</button>
+    <button class="tab-btn" onclick="switchTab('tab-mgr', this)">Manager & Jobs</button>
   </div>
 
-  <div class="hub-content">
-    <!-- 1. CALENDAR & SCHEDULE -->
+  <div class="hub-wrap">
+    <!-- 1. SCHEDULE & INBOX -->
     <div id="tab-home" class="tab-panel active">
       <div class="grid-2">
         <div>
-          <div class="card">
-            <h3>Current Schedule Event <span id="next-comp-badge" class="badge b-youth">MATCHDAY</span></h3>
-            <div id="next-match-box" style="margin-bottom:14px; font-size:0.98rem; line-height:1.5;"></div>
-            <div style="display:flex; flex-wrap:wrap; gap:10px;" id="schedule-actions"></div>
+          <div class="hero-event">
+            <span id="next-comp-badge" class="badge b-ok">MATCHDAY</span>
+            <div id="next-match-box" class="hero-matchup">Loading schedule...</div>
+            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:14px;" id="schedule-actions"></div>
           </div>
+
           <div class="card">
-            <h3>Season Calendar (Infinite Quick Sims + Mandatory Media Days)</h3>
-            <div style="max-height:380px; overflow-y:auto;">
+            <h3>Season Fixtures & Events <span class="sub-meta">Cup rounds insert dynamically as you advance</span></h3>
+            <div style="max-height:420px; overflow-y:auto;">
               <table>
-                <thead><tr><th>Day</th><th>Type</th><th>Event / Opponent</th><th>Venue</th><th>Status</th></tr></thead>
+                <thead><tr><th>Day</th><th>Type</th><th>Fixture / Event</th><th>Venue</th><th>Status</th></tr></thead>
                 <tbody id="fixtures-tbody"></tbody>
               </table>
             </div>
           </div>
         </div>
+
         <div>
           <div class="card">
-            <h3>Club News, Awards & Dressing Room Feed</h3>
-            <div id="inbox-list" style="display:flex; flex-direction:column; gap:8px; max-height:480px; overflow-y:auto;"></div>
+            <h3>Club Feed & Headlines</h3>
+            <div id="inbox-list" style="display:flex; flex-direction:column; gap:8px; max-height:540px; overflow-y:auto;"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 2. BOARD OBJECTIVES -->
-    <div id="tab-board" class="tab-panel">
-      <div class="card">
-        <h3>Season Board Requirements <span class="badge b-warn" id="board-status-badge">0 / 6 MET</span></h3>
-        <p class="sub-meta" style="margin-bottom:14px;">
-          Board survival requirements escalate each season (Season 1: 2/6 • Season 2: 3/6 • Season 3: 4/6 • Season 4+: 5/6). Fail to hit the target and you will be SACKED into Unemployed status!
-        </p>
-        <div id="board-objectives-list"></div>
-      </div>
-    </div>
-
-    <!-- 3. SQUAD, LOANS & YOUTH ACADEMY -->
+    <!-- 2. SQUAD & YOUTH ACADEMY -->
     <div id="tab-squad" class="tab-panel">
       <div class="card">
-        <h3>First Team Roster <span class="sub-meta">Players retire by age 52 max • Red cards trigger 1-match suspensions</span></h3>
+        <h3>First Team Squad <span class="sub-meta">Players retire by age 52 • Red cards = 1-match ban</span></h3>
         <div style="overflow-x:auto;">
           <table>
-            <thead><tr><th>Pos</th><th>Name</th><th>Age</th><th>OVR</th><th>Plan</th><th>Wage</th><th>G / A</th><th>Cards</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th>Pos</th><th>Player</th><th>Age</th><th>OVR</th><th>Plan</th><th>Wage</th><th>G / A</th><th>Cards</th><th>Status</th><th>Action</th></tr></thead>
             <tbody id="squad-tbody"></tbody>
           </table>
         </div>
       </div>
       <div class="card">
-        <h3>Youth Academy Prospects (Ages 16–18) <button class="btn-blue" onclick="scoutYouth()">Scout New Intake (£1.5M)</button></h3>
+        <h3>Youth Academy (Ages 16–18) <button class="btn-blue" onclick="scoutYouth()">Scout Intake (£1.5M)</button></h3>
         <table>
           <thead><tr><th>Pos</th><th>Prospect</th><th>Age</th><th>OVR</th><th>Potential</th><th>Action</th></tr></thead>
           <tbody id="academy-tbody"></tbody>
@@ -352,24 +387,24 @@
       </div>
     </div>
 
-    <!-- 4. DRAG AND DROP TACTICS + INDIVIDUAL PLAYER PLANS -->
+    <!-- 3. TACTICS & INDIVIDUAL PLANS -->
     <div id="tab-tactics" class="tab-panel">
       <div class="card">
-        <h3>Drag & Drop Tactics + Individual Player Plans <span class="sub-meta">Drag nodes to position • Tap any starter to set their AI role</span></h3>
+        <h3>Formation & Individual Player Plans <span class="sub-meta">Drag players on pitch • Tap any starter to assign AI role</span></h3>
         <div class="tactics-wrap">
           <div>
             <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
-              <select id="preset-formation" onchange="applyPresetFormation(this.value)" style="background:var(--panel-2); color:var(--text); border:1px solid var(--border); padding:6px 10px; border-radius:6px;">
-                <option value="">Load Preset Shape...</option>
+              <select id="preset-formation" onchange="applyPresetFormation(this.value)" style="width:auto; flex:1;">
+                <option value="">Load Shape...</option>
                 <option value="433">4-3-3 Attack</option>
                 <option value="442">4-4-2 Classic</option>
                 <option value="4231">4-2-3-1 Control</option>
                 <option value="352">3-5-2 Wingbacks</option>
               </select>
-              <select id="mentality-select" onchange="state.mentality=this.value; saveCareer(false);" style="background:var(--panel-2); color:var(--text); border:1px solid var(--border); padding:6px 10px; border-radius:6px;">
+              <select id="mentality-select" onchange="state.mentality=this.value; saveCareer(false);" style="width:auto; flex:1;">
                 <option value="Balanced">Mentality: Balanced</option>
-                <option value="Attacking">Mentality: All-Out Attack</option>
-                <option value="Defensive">Mentality: Park the Bus</option>
+                <option value="Attacking">All-Out Attack</option>
+                <option value="Defensive">Park the Bus</option>
               </select>
             </div>
             <div id="tactics-pitch">
@@ -380,49 +415,51 @@
             </div>
           </div>
           <div>
-            <div id="player-plan-editor" class="card" style="background:var(--panel-2); margin-bottom:12px;">
-              <h3>Individual Player Plan <span class="badge b-og" id="plan-target-name">SELECT A STARTER</span></h3>
-              <p class="sub-meta" style="margin-bottom:8px;">Assigned plans directly change how this player moves, presses, passes, and shoots in Watch Match AI.</p>
+            <div class="card" style="background:var(--surface-2); margin-bottom:14px;">
+              <h3>Individual Plan <span class="badge b-og" id="plan-target-name">SELECT STARTER</span></h3>
+              <p class="sub-meta" style="margin-bottom:10px;">Shapes how this player makes runs, passes, and shoots in Watch Match AI.</p>
               <div id="plan-options-box"></div>
             </div>
-            <h4 style="margin-bottom:8px;">Starting XI & Bench Swap</h4>
-            <div id="tactics-swap-ui"></div>
+            <h4 style="margin-bottom:8px; font-size:0.9rem;">Starting XI & Bench</h4>
+            <div id="tactics-swap-ui" style="max-height:360px; overflow-y:auto;"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 5. BALANCED MANUAL TRAINING TAB -->
+    <!-- 4. BALANCED TRAINING -->
     <div id="tab-training" class="tab-panel">
       <div class="card">
-        <h3>Balanced Squad & Individual Training <span class="badge b-youth" id="training-status-badge">SESSION AVAILABLE</span></h3>
-        <p class="sub-meta" style="margin-bottom:12px;">
-          Run <strong>1 training session per matchday</strong> so player growth stays realistic. Players earn XP toward their next +1 OVR based on age (16–22: fast growth • 23–29: steady • 30+: sharpness maintenance).
+        <h3>Squad & 1-on-1 Training <span class="badge b-ok" id="training-status-badge">SESSION READY</span></h3>
+        <p class="sub-meta" style="margin-bottom:14px;">
+          Run <strong>1 session per matchday</strong> for realistic age-curved XP progression toward each player's next +1 OVR.
         </p>
-        <div class="grid-3" style="margin-bottom:14px;">
-          <button class="btn-primary" id="tr-btn-att" onclick="runTeamTraining('ATT')">⚽ Attacking & Finishing Drill (+XP Forwards/Mids)</button>
-          <button class="btn-blue" id="tr-btn-def" onclick="runTeamTraining('DEF')">🛡️ Defensive Shape & Pressing (+XP Defenders/GK)</button>
-          <button class="btn-warn" id="tr-btn-fit" onclick="runTeamTraining('FIT')">⚡ Tactical Rondo & Fitness (+XP All & +1 Morale)</button>
+        <div class="grid-3" style="margin-bottom:16px;">
+          <button class="btn-primary" id="tr-btn-att" onclick="runTeamTraining('ATT')">⚽ Attacking & Finishing</button>
+          <button class="btn-blue" id="tr-btn-def" onclick="runTeamTraining('DEF')">🛡️ Defensive Shape & Press</button>
+          <button class="btn-warn" id="tr-btn-fit" onclick="runTeamTraining('FIT')">⚡ Tactical Rondo (+Morale)</button>
         </div>
         <div style="overflow-x:auto;">
           <table>
-            <thead><tr><th>Pos</th><th>Player</th><th>Age</th><th>OVR</th><th>Growth Curve</th><th>Progress to Next OVR</th><th>1-on-1 Focus</th></tr></thead>
+            <thead><tr><th>Pos</th><th>Player</th><th>Age</th><th>OVR</th><th>Growth Curve</th><th>Progress to Next OVR</th><th>1-on-1</th></tr></thead>
             <tbody id="training-tbody"></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- 6. FULL PAGINATED TRANSFER MARKET, LOANS & FREE AGENTS -->
+    <!-- 5. FULL PAGINATED TRANSFER MARKET -->
     <div id="tab-transfers" class="tab-panel">
       <div class="grid-2">
         <div class="card">
-          <h3>Full World Player Market <span class="badge b-youth" id="market-total-badge">ALL PLAYERS</span></h3>
-          <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
-            <input type="text" id="tr-search" placeholder="Search player, pos, or club..." oninput="marketPage=1; renderTransferMarket()" style="background:var(--panel-2); color:var(--text); border:1px solid var(--border); padding:7px 10px; border-radius:6px; flex:1;" />
-            <select id="tr-filter" onchange="marketPage=1; renderTransferMarket()" style="background:var(--panel-2); color:var(--text); border:1px solid var(--border); padding:7px 10px; border-radius:6px;">
+          <h3>Transfer & Loan Market <span class="badge b-youth" id="market-total-badge">ALL PLAYERS</span></h3>
+          <p class="sub-meta" style="margin-bottom:10px;">Players consider your <strong>Club Stature & European Football</strong> before agreeing to join. Free Agents can be signed anytime.</p>
+          <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+            <input type="text" id="tr-search" placeholder="Search player, pos, or club..." oninput="marketPage=1; renderTransferMarket()" style="flex:1; min-width:160px;" />
+            <select id="tr-filter" onchange="marketPage=1; renderTransferMarket()" style="width:auto;">
               <option value="ALL">All Players & Free Agents</option>
-              <option value="FREE">Free Agents (£0 Fee)</option>
+              <option value="FREE">Free Agents (£0 Fee — Anytime)</option>
+              <option value="REALISTIC">Realistic Targets For My Club</option>
               <option value="LOAN">Loan Targets (Age ≤ 23)</option>
               <option value="EXP">Expiring Contracts (≤ 6m)</option>
               <option value="STAR">85+ Rated Stars</option>
@@ -430,21 +467,21 @@
           </div>
           <div style="overflow-x:auto;">
             <table>
-              <thead><tr><th>Player</th><th>Club / Status</th><th>Age</th><th>OVR</th><th>Fee</th><th>Negotiate</th></tr></thead>
+              <thead><tr><th>Player</th><th>Club</th><th>Age</th><th>OVR</th><th>Fee</th><th>Interest</th><th>Action</th></tr></thead>
               <tbody id="market-tbody"></tbody>
             </table>
           </div>
           <div class="pager-bar">
-            <button class="btn-ghost" id="mk-prev" onclick="changeMarketPage(-1)">← Previous Page</button>
+            <button class="btn-ghost" id="mk-prev" onclick="changeMarketPage(-1)">← Prev</button>
             <span class="sub-meta" id="mk-page-info">Page 1 of 1</span>
-            <button class="btn-ghost" id="mk-next" onclick="changeMarketPage(1)">Next Page →</button>
+            <button class="btn-ghost" id="mk-next" onclick="changeMarketPage(1)">Next →</button>
           </div>
         </div>
         <div class="card">
-          <h3>Live World Transfer & Loan Feed <span class="badge b-og">COMPLETED DEALS</span></h3>
+          <h3>Completed World Deals</h3>
           <div style="max-height:540px; overflow-y:auto;">
             <table>
-              <thead><tr><th>Player (OVR)</th><th>From → To</th><th>Terms</th></tr></thead>
+              <thead><tr><th>Player (OVR)</th><th>Move</th><th>Terms</th></tr></thead>
               <tbody id="transfer-feed-tbody"></tbody>
             </table>
           </div>
@@ -452,12 +489,12 @@
       </div>
     </div>
 
-    <!-- 7. LEAGUE TABLES -->
+    <!-- 6. LEAGUE TABLES -->
     <div id="tab-leagues" class="tab-panel">
       <div class="card">
-        <h3>Domestic League Standings <span class="sub-meta">Top-Flight: 1st–5th = UCL | 6th–7th = UEL • EFL Tiers: Europe via FA/Carabao Cup Win</span></h3>
-        <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
-          <select id="table-select" onchange="renderStandings()" style="background:var(--panel-2); color:var(--text); border:1px solid var(--border); padding:8px 12px; border-radius:6px;">
+        <h3>Domestic League Standings <span class="sub-meta">Top-Flight: 1st–5th UCL | 6th–7th UEL</span></h3>
+        <div style="margin-bottom:12px; max-width:340px;">
+          <select id="table-select" onchange="renderStandings()">
             <option value="MY">My / Featured League</option>
             <option value="ENG1">England — Premier League</option>
             <option value="ENG2">England — EFL Championship</option>
@@ -473,140 +510,119 @@
       </div>
     </div>
 
-    <!-- 8. FULL 92-CLUB FA CUP & CARABAO CUP PAGE -->
+    <!-- 7. 92-CLUB FA & CARABAO CUPS -->
     <div id="tab-cups" class="tab-panel">
       <div class="card">
-        <h3>FA Cup & Carabao Cup (All 92 English Clubs — Full 7-Round Simulation) <span class="badge b-og">GIANT-KILLING +2 MORALE</span></h3>
-        <p class="sub-meta" style="margin-bottom:14px;">
-          Every round from Round 1 (92 clubs) through Quarter-Finals, Semi-Finals, and Wembley Final plays out globally every season—even if your club is knocked out early!
-        </p>
-        <div style="display:flex; gap:8px; margin-bottom:12px;">
-          <button class="btn-primary" onclick="activeCupView='fa'; renderCupBrackets();">Emirates FA Cup (92 Clubs)</button>
-          <button class="btn-blue" onclick="activeCupView='carabao'; renderCupBrackets();">Carabao Cup (92 Clubs)</button>
+        <h3>92-Club English Cup Brackets <span class="badge b-og">WINNERS QUALIFY FOR EUROPA LEAGUE</span></h3>
+        <div style="display:flex; gap:8px; margin-bottom:14px;">
+          <button class="btn-primary" onclick="activeCupView='fa'; renderCupBrackets();">Emirates FA Cup</button>
+          <button class="btn-blue" onclick="activeCupView='carabao'; renderCupBrackets();">Carabao Cup</button>
         </div>
         <div id="cup-bracket-container"></div>
       </div>
     </div>
 
-    <!-- 9. CHAMPIONS LEAGUE & EUROPA LEAGUE PAGE -->
+    <!-- 8. CHAMPIONS & EUROPA LEAGUES -->
     <div id="tab-europe" class="tab-panel">
       <div class="card">
-        <h3>UEFA Champions League & UEFA Europa League <span class="badge b-youth">SIMULATED GLOBALLY EVERY SEASON</span></h3>
-        <p class="sub-meta" style="margin-bottom:12px;">All 36 Champions League and 36 Europa League clubs play their full League Phase every season regardless of what division you manage in.</p>
+        <h3>UEFA European Competitions</h3>
         <div class="grid-2-eq">
           <div>
-            <h4 style="color:#60a5fa; margin-bottom:10px;">UEFA Champions League Table</h4>
+            <h4 style="color:#60a5fa; margin-bottom:10px;">UEFA Champions League</h4>
             <div id="ucl-table-box" style="max-height:480px; overflow-y:auto;"></div>
           </div>
           <div>
-            <h4 style="color:#fbbf24; margin-bottom:10px;">UEFA Europa League Table</h4>
+            <h4 style="color:#fbbf24; margin-bottom:10px;">UEFA Europa League</h4>
             <div id="uel-table-box" style="max-height:480px; overflow-y:auto;"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 10. DEDICATED PLAYER STATS PAGE -->
+    <!-- 9. PLAYER STATS -->
     <div id="tab-stats" class="tab-panel">
       <div class="card">
-        <h3>Competition Player Statistics & Discipline <span class="badge b-youth">LIVE LEADERBOARDS</span></h3>
-        <div style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;">
-          <select id="stats-comp-filter" onchange="renderPlayerStatsPage()" style="background:var(--panel-2); color:var(--text); border:1px solid var(--border); padding:8px 12px; border-radius:6px;">
-            <option value="ALL">All Competitions Combined (Global)</option>
+        <h3>Season Player Leaderboards</h3>
+        <div style="margin-bottom:14px; max-width:340px;">
+          <select id="stats-comp-filter" onchange="renderPlayerStatsPage()">
+            <option value="ALL">All Competitions Combined</option>
             <option value="MYLEAGUE">My Domestic League Only</option>
-            <option value="UCL">UEFA Champions League Only</option>
-            <option value="UEL">UEFA Europa League Only</option>
-            <option value="CUPS">FA Cup & Carabao Cup Only</option>
+            <option value="UCL">Champions League Only</option>
+            <option value="UEL">Europa League Only</option>
+            <option value="CUPS">FA & Carabao Cups Only</option>
           </select>
         </div>
         <div class="grid-2-eq">
-          <div class="card" style="margin-bottom:0; background:var(--panel-2);">
-            <h3 style="color:var(--accent);">⚽ Top Scorers (Golden Boot)</h3>
-            <table>
-              <thead><tr><th>#</th><th>Player</th><th>Club</th><th>Goals</th></tr></thead>
-              <tbody id="stats-goals-tbody"></tbody>
-            </table>
+          <div class="card" style="margin-bottom:0; background:var(--surface-2);">
+            <h3 style="color:var(--accent);">⚽ Top Scorers</h3>
+            <table><thead><tr><th>#</th><th>Player</th><th>Club</th><th>Goals</th></tr></thead><tbody id="stats-goals-tbody"></tbody></table>
           </div>
-          <div class="card" style="margin-bottom:0; background:var(--panel-2);">
-            <h3 style="color:#60a5fa;">🎯 Top Assists (Playmaker)</h3>
-            <table>
-              <thead><tr><th>#</th><th>Player</th><th>Club</th><th>Assists</th></tr></thead>
-              <tbody id="stats-assists-tbody"></tbody>
-            </table>
+          <div class="card" style="margin-bottom:0; background:var(--surface-2);">
+            <h3 style="color:#60a5fa;">🎯 Top Assists</h3>
+            <table><thead><tr><th>#</th><th>Player</th><th>Club</th><th>Assists</th></tr></thead><tbody id="stats-assists-tbody"></tbody></table>
           </div>
-          <div class="card" style="margin-bottom:0; background:var(--panel-2);">
-            <h3 style="color:#fbbf24;">🟨 Most Yellow Cards</h3>
-            <table>
-              <thead><tr><th>#</th><th>Player</th><th>Club</th><th>Yellows</th></tr></thead>
-              <tbody id="stats-yellows-tbody"></tbody>
-            </table>
+          <div class="card" style="margin-bottom:0; background:var(--surface-2);">
+            <h3 style="color:#fbbf24;">🟨 Yellow Cards</h3>
+            <table><thead><tr><th>#</th><th>Player</th><th>Club</th><th>Yellows</th></tr></thead><tbody id="stats-yellows-tbody"></tbody></table>
           </div>
-          <div class="card" style="margin-bottom:0; background:var(--panel-2);">
-            <h3 style="color:#ef4444;">🟥 Most Red Cards</h3>
-            <table>
-              <thead><tr><th>#</th><th>Player</th><th>Club</th><th>Reds</th></tr></thead>
-              <tbody id="stats-reds-tbody"></tbody>
-            </table>
+          <div class="card" style="margin-bottom:0; background:var(--surface-2);">
+            <h3 style="color:#ef4444;">🟥 Red Cards</h3>
+            <table><thead><tr><th>#</th><th>Player</th><th>Club</th><th>Reds</th></tr></thead><tbody id="stats-reds-tbody"></tbody></table>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 11. BALLON D'OR & MANAGER OF THE YEAR AWARDS PAGE -->
+    <!-- 10. BALLON D'OR -->
     <div id="tab-ballondor" class="tab-panel">
       <div class="card">
-        <h3>Ballon d'Or & World Manager of the Year <span class="badge b-og">LIVE GLOBAL RANKINGS</span></h3>
-        <p class="sub-meta" style="margin-bottom:14px;">
-          Evaluates every player and manager across all 8 leagues, FA & Carabao Cups, Champions League, and Europa League based on Goals, Assists, Match Ratings, Clean Sheets, and Trophies won.
-        </p>
+        <h3>Ballon d'Or & Manager of the Year</h3>
         <div class="grid-2-eq">
-          <div class="card" style="margin-bottom:0; background:var(--panel-2);">
-            <h3 style="color:#fbbf24;">🏆 Live Ballon d'Or Top 10 Contenders</h3>
-            <table>
-              <thead><tr><th>#</th><th>Player (OVR)</th><th>Club</th><th>G / A</th><th>Avg Rtg</th><th>Score</th></tr></thead>
-              <tbody id="ballondor-players-tbody"></tbody>
-            </table>
+          <div class="card" style="margin-bottom:0; background:var(--surface-2);">
+            <h3 style="color:#fbbf24;">🏆 Ballon d'Or Top 10</h3>
+            <table><thead><tr><th>#</th><th>Player (OVR)</th><th>Club</th><th>G / A</th><th>Rtg</th><th>Pts</th></tr></thead><tbody id="ballondor-players-tbody"></tbody></table>
           </div>
-          <div class="card" style="margin-bottom:0; background:var(--panel-2);">
-            <h3 style="color:var(--accent);">👔 Manager of the Year Contenders</h3>
-            <table>
-              <thead><tr><th>#</th><th>Manager</th><th>Club</th><th>League Pos</th><th>Pts</th></tr></thead>
-              <tbody id="ballondor-mgrs-tbody"></tbody>
-            </table>
+          <div class="card" style="margin-bottom:0; background:var(--surface-2);">
+            <h3 style="color:var(--accent);">👔 Manager of the Year</h3>
+            <table><thead><tr><th>#</th><th>Manager</th><th>Club</th><th>Pos</th><th>Pts</th></tr></thead><tbody id="ballondor-mgrs-tbody"></tbody></table>
           </div>
         </div>
-        <div class="card" style="margin-top:16px; margin-bottom:0; background:var(--panel-2);">
-          <h3>All-Time Ballon d'Or & Manager Award Winners Hall of Fame</h3>
+        <div class="card" style="margin-top:16px; margin-bottom:0; background:var(--surface-2);">
+          <h3>Past Award Winners</h3>
           <div id="awards-hof-list"></div>
         </div>
       </div>
     </div>
 
-    <!-- 12. MANAGER STATS, AI MANAGERS & OPEN JOB VACANCIES -->
+    <!-- 11. BOARD OBJECTIVES -->
+    <div id="tab-board" class="tab-panel">
+      <div class="card">
+        <h3>Board Objectives <span class="badge b-warn" id="board-status-badge">0 / 6 MET</span></h3>
+        <p class="sub-meta" style="margin-bottom:14px;">
+          Targets scale by season (S1: 2/6 • S2: 3/6 • S3: 4/6 • S4+: 5/6). Falling short leads to dismissal.
+        </p>
+        <div id="board-objectives-list"></div>
+      </div>
+    </div>
+
+    <!-- 12. MANAGER & JOB MARKET -->
     <div id="tab-mgr" class="tab-panel">
       <div class="card">
-        <h3>Manager Career Stats, Job Market & Club Managers</h3>
+        <h3>Manager Profile & Open Vacancies</h3>
         <div class="grid-3" id="mgr-stats-grid" style="margin-bottom:16px;"></div>
         <div class="grid-2-eq">
-          <div class="card" style="margin-bottom:0; background:var(--panel-2);">
-            <h3>Available Managerial Vacancies <span class="badge b-warn" id="vacancy-count-badge">0 OPEN</span></h3>
-            <p class="sub-meta" style="margin-bottom:10px;">You can only apply for jobs when another club sacks or loses its manager!</p>
+          <div class="card" style="margin-bottom:0; background:var(--surface-2);">
+            <h3>Open Job Vacancies <span class="badge b-warn" id="vacancy-count-badge">0 OPEN</span></h3>
             <div id="job-vacancies-list"></div>
             <h3 style="margin-top:16px;">Trophy Cabinet</h3>
             <div id="mgr-trophies-list"></div>
           </div>
-          <div class="card" style="margin-bottom:0; background:var(--panel-2);">
-            <h3>World Club Managers Directory & Career History</h3>
-            <div style="max-height:240px; overflow-y:auto; margin-bottom:14px;">
-              <table>
-                <thead><tr><th>Club</th><th>League</th><th>Current Manager</th></tr></thead>
-                <tbody id="world-managers-tbody"></tbody>
-              </table>
+          <div class="card" style="margin-bottom:0; background:var(--surface-2);">
+            <h3>World Managers & Career History</h3>
+            <div style="max-height:230px; overflow-y:auto; margin-bottom:14px;">
+              <table><thead><tr><th>Club</th><th>League</th><th>Manager</th></tr></thead><tbody id="world-managers-tbody"></tbody></table>
             </div>
-            <table>
-              <thead><tr><th>Season</th><th>Club</th><th>Pos</th><th>Board</th><th>Status</th></tr></thead>
-              <tbody id="mgr-history-tbody"></tbody>
-            </table>
+            <table><thead><tr><th>Season</th><th>Club</th><th>Pos</th><th>Board</th><th>Status</th></tr></thead><tbody id="mgr-history-tbody"></tbody></table>
           </div>
         </div>
       </div>
@@ -614,28 +630,28 @@
   </div>
 </div>
 
-<!-- 3. PURE AI VS AI WATCH MATCH BROADCAST SCREEN -->
+<!-- 3. WATCH MATCH AI BROADCAST SCREEN -->
 <div id="match-screen" class="screen">
   <div class="match-hud">
     <span id="m-comp" class="badge b-youth">LEAGUE</span>
     <span id="m-teams" style="font-weight:700;">HOME vs AWAY</span>
     <span id="m-score" class="score-box">0 - 0</span>
-    <span id="m-clock" style="font-family:monospace; font-size:0.98rem;">00'</span>
+    <span id="m-clock" style="font-family:monospace; font-size:1rem;">00'</span>
     <span id="m-poss" class="sub-meta">Poss: 50% - 50%</span>
   </div>
   <div id="match-banner" class="match-banner">GOAL!</div>
   <canvas id="match-canvas"></canvas>
   <div class="touchline-bar">
-    <span style="font-size:0.75rem; color:var(--muted); font-weight:700;">SPEED:</span>
+    <span style="font-size:0.74rem; color:var(--muted); font-weight:700;">SPEED:</span>
     <button class="btn-ghost active-pill" id="spd-1" style="padding:5px 10px; font-size:0.76rem;" onclick="setWatchSpeed(1)">1x</button>
     <button class="btn-ghost" id="spd-2" style="padding:5px 10px; font-size:0.76rem;" onclick="setWatchSpeed(2)">2x</button>
     <button class="btn-ghost" id="spd-4" style="padding:5px 10px; font-size:0.76rem;" onclick="setWatchSpeed(4)">4x</button>
-    <select id="live-mentality" onchange="changeLiveMentality(this.value)" style="background:var(--panel-2); color:var(--text); border:1px solid var(--border); padding:5px 8px; border-radius:6px; font-size:0.76rem;">
-      <option value="Balanced">Mentality: Balanced</option>
+    <select id="live-mentality" onchange="changeLiveMentality(this.value)" style="width:auto; padding:5px 9px; font-size:0.76rem;">
+      <option value="Balanced">Balanced</option>
       <option value="Attacking">All-Out Attack</option>
       <option value="Defensive">Park the Bus</option>
     </select>
-    <button class="btn-warn" style="padding:5px 11px; font-size:0.76rem;" onclick="openMatchSubModal()">Tactical Subs</button>
+    <button class="btn-warn" style="padding:5px 11px; font-size:0.76rem;" onclick="openMatchSubModal()">Subs</button>
     <button class="btn-danger" style="padding:5px 11px; font-size:0.76rem;" onclick="finishMatchEarly()">Instant Result</button>
   </div>
 </div>
@@ -647,7 +663,7 @@
 
 <script>
 /* ============================================================================
-   1. 168-CLUB DATABASE + NAMED MANAGERS + INDIVIDUAL PLAYER PLANS + STATS
+   1. 168-CLUB DATABASE, NAMED MANAGERS & INDIVIDUAL PLAYER PLANS
    ============================================================================ */
 const LEAGUES_META = {
   ENG1: { name: "Premier League", country: "England", tier: 1, topFlight: true },
@@ -796,6 +812,8 @@ const LEAGUE_CLUB_DEFS = {
 };
 
 const INITIAL_FREE_AGENTS = [
+  { id: "fa_13", name: "Owen Roberts", pos: "ST", ovr: 79, age: 16, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 22, xp: 0, plan: "Get In Behind", posCoord: {x:50,y:18} },
+  { id: "fa_14", name: "Fernando Baines", pos: "GK", ovr: 76, age: 16, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 16, xp: 0, plan: "Sweeper Keeper", posCoord: {x:50,y:91} },
   { id: "fa_1", name: "Sergio Ramos", pos: "CB", ovr: 82, age: 40, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 65, xp: 0, plan: "Stay Back", posCoord: {x:50,y:75} },
   { id: "fa_2", name: "Paul Pogba", pos: "CM", ovr: 81, age: 33, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 75, xp: 0, plan: "Playmaker Roam", posCoord: {x:50,y:52} },
   { id: "fa_3", name: "Mats Hummels", pos: "CB", ovr: 82, age: 37, ogClubId: null, morale: 1, contractMonths: 0, injuryWeeks: 0, suspendedMatches: 0, wageK: 55, xp: 0, plan: "Ball-Playing Defender", posCoord: {x:40,y:75} },
@@ -935,7 +953,7 @@ function updateOgPreview() {
 
   const sheet = document.getElementById("og-team-sheet");
   sheet.innerHTML = c.squad.slice(0, 11).map((p, idx) => `
-    <div class="sheet-row">
+    <div class="roster-row">
       <span><strong>#${idx + 1} ${p.pos}</strong> — ${p.name} ${p.ovr >= 95 ? '<span class="badge b-og">ICON</span>' : ''}</span>
       <span>Age ${p.age} • <strong>${p.ovr} OVR</strong> • £${p.wageK}k/wk</span>
     </div>
@@ -950,7 +968,7 @@ function updateOgPreview() {
 }
 
 /* ============================================================================
-   3. CAREER INIT, ROLLING CRASH-RECOVERY SAVES, 92-CLUB CUPS & CALENDAR
+   3. CAREER INIT, DYNAMIC CUP SCHEDULING & CRASH-SAFE SAVE
    ============================================================================ */
 function startNewCareer() {
   quickMatchMode = false;
@@ -970,6 +988,7 @@ function startNewCareer() {
     season: 1,
     year: 2026,
     dayIndex: 0,
+    matchCounter: 0,
     manager: mgrName,
     userClubId,
     unemployed: false,
@@ -999,13 +1018,13 @@ function startNewCareer() {
     ],
     inbox: [
       `Welcome to ${clubs[userClubId].name}, ${mgrName}!`,
-      `AI BROADCAST ENGINE ACTIVE: Assign Individual Player Plans in Tactics and watch both AI teams battle on the pitch with live 1x/2x/4x speed and touchline adjustments.`,
-      `INFINITE QUICK SIMS + MEDIA DAYS: You can Quick Sim any matchday, while mandatory Media Days keep dressing room morale and press storylines alive.`
+      `REALISTIC TRANSFERS & FREE AGENTS: Players weigh your Club Stature & European status before signing. Free Agents can be signed anytime!`,
+      `DYNAMIC CUP & EUROPEAN SCHEDULE: Win your cup ties to automatically schedule every round all the way to the Wembley Final!`
     ],
     calendar: []
   };
 
-  generateSporadicSeasonCalendar();
+  generateDynamicSeasonCalendar();
   saveCareer(false);
   enterHub();
 }
@@ -1034,6 +1053,94 @@ function buildFull92CupBracket(clubs, userClubId) {
     winnerId: null,
     userEliminated: false
   };
+}
+
+function findUserCupOpponent(cupObj, userClubId) {
+  const rIdx = cupObj.currentRound;
+  if (rIdx >= cupObj.rounds.length) return null;
+  const tie = cupObj.rounds[rIdx].find(t => t.a === userClubId || t.b === userClubId);
+  if (!tie) return null;
+  return tie.a === userClubId ? tie.b : tie.a;
+}
+
+function renumberCalendarDays() {
+  state.calendar.forEach((item, idx) => { item.day = idx + 1; });
+}
+
+function generateDynamicSeasonCalendar() {
+  const refClub = state.userClubId ? state.clubs[state.userClubId] : Object.values(state.clubs)[0];
+  const leagueRivals = Object.values(state.clubs).filter(c => c.league === refClub.league && c.id !== refClub.id);
+
+  const rawLeagueFixtures = [];
+  leagueRivals.forEach(opp => {
+    rawLeagueFixtures.push({ type: "MATCH", comp: LEAGUES_META[refClub.league].name, compType: "LEAGUE", oppId: opp.id, home: true });
+    rawLeagueFixtures.push({ type: "MATCH", comp: LEAGUES_META[refClub.league].name, compType: "LEAGUE", oppId: opp.id, home: false });
+  });
+
+  rawLeagueFixtures.sort(() => Math.random() - 0.5);
+  const spacedLeague = [];
+  const pool = [...rawLeagueFixtures];
+  while (pool.length > 0) {
+    const lastOpp = spacedLeague.length ? spacedLeague[spacedLeague.length - 1].oppId : null;
+    let pickIdx = pool.findIndex(m => m.oppId !== lastOpp);
+    if (pickIdx === -1) pickIdx = 0;
+    spacedLeague.push(pool.splice(pickIdx, 1)[0]);
+  }
+  const matchList = spacedLeague.slice(0, 18);
+
+  if (refClub.league.startsWith("ENG")) {
+    const faOppId = findUserCupOpponent(state.cupBrackets.fa, refClub.id);
+    if (faOppId) {
+      matchList.splice(2, 0, {
+        type: "MATCH", comp: `FA Cup (${state.cupBrackets.fa.roundNames[0]})`, compType: "FACUP", oppId: faOppId, home: true
+      });
+    }
+    const carbOppId = findUserCupOpponent(state.cupBrackets.carabao, refClub.id);
+    if (carbOppId) {
+      matchList.splice(4, 0, {
+        type: "MATCH", comp: `Carabao Cup (${state.cupBrackets.carabao.roundNames[0]})`, compType: "CARABAO", oppId: carbOppId, home: false
+      });
+    }
+  }
+
+  if (refClub.euComp) {
+    const euRivals = Object.values(state.clubs).filter(c => c.euComp === refClub.euComp && c.id !== refClub.id);
+    const euLabel = refClub.euComp === "UCL" ? "Champions League" : "Europa League";
+    for (let i = 0; i < Math.min(6, euRivals.length); i++) {
+      matchList.splice(Math.min(matchList.length, 3 + i * 3), 0, {
+        type: "MATCH", comp: euLabel, compType: refClub.euComp, oppId: euRivals[i].id, home: i % 2 === 0
+      });
+    }
+  }
+
+  const cal = [];
+  matchList.forEach((m, idx) => {
+    cal.push({
+      day: 0, type: "MATCH", comp: m.comp, compType: m.compType,
+      oppId: m.oppId, home: m.home, done: false, result: null
+    });
+
+    if ((idx + 1) % 3 === 0) {
+      cal.push({
+        day: 0, type: "MEDIA", comp: "Media Day",
+        title: pick(["Mandatory Press Briefing", "Tunnel & Sky Sports Interview", "Dressing Room Media & Viral Buzz", "Supporters Forum & Tabloid Headlines"]),
+        done: false, result: "Pending"
+      });
+    }
+
+    if ((idx + 1) % 5 === 0 && idx < matchList.length - 1) {
+      cal.push({
+        day: 0, type: "BREAK", comp: "International Break",
+        title: "2-Week International & Tactical Recovery Break",
+        done: false, result: "Scheduled"
+      });
+    }
+  });
+
+  state.calendar = cal;
+  state.dayIndex = 0;
+  state.matchCounter = 0;
+  renumberCalendarDays();
 }
 
 function getRequiredBoardScore() {
@@ -1112,82 +1219,6 @@ function seedEuropeanCompetitions(clubs, isInitial, faWinnerId, carabaoWinnerId)
   if (carabaoWinnerId && clubs[carabaoWinnerId] && !clubs[carabaoWinnerId].euComp) clubs[carabaoWinnerId].euComp = "UEL";
 }
 
-function generateSporadicSeasonCalendar() {
-  const refClub = state.userClubId ? state.clubs[state.userClubId] : Object.values(state.clubs)[0];
-  const leagueRivals = Object.values(state.clubs).filter(c => c.league === refClub.league && c.id !== refClub.id);
-
-  const rawLeagueFixtures = [];
-  leagueRivals.forEach(opp => {
-    rawLeagueFixtures.push({ type: "MATCH", comp: LEAGUES_META[refClub.league].name, compType: "LEAGUE", oppId: opp.id, home: true });
-    rawLeagueFixtures.push({ type: "MATCH", comp: LEAGUES_META[refClub.league].name, compType: "LEAGUE", oppId: opp.id, home: false });
-  });
-
-  rawLeagueFixtures.sort(() => Math.random() - 0.5);
-  const spacedLeague = [];
-  const pool = [...rawLeagueFixtures];
-  while (pool.length > 0) {
-    const lastOpp = spacedLeague.length ? spacedLeague[spacedLeague.length - 1].oppId : null;
-    let pickIdx = pool.findIndex(m => m.oppId !== lastOpp);
-    if (pickIdx === -1) pickIdx = 0;
-    spacedLeague.push(pool.splice(pickIdx, 1)[0]);
-  }
-  const matchList = spacedLeague.slice(0, 18);
-
-  if (refClub.league.startsWith("ENG")) {
-    const engClubs = Object.values(state.clubs).filter(c => c.league.startsWith("ENG") && c.id !== refClub.id);
-    const cupSlots = [2, 5, 8, 11, 14, 17, 20];
-    cupSlots.forEach((slotIdx, rIdx) => {
-      if (rIdx % 2 === 0) {
-        matchList.splice(Math.min(matchList.length, slotIdx), 0, {
-          type: "MATCH", comp: `FA Cup (${state.cupBrackets.fa.roundNames[rIdx]})`, compType: "FACUP", oppId: pick(engClubs).id, home: rIdx % 4 === 0
-        });
-      } else {
-        matchList.splice(Math.min(matchList.length, slotIdx), 0, {
-          type: "MATCH", comp: `Carabao Cup (${state.cupBrackets.carabao.roundNames[rIdx]})`, compType: "CARABAO", oppId: pick(engClubs).id, home: rIdx % 4 === 1
-        });
-      }
-    });
-  }
-
-  if (refClub.euComp) {
-    const euRivals = Object.values(state.clubs).filter(c => c.euComp === refClub.euComp && c.id !== refClub.id);
-    const euLabel = refClub.euComp === "UCL" ? "Champions League" : "Europa League";
-    for (let i = 0; i < Math.min(6, euRivals.length); i++) {
-      matchList.splice(Math.min(matchList.length, 3 + i * 3), 0, {
-        type: "MATCH", comp: euLabel, compType: refClub.euComp, oppId: euRivals[i].id, home: i % 2 === 0
-      });
-    }
-  }
-
-  const cal = [];
-  let dayNum = 1;
-  matchList.forEach((m, idx) => {
-    cal.push({
-      day: dayNum++, type: "MATCH", comp: m.comp, compType: m.compType,
-      oppId: m.oppId, home: m.home, done: false, result: null
-    });
-
-    if ((idx + 1) % 3 === 0) {
-      cal.push({
-        day: dayNum++, type: "MEDIA", comp: "Media Day",
-        title: pick(["Mandatory Press Briefing", "Tunnel & Sky Sports Interview", "Dressing Room Media & Viral Buzz", "Supporters Forum & Tabloid Headlines"]),
-        done: false, result: "Pending"
-      });
-    }
-
-    if ((idx + 1) % 5 === 0 && idx < matchList.length - 1) {
-      cal.push({
-        day: dayNum++, type: "BREAK", comp: "International Break",
-        title: "2-Week International & Tactical Recovery Break",
-        done: false, result: "Scheduled"
-      });
-    }
-  });
-
-  state.calendar = cal;
-  state.dayIndex = 0;
-}
-
 function generateAcademyProspects(leagueId) {
   const base = leagueId === "ENG4" ? 54 : leagueId === "ENG3" ? 58 : leagueId === "ENG2" ? 62 : 66;
   const list = [];
@@ -1204,7 +1235,6 @@ function generateAcademyProspects(leagueId) {
   return list;
 }
 
-// ROLLING DUAL-SLOT CRASH-SAFE SAVE SYSTEM
 function saveCareer(notify) {
   if (quickMatchMode || !state) return;
   try {
@@ -1224,6 +1254,7 @@ function loadCareer() {
     quickMatchMode = false;
     state = JSON.parse(raw);
     if (state.trainingAvailable === undefined) state.trainingAvailable = true;
+    if (state.matchCounter === undefined) state.matchCounter = 0;
     enterHub();
   } catch (e) {
     recoverBackupCareer();
@@ -1251,7 +1282,7 @@ function resetCareer() {
 }
 
 /* ============================================================================
-   4. HUB RENDERING & GLOBAL COMPETITION SIMULATION
+   4. HUB RENDERING
    ============================================================================ */
 function enterHub() {
   document.getElementById("setup-screen").classList.remove("active");
@@ -1292,30 +1323,29 @@ function refreshHub() {
   const boardEval = evaluateBoardObjectives();
 
   if (isUnemployed) {
-    document.getElementById("hud-club").textContent = "UNEMPLOYED (FREE AGENT MANAGER)";
-    document.getElementById("hud-sub").textContent = `Mgr. ${state.manager} • Watching World Football • ${state.year}/${String(state.year+1).slice(-2)}`;
+    document.getElementById("hud-club").textContent = "UNEMPLOYED MANAGER";
+    document.getElementById("hud-sub").textContent = `Mgr. ${state.manager} • ${state.year}/${String(state.year+1).slice(-2)}`;
     document.getElementById("hud-budget").textContent = "No Club";
     document.getElementById("hud-wages").textContent = `Vacancies: ${state.jobVacancies.length}`;
-    document.getElementById("hud-board-obj").textContent = "Awaiting Job Offer";
+    document.getElementById("hud-board-obj").textContent = "Awaiting Job";
   } else {
     const totalWagesK = club.squad.reduce((s, p) => s + (p.wageK || 15), 0);
     document.getElementById("hud-club").textContent = club.name;
     document.getElementById("hud-sub").textContent = `Mgr. ${state.manager} • ${LEAGUES_META[club.league].name} • ${state.year}/${String(state.year+1).slice(-2)}`;
     document.getElementById("hud-budget").textContent = `Budget: £${club.budget.toFixed(1)}M`;
     document.getElementById("hud-wages").textContent = `Wages: £${totalWagesK}k/wk`;
-    document.getElementById("hud-board-obj").textContent = `Board: ${boardEval.metCount}/6 (Req: ${boardEval.req})`;
+    document.getElementById("hud-board-obj").textContent = `Board: ${boardEval.metCount}/6`;
   }
 
-  document.getElementById("hud-sim").textContent = `Quick Sims: ∞`;
   const winEl = document.getElementById("hud-window");
   if (isDeadlineDay()) {
-    winEl.textContent = "TRANSFER DEADLINE DAY!";
+    winEl.textContent = "DEADLINE DAY!";
     winEl.classList.add("deadline");
   } else if (isTransferWindowOpen()) {
     winEl.textContent = "Window: OPEN";
     winEl.classList.remove("deadline");
   } else {
-    winEl.textContent = "Window: CLOSED";
+    winEl.textContent = "Window: CLOSED (FA Open)";
     winEl.classList.remove("deadline");
   }
 
@@ -1326,36 +1356,41 @@ function refreshHub() {
 
   if (!ev) {
     badge.textContent = "SEASON COMPLETE";
+    badge.className = "badge b-og";
     if (isUnemployed) {
-      nextBox.innerHTML = `The ${state.year}/${String(state.year+1).slice(-2)} world season has finished while you were unemployed. Advance to crown Ballon d'Or winners and check new vacancies!`;
+      nextBox.innerHTML = `The ${state.year}/${String(state.year+1).slice(-2)} world season has finished.`;
       actBox.innerHTML = `<button class="btn-primary" onclick="rolloverSeasonData()">Crown Ballon d'Or & Advance Season</button>`;
     } else {
-      nextBox.innerHTML = `The ${state.year}/${String(state.year+1).slice(-2)} campaign has concluded! Board Objectives Met: <strong>${boardEval.metCount} / 6</strong> (Season ${state.season} requires <strong>${boardEval.req}/6</strong> to keep your job).`;
+      nextBox.innerHTML = `Season Complete! Board Objectives: ${boardEval.metCount}/6 (Req: ${boardEval.req}/6)`;
       actBox.innerHTML = `<button class="btn-primary" onclick="advanceToNextSeason()">Crown Ballon d'Or & Submit Board Review</button>`;
     }
   } else if (isUnemployed) {
-    badge.textContent = "UNEMPLOYED SPECTATOR MODE";
-    nextBox.innerHTML = `<strong>Day ${ev.day} (${ev.comp}):</strong> You are currently unemployed after being sacked. Sim world fixtures to watch leagues/cups progress and wait for managerial sackings!`;
+    badge.textContent = "UNEMPLOYED";
+    badge.className = "badge b-warn";
+    nextBox.innerHTML = `Day ${ev.day} — Watching World Football`;
     actBox.innerHTML = `
       <button class="btn-blue" onclick="simUnemployedDay()">Sim World Matchday</button>
-      <button class="btn-warn" onclick="switchTab('tab-mgr', document.querySelectorAll('.tab-btn')[11])">Check Open Job Vacancies (${state.jobVacancies.length})</button>
+      <button class="btn-warn" onclick="switchTab('tab-mgr', document.querySelectorAll('.tab-btn')[11])">Check Job Vacancies (${state.jobVacancies.length})</button>
     `;
   } else if (ev.type === "MATCH") {
     const opp = state.clubs[ev.oppId];
     badge.textContent = ev.comp.toUpperCase();
-    nextBox.innerHTML = `<strong>Day ${ev.day}:</strong> ${ev.home ? club.name : opp.name} vs ${ev.home ? opp.name : club.name} <span class="sub-meta">(${ev.home ? "Home" : "Away"} • ${ev.comp} • Opp Mgr: ${opp.managerName})</span>`;
+    badge.className = (ev.compType === "FACUP" || ev.compType === "CARABAO") ? "badge b-og" : "badge b-ok";
+    nextBox.innerHTML = `${ev.home ? club.name : opp.name} vs ${ev.home ? opp.name : club.name} <div class="sub-meta" style="margin-top:4px; font-weight:400;">Day ${ev.day} of ${state.calendar.length} • ${ev.home ? "Home" : "Away"} • Opp Mgr: ${opp.managerName}</div>`;
     actBox.innerHTML = `
       <button class="btn-primary" onclick="startWatchMatch()">📺 Watch Match (AI vs. AI)</button>
-      <button class="btn-blue" onclick="simNextMatch()">⚡ Quick Sim Match</button>
+      <button class="btn-blue" onclick="simNextMatch()">⚡ Quick Sim</button>
     `;
   } else if (ev.type === "MEDIA") {
     badge.textContent = "MANDATORY MEDIA DAY";
-    nextBox.innerHTML = `<strong>Day ${ev.day} — ${ev.title}:</strong> Handle today's press conference or random club event before advancing.`;
+    badge.className = "badge b-warn";
+    nextBox.innerHTML = `${ev.title} <div class="sub-meta" style="margin-top:4px; font-weight:400;">Day ${ev.day} • Press briefing & club media duties</div>`;
     actBox.innerHTML = `<button class="btn-warn" onclick="openMediaEvent()">Attend Media Day</button>`;
   } else if (ev.type === "BREAK") {
     badge.textContent = "INTERNATIONAL BREAK";
-    nextBox.innerHTML = `<strong>Day ${ev.day} — ${ev.title}:</strong> Players recover from knocks, youth prospects train, and a fresh Training Session unlocks.`;
-    actBox.innerHTML = `<button class="btn-blue" onclick="processBreakEvent()">Complete Break & Advance</button>`;
+    badge.className = "badge b-youth";
+    nextBox.innerHTML = `${ev.title} <div class="sub-meta" style="margin-top:4px; font-weight:400;">Day ${ev.day} • Squad recovery & training reset</div>`;
+    actBox.innerHTML = `<button class="btn-blue" onclick="processBreakEvent()">Complete Break</button>`;
   }
 
   document.getElementById("fixtures-tbody").innerHTML = state.calendar.map((item, idx) => {
@@ -1369,7 +1404,7 @@ function refreshHub() {
     }
     return `<tr class="${isCurrent ? 'my-row' : ''}">
       <td>Day ${item.day}</td>
-      <td><span class="badge ${item.type === 'MEDIA' ? 'b-warn' : item.type === 'BREAK' ? 'b-og' : 'b-youth'}">${item.type}</span></td>
+      <td><span class="badge ${item.type === 'MEDIA' ? 'b-warn' : item.type === 'BREAK' ? 'b-youth' : (item.compType === 'FACUP' || item.compType === 'CARABAO') ? 'b-og' : 'b-ok'}">${item.type}</span></td>
       <td>${label}</td>
       <td>${venue}</td>
       <td><strong>${item.done ? item.result : (isCurrent ? 'NEXT' : '-')}</strong></td>
@@ -1377,11 +1412,11 @@ function refreshHub() {
   }).join("");
 
   document.getElementById("inbox-list").innerHTML = state.inbox.slice().reverse().map(msg =>
-    `<div style="background:var(--panel-2); padding:9px 12px; border-radius:6px; font-size:0.84rem; border-left:3px solid var(--accent);">${msg}</div>`
+    `<div style="background:var(--surface-2); padding:10px 12px; border-radius:8px; font-size:0.83rem; border-left:3px solid var(--accent); line-height:1.4;">${msg}</div>`
   ).join("");
 
   if (isUnemployed) {
-    document.getElementById("squad-tbody").innerHTML = `<tr><td colspan="10" class="sub-meta">You are currently unemployed. Accept a job offer in 'Manager & Job Market' to manage a squad!</td></tr>`;
+    document.getElementById("squad-tbody").innerHTML = `<tr><td colspan="10" class="sub-meta">Accept a job offer in 'Manager & Jobs' to manage a squad.</td></tr>`;
     document.getElementById("academy-tbody").innerHTML = "";
     return;
   }
@@ -1404,10 +1439,10 @@ function refreshHub() {
       <td>${totG}G / ${totA}A</td>
       <td>🟨${totY} 🟥${totR}</td>
       <td>${p.suspendedMatches > 0 ? `<span class="badge b-exp">SUSP (${p.suspendedMatches})</span>` : p.injuryWeeks > 0 ? `<span class="badge b-inj">Inj (${p.injuryWeeks}w)</span>` : 'Fit'}</td>
-      <td>
+      <td style="white-space:nowrap;">
         ${p.isLoan ? '<span class="sub-meta">On Loan</span>' : `
           <button class="btn-ghost" style="padding:3px 7px; font-size:0.71rem;" onclick="renewContract('${p.id}')">Renew</button>
-          ${p.age <= 22 ? `<button class="btn-blue" style="padding:3px 7px; font-size:0.71rem;" onclick="loanOutMyYouth('${p.id}')">Loan Out</button>` : ''}
+          ${p.age <= 22 ? `<button class="btn-blue" style="padding:3px 7px; font-size:0.71rem;" onclick="loanOutMyYouth('${p.id}')">Loan</button>` : ''}
           <button class="btn-danger" style="padding:3px 7px; font-size:0.71rem;" onclick="sellMyPlayer('${p.id}')">Sell (£${(val*0.85).toFixed(1)}M)</button>
         `}
       </td>
@@ -1427,7 +1462,7 @@ function refreshHub() {
 }
 
 /* ============================================================================
-   5. BALANCED MANUAL TRAINING TAB (AGE-SCALED XP SO OVR GROWS REALISTICALLY)
+   5. BALANCED MANUAL TRAINING TAB
    ============================================================================ */
 function getAgeGrowthRate(age) {
   if (age <= 20) return { label: "Wonderkid (Fast)", mult: 1.5 };
@@ -1452,7 +1487,7 @@ function awardPlayerTrainingXp(p, rawXp) {
 
 function runTeamTraining(drillType) {
   if (state.unemployed || !state.userClubId) return;
-  if (!state.trainingAvailable) return alert("You already ran today's training session! Play or Quick Sim the next matchday to unlock another session.");
+  if (!state.trainingAvailable) return alert("You already ran today's training session! Advance a matchday to unlock another session.");
   const club = state.clubs[state.userClubId];
   const levelUps = [];
 
@@ -1471,8 +1506,8 @@ function runTeamTraining(drillType) {
   });
 
   state.trainingAvailable = false;
-  const drillLabel = drillType === "ATT" ? "Attacking & Finishing" : drillType === "DEF" ? "Defensive Shape" : "Tactical Rondo & Fitness";
-  state.inbox.push(`TRAINING COMPLETE (${drillLabel}): Squad gained realistic training XP.${levelUps.length ? ` Level-Ups: ${levelUps.join(", ")}!` : ""}`);
+  const drillLabel = drillType === "ATT" ? "Attacking & Finishing" : drillType === "DEF" ? "Defensive Shape" : "Tactical Rondo";
+  state.inbox.push(`TRAINING (${drillLabel}): Squad gained realistic training XP.${levelUps.length ? ` Level-Ups: ${levelUps.join(", ")}!` : ""}`);
   saveCareer(false);
   renderTrainingTab();
   refreshHub();
@@ -1491,7 +1526,7 @@ function runIndividualTraining(playerId) {
   });
 
   state.trainingAvailable = false;
-  state.inbox.push(`1-ON-1 COACHING: Focused session with ${p.name}.${leveledUp ? ` ${p.name} improved to ${p.ovr} OVR!` : ` Progress is now ${p.xp}%.`}`);
+  state.inbox.push(`1-ON-1 COACHING: Focused session with ${p.name}.${leveledUp ? ` ${p.name} improved to ${p.ovr} OVR!` : ` XP is now ${p.xp}%.`}`);
   saveCareer(false);
   renderTrainingTab();
   refreshHub();
@@ -1504,7 +1539,7 @@ function renderTrainingTab() {
   }
   const club = state.clubs[state.userClubId];
   const badge = document.getElementById("training-status-badge");
-  badge.textContent = state.trainingAvailable ? "1 SESSION READY" : "COMPLETED FOR THIS MATCHDAY";
+  badge.textContent = state.trainingAvailable ? "SESSION READY" : "COMPLETED TODAY";
   badge.className = `badge ${state.trainingAvailable ? 'b-ok' : 'b-warn'}`;
 
   ["tr-btn-att", "tr-btn-def", "tr-btn-fit"].forEach(id => {
@@ -1525,7 +1560,7 @@ function renderTrainingTab() {
         <span class="sub-meta" style="margin-left:6px;">${xp}%</span>
       </td>
       <td>
-        <button class="btn-ghost" style="padding:3px 9px; font-size:0.73rem;" ${state.trainingAvailable ? '' : 'disabled'} onclick="runIndividualTraining('${p.id}')">1-on-1 Focus</button>
+        <button class="btn-ghost" style="padding:3px 9px; font-size:0.73rem;" ${state.trainingAvailable ? '' : 'disabled'} onclick="runIndividualTraining('${p.id}')">Focus</button>
       </td>
     </tr>`;
   }).join("");
@@ -1638,10 +1673,10 @@ function renderTacticsSwapList() {
   document.getElementById("tactics-swap-ui").innerHTML = club.squad.map((p, idx) => {
     const isXI = idx < 11;
     const isSel = selectedStarterIdx === idx;
-    return `<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; margin-bottom:5px; border-radius:6px; background:${isSel ? 'rgba(59,130,246,0.28)' : 'var(--panel-2)'}; border:1px solid ${isSel ? '#3b82f6' : 'var(--border)'};">
+    return `<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; margin-bottom:5px; border-radius:8px; background:${isSel ? 'rgba(59,130,246,0.22)' : 'var(--surface-2)'}; border:1px solid ${isSel ? 'var(--blue)' : 'var(--border)'};">
       <span><strong>${isXI ? inferRoleFromCoords(p.posCoord.x, p.posCoord.y) : p.pos}</strong> — ${p.name} (${p.ovr}) <span class="sub-meta">[${p.plan || defaultPlanForPos(p.pos)}]</span></span>
       <button class="${isXI ? 'btn-ghost' : 'btn-blue'}" style="padding:3px 9px; font-size:0.74rem;" onclick="handleSquadSwap(${idx})">
-        ${isXI ? (isSel ? 'Selected' : 'Select XI') : 'Sub In'}
+        ${isXI ? (isSel ? 'Selected' : 'Select') : 'Sub In'}
       </button>
     </div>`;
   }).join("");
@@ -1662,7 +1697,7 @@ function handleSquadSwap(idx) {
     saveCareer(false);
     renderTacticsBoard();
   } else {
-    alert("Click 'Select XI' on a starter first, then click 'Sub In' on a bench player.");
+    alert("Select a starter first, then click 'Sub In' on a bench player.");
   }
 }
 
@@ -1671,21 +1706,21 @@ function handleSquadSwap(idx) {
    ============================================================================ */
 function renderBoardObjectives() {
   if (state.unemployed || !state.userClubId) {
-    document.getElementById("board-objectives-list").innerHTML = `<p class="sub-meta">You are currently unemployed and have no Board objectives until you accept a new managerial vacancy.</p>`;
+    document.getElementById("board-objectives-list").innerHTML = `<p class="sub-meta">Accept a managerial job to view Board objectives.</p>`;
     return;
   }
   const { list, metCount, req } = evaluateBoardObjectives();
   const badge = document.getElementById("board-status-badge");
-  badge.textContent = `${metCount} / 6 MET — SEASON ${state.season} REQUIRES ${req}/6`;
+  badge.textContent = `${metCount} / 6 MET — REQ ${req}/6`;
   badge.className = `badge ${metCount >= req ? 'b-ok' : 'b-exp'}`;
 
   document.getElementById("board-objectives-list").innerHTML = list.map(o => `
-    <div class="obj-card ${o.met ? 'met' : 'pending'}">
+    <div class="obj-row ${o.met ? 'met' : 'pending'}">
       <div>
         <div style="font-weight:700;">${o.title}</div>
         <div class="sub-meta" style="margin-top:3px;">${o.progress}</div>
       </div>
-      <span class="badge ${o.met ? 'b-ok' : 'b-warn'}">${o.met ? 'COMPLETED' : 'IN PROGRESS'}</span>
+      <span class="badge ${o.met ? 'b-ok' : 'b-warn'}">${o.met ? 'MET' : 'IN PROGRESS'}</span>
     </div>
   `).join("");
 }
@@ -1839,7 +1874,7 @@ function renderBallonDorPage() {
   `).join("");
 
   document.getElementById("awards-hof-list").innerHTML = state.awardsHistory.length
-    ? state.awardsHistory.map(h => `<div style="padding:8px 10px; background:var(--panel); border-radius:6px; margin-bottom:6px; border-left:3px solid var(--warn);">
+    ? state.awardsHistory.map(h => `<div style="padding:8px 10px; background:var(--surface); border-radius:8px; margin-bottom:6px; border-left:3px solid var(--amber);">
         <strong>${h.season}:</strong> 🏆 Ballon d'Or: <strong>${h.player}</strong> (${h.playerClub}) • 👔 Manager of the Year: <strong>${h.manager}</strong> (${h.mgrClub})
       </div>`).join("")
     : `<p class="sub-meta">Awards are officially presented at the end of every season.</p>`;
@@ -1849,12 +1884,12 @@ function renderManagerStats() {
   const ms = state.mgrStats;
   const winPct = ms.played > 0 ? Math.round((ms.wins / ms.played) * 100) : 0;
   document.getElementById("mgr-stats-grid").innerHTML = `
-    <div class="stat-tile"><div class="st-val">${state.manager}</div><div class="st-lbl">${state.unemployed ? 'Status: UNEMPLOYED' : 'Active Manager'}</div></div>
-    <div class="stat-tile"><div class="st-val">${ms.reputation} / 100</div><div class="st-lbl">Global Reputation</div></div>
-    <div class="stat-tile"><div class="st-val">${winPct}%</div><div class="st-lbl">Career Win Rate (${ms.wins}W-${ms.draws}D-${ms.losses}L)</div></div>
-    <div class="stat-tile"><div class="st-val">${ms.played}</div><div class="st-lbl">Matches Managed</div></div>
-    <div class="stat-tile"><div class="st-val">${ms.gf} : ${ms.ga}</div><div class="st-lbl">Goals For / Against</div></div>
-    <div class="stat-tile"><div class="st-val">${ms.trophies.length}</div><div class="st-lbl">Major Trophies Won</div></div>
+    <div class="kpi-box"><div class="kpi-val">${state.manager}</div><div class="kpi-lbl">${state.unemployed ? 'UNEMPLOYED' : 'Active Manager'}</div></div>
+    <div class="kpi-box"><div class="kpi-val">${ms.reputation} / 100</div><div class="kpi-lbl">Reputation</div></div>
+    <div class="kpi-box"><div class="kpi-val">${winPct}%</div><div class="kpi-lbl">Win Rate (${ms.wins}W-${ms.draws}D-${ms.losses}L)</div></div>
+    <div class="kpi-box"><div class="kpi-val">${ms.played}</div><div class="kpi-lbl">Matches</div></div>
+    <div class="kpi-box"><div class="kpi-val">${ms.gf} : ${ms.ga}</div><div class="kpi-lbl">Goals For / Against</div></div>
+    <div class="kpi-box"><div class="kpi-val">${ms.trophies.length}</div><div class="kpi-lbl">Trophies</div></div>
   `;
 
   document.getElementById("vacancy-count-badge").textContent = `${state.jobVacancies.length} OPEN`;
@@ -1863,7 +1898,7 @@ function renderManagerStats() {
         const c = state.clubs[cid];
         const minRep = Math.max(20, (c.avgOvr - 62) * 3);
         const canApply = ms.reputation >= minRep;
-        return `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; background:var(--panel); border-radius:6px; margin-bottom:6px; border:1px solid var(--border);">
+        return `<div style="display:flex; justify-content:space-between; align-items:center; padding:9px 11px; background:var(--surface); border-radius:8px; margin-bottom:6px; border:1px solid var(--border);">
           <div>
             <strong>${c.name}</strong> (${LEAGUES_META[c.league].name})
             <div class="sub-meta">Avg OVR: ${c.avgOvr} • Required Rep: ${minRep}</div>
@@ -1873,10 +1908,10 @@ function renderManagerStats() {
           </button>
         </div>`;
       }).join("")
-    : `<p class="sub-meta">No open managerial vacancies right now—keep advancing days until a board sacks its manager!</p>`;
+    : `<p class="sub-meta">No open managerial vacancies right now.</p>`;
 
   document.getElementById("mgr-trophies-list").innerHTML = ms.trophies.length
-    ? ms.trophies.map(t => `<div style="padding:7px 10px; background:var(--panel); border-radius:6px; margin-bottom:6px; border-left:3px solid var(--warn);">🏆 <strong>${t}</strong></div>`).join("")
+    ? ms.trophies.map(t => `<div style="padding:7px 10px; background:var(--surface); border-radius:8px; margin-bottom:6px; border-left:3px solid var(--amber);">🏆 <strong>${t}</strong></div>`).join("")
     : `<p class="sub-meta">No trophies won yet.</p>`;
 
   document.getElementById("world-managers-tbody").innerHTML = Object.values(state.clubs).slice(0, 80).map(c => `
@@ -1904,7 +1939,7 @@ function acceptJobVacancy(clubId) {
   c.managerName = state.manager;
   state.jobVacancies = state.jobVacancies.filter(id => id !== clubId);
   state.academy = generateAcademyProspects(c.league);
-  state.inbox.push(`APPOINTED: ${state.manager} signed a contract to become the new manager of ${c.name}!`);
+  state.inbox.push(`APPOINTED: ${state.manager} became the new manager of ${c.name}!`);
   saveCareer(false);
   refreshHub();
 }
@@ -1920,7 +1955,7 @@ function simulateAiManagerChurn() {
     if (!state.jobVacancies.includes(sackedClub.id)) {
       state.jobVacancies.push(sackedClub.id);
     }
-    state.inbox.push(`BREAKING NEWS: ${sackedClub.name} have SACKED manager ${oldMgr}! The job is now open in 'Manager & Job Market'.`);
+    state.inbox.push(`MANAGER SACKED: ${sackedClub.name} parted ways with ${oldMgr}!`);
   }
   if (state.jobVacancies.length > 5 && Math.random() < 0.35) {
     const filledId = state.jobVacancies.shift();
@@ -1955,7 +1990,7 @@ function processBreakEvent() {
   ev.done = true;
   ev.result = "Completed";
   state.dayIndex++;
-  state.inbox.push("INTERNATIONAL BREAK: Squad rested, injuries healed faster, and a fresh Training Session unlocked.");
+  state.inbox.push("INTERNATIONAL BREAK: Squad rested, injuries healed faster, and a Training Session unlocked.");
   saveCareer(false);
   refreshHub();
 }
@@ -1963,27 +1998,27 @@ function processBreakEvent() {
 const MEDIA_EVENTS = [
   {
     kind: "PRESS QUESTION",
-    text: "Sky Sports Reporter: 'Your fans are demanding Champions League football—or at least a deep cup run. How are you feeling about the squad's hunger right now?'",
+    text: "Sky Sports Reporter: 'Your supporters are expecting European qualification or a Wembley cup run this season. How confident is your dressing room?'",
     opts: [
       { label: "We fear nobody—we are going all out for trophies. (+1 Morale)", morale: 1, budget: 0, note: "Bold dressing-room message fired up the players!" },
       { label: "We take every match one step at a time with full focus. (+1 Morale)", morale: 1, budget: 0, note: "Composed press briefing impressed the board." },
-      { label: "Some players need to start showing real pride in the badge. (-1 Morale)", morale: -1, budget: 0, note: "Public criticism ruffled feathers in the squad." }
+      { label: "Some players need to show more hunger for the badge. (-1 Morale)", morale: -1, budget: 0, note: "Public criticism ruffled feathers in the squad." }
     ]
   },
   {
-    kind: "RANDOM VIRAL MOMENT",
-    text: "A training ground clip of your star forward nutmegging the assistant coach went viral with 12 million views overnight! Sponsors are calling.",
+    kind: "VIRAL MOMENT",
+    text: "A training ground clip of your star attacker nutmegging the assistant coach went viral with 12 million views overnight!",
     opts: [
-      { label: "Lean into the viral hype & sign a quick social media promo (+£1.2M Budget, +1 Morale)", morale: 1, budget: 1.2, note: "Viral training clip netted £1.2M in sponsor bonuses!" },
-      { label: "Ban phones at the training ground so players stay locked in (0 Morale)", morale: 0, budget: 0, note: "Strict discipline enforced at the training complex." }
+      { label: "Sign a quick sponsor promo off the viral hype (+£1.2M Budget, +1 Morale)", morale: 1, budget: 1.2, note: "Viral training clip netted £1.2M in sponsor bonuses!" },
+      { label: "Keep phones banned at the training ground (0 Morale)", morale: 0, budget: 0, note: "Strict discipline enforced at the training complex." }
     ]
   },
   {
-    kind: "RANDOM CLUB EVENT",
-    text: "Local youth charity and supporters' trust invited your first-team squad to a community open day in town.",
+    kind: "CLUB EVENT",
+    text: "Local supporters' trust invited your first-team squad to a community open day in town.",
     opts: [
       { label: "Send the whole squad to sign shirts and run drills (+2 Morale)", morale: 2, budget: 0, note: "Community day brought fans and players closer together!" },
-      { label: "Keep the starters in tactical video analysis instead (0 Morale)", morale: 0, budget: 0, note: "Extra video session sharpened tactical shape." }
+      { label: "Keep starters in tactical video analysis instead (0 Morale)", morale: 0, budget: 0, note: "Extra video session sharpened tactical shape." }
     ]
   }
 ];
@@ -2026,8 +2061,80 @@ function closeModal() {
 }
 
 /* ============================================================================
-   8. PAGINATED TRANSFER MARKET, LOANS & MULTI-ROUND NEGOTIATIONS
+   8. REALISTIC CLUB STATURE TRANSFER LOGIC, ANYTIME FREE AGENTS & NEGOTIATIONS
    ============================================================================ */
+function calcClubStature(club) {
+  if (!club) return 60;
+  const xiAvg = club.squad.slice(0, 11).reduce((s, p) => s + p.ovr, 0) / Math.max(1, Math.min(11, club.squad.length));
+  let stature = (club.avgOvr * 0.55) + (xiAvg * 0.45);
+  const meta = LEAGUES_META[club.league];
+  if (meta) {
+    if (meta.tier === 2) stature -= 4;
+    if (meta.tier === 3) stature -= 7;
+    if (meta.tier === 4) stature -= 10;
+  }
+  if (club.euComp === "UCL") stature += 3;
+  else if (club.euComp === "UEL") stature += 1.2;
+
+  const leagueTeams = Object.values(state.clubs).filter(c => c.league === club.league).sort((a,b) => b.pts - a.pts);
+  const rank = leagueTeams.findIndex(c => c.id === club.id) + 1;
+  if (rank === 1 && club.pts > 0) stature += 2.5;
+  else if (rank <= 4 && club.pts > 0) stature += 1.5;
+
+  return Math.round(stature * 10) / 10;
+}
+
+function evaluateTransferWillingness(targetClub, player, isFreeAgent, isLoan) {
+  if (!targetClub) return { willing: false, reason: "You are currently unemployed." };
+  const clubStature = calcClubStature(targetClub);
+
+  // Young loan players (<= 23) will drop down a level to get first-team minutes
+  if (isLoan) {
+    const minLoanStature = player.ovr - 14;
+    if (clubStature < minLoanStature) {
+      return {
+        willing: false,
+        reason: `${player.name}'s parent club wants him loaned to a higher-level side (Club Stature ${clubStature.toFixed(0)} vs required ${minLoanStature}).`
+      };
+    }
+    return { willing: true, reason: "Keen on loan move for playing time" };
+  }
+
+  // Free agents are unattached and much more flexible, especially veterans (32+) or teen prospects (<=17)
+  if (isFreeAgent) {
+    let minStature = player.ovr - 9;
+    if (player.age >= 32) minStature -= 5;
+    if (player.age >= 36) minStature -= 4;
+    if (player.age <= 17) minStature -= 7;
+    if (clubStature < minStature) {
+      return {
+        willing: false,
+        reason: `${player.name} (${player.ovr} OVR) is holding out for a bigger club than ${targetClub.name}.`
+      };
+    }
+    return { willing: true, reason: "Free Agent — Open to talks" };
+  }
+
+  // Contracted players: Prime superstars (like 92 OVR Mbappe or 92 OVR Haaland) demand elite clubs (Stature 86+)
+  let requiredStature = player.ovr - 5;
+  if (player.ovr >= 90) requiredStature = player.ovr - 4;      // 92 OVR requires ~88 stature (Real Madrid, Man City, Bayern, PSG, Arsenal, Liverpool, Barca)
+  else if (player.ovr >= 86) requiredStature = player.ovr - 4.5; // 87 OVR requires ~82.5 stature
+  else if (player.ovr <= 21) requiredStature -= 2;
+
+  if (player.age >= 33) requiredStature -= 4;
+  if (player.contractMonths <= 6) requiredStature -= 1.5;
+
+  if (clubStature < requiredStature) {
+    const uclNote = (player.ovr >= 88 && targetClub.euComp !== "UCL") ? " playing in the UEFA Champions League" : "";
+    return {
+      willing: false,
+      reason: `UNREALISTIC TARGET: ${player.name} (${player.ovr} OVR) has no interest in leaving for ${targetClub.name}. He only wants a top club${uclNote}!`
+    };
+  }
+
+  return { willing: true, reason: "Interested in transfer" };
+}
+
 function renewContract(playerId) {
   const club = state.clubs[state.userClubId];
   const p = club.squad.find(x => x.id === playerId);
@@ -2038,7 +2145,7 @@ function renewContract(playerId) {
   p.contractMonths += 24;
   p.wageK = Math.round((p.wageK || 15) * 1.1);
   p.morale = Math.min(2, p.morale + 1);
-  state.inbox.push(`${p.name} signed a 2-year contract extension (£${bonus}M bonus, £${p.wageK}k/wk).`);
+  state.inbox.push(`${p.name} signed a 2-year contract extension (£${bonus}M bonus).`);
   saveCareer(false);
   refreshHub();
 }
@@ -2054,7 +2161,7 @@ function loanOutMyYouth(playerId) {
   p.loanFromClubId = club.id;
   dest.squad.push(p);
   state.transferFeed.unshift({ player: p.name, ovr: p.ovr, from: club.name, to: dest.name, fee: "1-Yr Loan Out" });
-  state.inbox.push(`LOANED OUT: ${p.name} joined ${dest.name} on a 1-season development loan (+2 to +4 OVR expected next summer).`);
+  state.inbox.push(`LOANED OUT: ${p.name} joined ${dest.name} on a 1-season loan.`);
   saveCareer(false);
   refreshHub();
 }
@@ -2066,7 +2173,8 @@ function sellMyPlayer(playerId) {
   const idx = club.squad.findIndex(x => x.id === playerId);
   const p = club.squad[idx];
   const fee = Math.round(calcValue(p.ovr, p.age) * 0.85 * 10) / 10;
-  const buyer = pick(Object.values(state.clubs).filter(c => c.id !== club.id));
+  const buyer = pick(Object.values(state.clubs).filter(c => c.id !== club.id && evaluateTransferWillingness(c, p, false, false).willing));
+  if (!buyer) return alert("No clubs of matching stature have submitted a bid right now.");
   club.squad.splice(idx, 1);
   club.budget += fee;
   buyer.squad.push(p);
@@ -2081,7 +2189,7 @@ function scoutYouth() {
   if (club.budget < 1.5) return alert("You need £1.5M to run a Youth Academy scouting mission.");
   club.budget -= 1.5;
   state.academy = generateAcademyProspects(club.league);
-  state.inbox.push("Youth scouts delivered a fresh batch of 16–18 year old academy prospects.");
+  state.inbox.push("Youth scouts delivered a fresh batch of 16–18 year old prospects.");
   saveCareer(false);
   refreshHub();
 }
@@ -2100,7 +2208,7 @@ function promoteProspect(acadId) {
     posCoord: { x: 50, y: 50 }
   });
   state.youthPromotionsThisSeason++;
-  state.inbox.push(`ACADEMY GRADUATE: ${a.name} (${a.age}, ${a.ovr} OVR) promoted to the senior squad!`);
+  state.inbox.push(`ACADEMY GRADUATE: ${a.name} (${a.age}, ${a.ovr} OVR) promoted to the first team!`);
   saveCareer(false);
   refreshHub();
 }
@@ -2112,6 +2220,7 @@ function changeMarketPage(delta) {
 
 function renderTransferMarket() {
   const myClubId = state.userClubId;
+  const myClub = myClubId ? state.clubs[myClubId] : null;
   const q = document.getElementById("tr-search").value.toLowerCase();
   const filter = document.getElementById("tr-filter").value;
   const targets = [];
@@ -2120,7 +2229,9 @@ function renderTransferMarket() {
     if (q && !p.name.toLowerCase().includes(q) && !p.pos.toLowerCase().includes(q) && !"free agent".includes(q)) return;
     if (filter === "EXP" || filter === "LOAN") return;
     if (filter === "STAR" && p.ovr < 85) return;
-    targets.push({ player: p, club: null, isFreeAgent: true });
+    const check = myClub ? evaluateTransferWillingness(myClub, p, true, false) : { willing: true };
+    if (filter === "REALISTIC" && !check.willing) return;
+    targets.push({ player: p, club: null, isFreeAgent: true, willing: check.willing });
   });
 
   if (filter !== "FREE") {
@@ -2131,7 +2242,9 @@ function renderTransferMarket() {
         if (filter === "EXP" && p.contractMonths > 6) return;
         if (filter === "LOAN" && (p.age > 23 || p.ovr >= 88)) return;
         if (filter === "STAR" && p.ovr < 85) return;
-        targets.push({ player: p, club: c, isFreeAgent: false });
+        const check = myClub ? evaluateTransferWillingness(myClub, p, false, filter === "LOAN") : { willing: true };
+        if (filter === "REALISTIC" && !check.willing) return;
+        targets.push({ player: p, club: c, isFreeAgent: false, willing: check.willing });
       });
     });
   }
@@ -2143,18 +2256,23 @@ function renderTransferMarket() {
   const pageItems = targets.slice(start, start + MARKET_PER_PAGE);
 
   document.getElementById("market-total-badge").textContent = `${targets.length} PLAYERS`;
-  document.getElementById("mk-page-info").textContent = `Page ${marketPage} of ${totalPages} (${start + 1}–${Math.min(targets.length, start + MARKET_PER_PAGE)})`;
+  document.getElementById("mk-page-info").textContent = `Page ${marketPage} of ${totalPages}`;
   document.getElementById("mk-prev").disabled = marketPage <= 1;
   document.getElementById("mk-next").disabled = marketPage >= totalPages;
 
-  document.getElementById("market-tbody").innerHTML = pageItems.map(({ player: p, club: c, isFreeAgent }) => {
+  document.getElementById("market-tbody").innerHTML = pageItems.map(({ player: p, club: c, isFreeAgent, willing }) => {
+    const interestBadge = willing
+      ? `<span class="badge b-ok">Interested</span>`
+      : `<span class="badge b-exp">Unrealistic</span>`;
+
     if (isFreeAgent) {
       return `<tr>
-        <td><strong>${p.name}</strong> (${p.pos}) <span class="badge b-ok">FREE AGENT</span></td>
+        <td><strong>${p.name}</strong> (${p.pos}) <span class="badge b-ok">FREE</span></td>
         <td>Unattached</td>
         <td>${p.age}</td>
         <td><strong>${p.ovr}</strong></td>
         <td>£0.0M</td>
+        <td>${interestBadge}</td>
         <td><button class="btn-blue" style="padding:4px 9px; font-size:0.74rem;" onclick="openContractModal(null,'${p.id}',0,false)">Sign Free</button></td>
       </tr>`;
     }
@@ -2163,11 +2281,12 @@ function renderTransferMarket() {
     const askFee = p.contractMonths <= 6 ? Math.round(baseVal * 0.55 * 10) / 10 : isOgStar ? Math.round(baseVal * 1.9 * 10) / 10 : baseVal;
     const canLoan = p.age <= 23 && p.ovr < 88 && !p.isLoan;
     return `<tr>
-      <td><strong>${p.name}</strong> (${p.pos}) ${isOgStar ? '<span class="badge b-og">OG STAR</span>' : ''} ${p.contractMonths <= 6 ? '<span class="badge b-exp">6m EXP</span>' : ''}</td>
+      <td><strong>${p.name}</strong> (${p.pos}) ${isOgStar ? '<span class="badge b-og">OG</span>' : ''} ${p.contractMonths <= 6 ? '<span class="badge b-exp">6m</span>' : ''}</td>
       <td>${c.name}</td>
       <td>${p.age}</td>
       <td><strong>${p.ovr}</strong></td>
       <td>£${askFee.toFixed(1)}M</td>
+      <td>${interestBadge}</td>
       <td style="white-space:nowrap;">
         <button class="btn-primary" style="padding:4px 8px; font-size:0.73rem;" onclick="submitClubTransferBid('${c.id}','${p.id}',${askFee},false)">Buy</button>
         ${canLoan ? `<button class="btn-ghost" style="padding:4px 7px; font-size:0.73rem; margin-left:3px;" onclick="submitClubTransferBid('${c.id}','${p.id}',0,true)">Loan</button>` : ''}
@@ -2178,19 +2297,25 @@ function renderTransferMarket() {
 
 function submitClubTransferBid(sellerClubId, playerId, askFee, isLoanDeal) {
   if (state.unemployed || !state.userClubId) return alert("You must be managing a club to sign players!");
-  if (!isTransferWindowOpen()) return alert("Transfer Window is CLOSED! Wait for the open window.");
+  if (!isTransferWindowOpen()) return alert("The main transfer window is CLOSED! You can still sign Free Agents (£0 fee) anytime.");
   const myClub = state.clubs[state.userClubId];
   const seller = state.clubs[sellerClubId];
   const p = seller.squad.find(x => x.id === playerId);
   if (!p) return;
 
+  // Check realistic player ambition / club stature first!
+  const willingness = evaluateTransferWillingness(myClub, p, false, isLoanDeal);
+  if (!willingness.willing) {
+    return alert(willingness.reason);
+  }
+
   if (!isLoanDeal && myClub.budget < askFee) return alert(`Insufficient transfer budget! You need £${askFee.toFixed(1)}M.`);
 
   const isOgStar = p.ogClubId === seller.id && p.ovr >= 85;
   if (!isLoanDeal && isOgStar && p.contractMonths > 6) {
-    const acceptChance = p.ovr >= 95 ? 0.14 : 0.28;
+    const acceptChance = p.ovr >= 95 ? 0.14 : 0.30;
     if (Math.random() > acceptChance) {
-      return alert(`CLUB BID REJECTED: ${seller.name} rejected £${askFee.toFixed(1)}M because ${p.name} (${p.ovr} OVR) is an OG club icon!`);
+      return alert(`BID REJECTED: ${seller.name} turned down £${askFee.toFixed(1)}M for club icon ${p.name}!`);
     }
   }
 
@@ -2198,12 +2323,19 @@ function submitClubTransferBid(sellerClubId, playerId, askFee, isLoanDeal) {
 }
 
 function openContractModal(sellerClubId, playerId, agreedFee, isLoanDeal) {
-  if (state.unemployed || !state.userClubId) return;
+  if (state.unemployed || !state.userClubId) return alert("Accept a club job before signing players!");
   const isFree = !sellerClubId;
+  const myClub = state.clubs[state.userClubId];
   const p = isFree
     ? state.freeAgents.find(x => x.id === playerId)
     : state.clubs[sellerClubId]?.squad.find(x => x.id === playerId);
   if (!p) return;
+
+  // Check stature willingness for Free Agents as well
+  const willingness = evaluateTransferWillingness(myClub, p, isFree, isLoanDeal);
+  if (!willingness.willing) {
+    return alert(willingness.reason);
+  }
 
   const isOg = !isFree && p.ogClubId === sellerClubId && p.ovr >= 85;
   const baseDemandWage = p.wageK || calcWageK(p.ovr);
@@ -2212,7 +2344,7 @@ function openContractModal(sellerClubId, playerId, agreedFee, isLoanDeal) {
   window._pendingDeal = {
     sellerClubId, playerId, agreedFee, isLoanDeal,
     desiredWage, isOg, round: 1, maxRounds: 3,
-    agentMsg: `Looking for roughly <strong>£${desiredWage}k/wk</strong> and a strong squad role before putting pen to paper.`
+    agentMsg: `Looking for roughly <strong>£${desiredWage}k/wk</strong> and a clear squad role.`
   };
 
   renderNegotiationModal();
@@ -2230,18 +2362,16 @@ function renderNegotiationModal() {
   box.innerHTML = `
     <h2>Contract Talks: ${p.name} (${p.ovr} OVR)</h2>
     <span class="badge ${deal.isLoanDeal ? 'b-loan' : isFree ? 'b-ok' : 'b-youth'}">
-      ${deal.isLoanDeal ? '1-SEASON LOAN DEAL (£0 FEE)' : isFree ? 'FREE AGENT (£0 FEE)' : `CLUB FEE AGREED: £${deal.agreedFee.toFixed(1)}M`}
+      ${deal.isLoanDeal ? '1-SEASON LOAN (£0 FEE)' : isFree ? 'FREE AGENT (£0 FEE)' : `FEE AGREED: £${deal.agreedFee.toFixed(1)}M`}
     </span>
-    <span class="badge b-warn" style="margin-left:6px;">ROUND ${deal.round} OF ${deal.maxRounds}</span>
-    <div class="press-q">
-      <strong>Agent Response:</strong> ${deal.agentMsg}
-    </div>
-    <div class="og-field">
+    <span class="badge b-warn" style="margin-left:6px;">ROUND ${deal.round} / ${deal.maxRounds}</span>
+    <div class="press-q"><strong>Agent:</strong> ${deal.agentMsg}</div>
+    <div class="field">
       <label>Weekly Wage Offer (£k / week)</label>
       <input type="number" id="neg-wage" value="${deal.desiredWage}" min="2" max="950" />
     </div>
     ${deal.isLoanDeal ? '' : `
-      <div class="og-field">
+      <div class="field">
         <label>Contract Length</label>
         <select id="neg-years">
           <option value="12">1 Year</option>
@@ -2252,8 +2382,8 @@ function renderNegotiationModal() {
         </select>
       </div>
     `}
-    <div class="og-field">
-      <label>Squad Role Promise</label>
+    <div class="field">
+      <label>Squad Role</label>
       <select id="neg-role">
         <option value="STAR">Key Star Player</option>
         <option value="FIRST" selected>Important First Team</option>
@@ -2293,12 +2423,12 @@ function finalizeContractOffer() {
       deal.round++;
       deal.desiredWage = Math.max(offerWage + 2, Math.round((deal.desiredWage + offerWage) / 2));
       const roleHint = (p.ovr >= 80 && offerRole === "ROT") ? " and at least Important First Team status" : "";
-      deal.agentMsg = `That £${offerWage}k/wk offer is a bit light for a player of ${p.name}'s quality. Meet us at <strong>£${deal.desiredWage}k/wk</strong>${roleHint} and we have a deal!`;
+      deal.agentMsg = `£${offerWage}k/wk is too low for ${p.name}. Meet us at <strong>£${deal.desiredWage}k/wk</strong>${roleHint} and we'll sign!`;
       renderNegotiationModal();
       return;
     } else {
       closeModal();
-      return alert(`TALKS COLLAPSED: After ${deal.maxRounds} rounds, ${p.name}'s agent walked away from negotiations!`);
+      return alert(`TALKS COLLAPSED: ${p.name}'s agent ended negotiations!`);
     }
   }
 
@@ -2326,7 +2456,7 @@ function finalizeContractOffer() {
   const fromLabel = isFree ? "Free Agent" : seller.name;
   const feeLabel = deal.isLoanDeal ? "1-Yr Loan" : isFree ? "Free" : `£${deal.agreedFee.toFixed(1)}M`;
   state.transferFeed.unshift({ player: p.name, ovr: p.ovr, from: fromLabel, to: myClub.name, fee: feeLabel });
-  state.inbox.push(`SIGNED: ${p.name} (${p.ovr} OVR) agreed personal terms (£${offerWage}k/wk) from ${fromLabel} (${feeLabel})!`);
+  state.inbox.push(`SIGNED: ${p.name} (${p.ovr} OVR) joined from ${fromLabel} (${feeLabel})!`);
 
   closeModal();
   saveCareer(false);
@@ -2346,23 +2476,37 @@ function renderTransferFeed() {
 }
 
 function simulateAiTransfers() {
-  if (!isTransferWindowOpen()) return;
   const allClubs = Object.values(state.clubs).filter(c => c.id !== state.userClubId);
-  if (state.freeAgents.length > 0 && Math.random() < 0.45) {
-    const fa = state.freeAgents.shift();
-    const buyer = pick(allClubs);
-    buyer.squad.push(fa);
-    state.transferFeed.unshift({ player: fa.name, ovr: fa.ovr, from: "Free Agent", to: buyer.name, fee: "Free" });
-    return;
+
+  // Free agents can be signed by AI clubs anytime if stature matches
+  if (state.freeAgents.length > 0 && Math.random() < 0.35) {
+    const fa = state.freeAgents[0];
+    const realisticBuyers = allClubs.filter(c => evaluateTransferWillingness(c, fa, true, false).willing);
+    if (realisticBuyers.length) {
+      state.freeAgents.shift();
+      const buyer = pick(realisticBuyers);
+      buyer.squad.push(fa);
+      state.transferFeed.unshift({ player: fa.name, ovr: fa.ovr, from: "Free Agent", to: buyer.name, fee: "Free" });
+      return;
+    }
   }
+
+  if (!isTransferWindowOpen()) return;
   const seller = pick(allClubs);
-  const buyer = pick(allClubs.filter(c => c.id !== seller.id));
-  if (!seller || !buyer || seller.squad.length <= 13) return;
+  if (!seller || seller.squad.length <= 13) return;
   const candidates = seller.squad.filter(p => !(p.ogClubId === seller.id && p.ovr >= 85));
   if (!candidates.length) return;
   const p = pick(candidates);
   const fee = calcValue(p.ovr, p.age);
-  if (buyer.budget < fee) return;
+
+  const realisticBuyers = allClubs.filter(c =>
+    c.id !== seller.id &&
+    c.budget >= fee &&
+    evaluateTransferWillingness(c, p, false, false).willing
+  );
+  if (!realisticBuyers.length) return;
+
+  const buyer = pick(realisticBuyers);
   seller.squad = seller.squad.filter(x => x.id !== p.id);
   seller.budget += fee;
   buyer.budget -= fee;
@@ -2380,15 +2524,15 @@ function renderStandings() {
   teams.sort((a,b) => (b.pts - a.pts) || ((b.gf - b.ga) - (a.gf - a.ga)));
 
   container.innerHTML = `<table>
-    <thead><tr><th>#</th><th>Club</th><th>Manager</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th><th>Qualification</th></tr></thead>
+    <thead><tr><th>#</th><th>Club</th><th>Manager</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th><th>Zone</th></tr></thead>
     <tbody>${teams.map((t, i) => {
       let zoneClass = "";
       let qual = "-";
       if (meta.topFlight) {
-        if (i < 5) { zoneClass = "zone-ucl"; qual = "Champions League (1st–5th)"; }
-        else if (i < 7) { zoneClass = "zone-uel"; qual = "Europa League (6th–7th)"; }
+        if (i < 5) { zoneClass = "zone-ucl"; qual = "UCL"; }
+        else if (i < 7) { zoneClass = "zone-uel"; qual = "UEL"; }
       } else {
-        if (i < 2) { zoneClass = "zone-ucl"; qual = "Promotion (Europe via FA/Carabao Cup only)"; }
+        if (i < 2) { zoneClass = "zone-ucl"; qual = "Promotion"; }
       }
       if (i === teams.length - 1 && sel !== "ENG4") { zoneClass = "zone-rel"; qual = "Relegation"; }
       return `<tr class="${zoneClass} ${t.id === state.userClubId ? 'my-row' : ''}">
@@ -2402,7 +2546,7 @@ function renderStandings() {
 }
 
 /* ============================================================================
-   9. GLOBAL MATCH SIMULATION, INFINITE QUICK SIMS & PENALTY SHOOTOUTS
+   9. DYNAMIC CUP PROGRESSION & WORLD SIMULATION
    ============================================================================ */
 function creditTeamMatchStats(club, gf, ga, compBucket) {
   const xi = club.squad.slice(0, 11);
@@ -2473,6 +2617,25 @@ function advance92CupRound(cupObj, userClubId, userWon, scoreStr) {
   cupObj.currentRound++;
 }
 
+function scheduleNextUserCupMatch(cupKey) {
+  const cupObj = cupKey === "FACUP" ? state.cupBrackets.fa : state.cupBrackets.carabao;
+  const cupTitle = cupKey === "FACUP" ? "FA Cup" : "Carabao Cup";
+  const nextRIdx = cupObj.currentRound;
+  if (nextRIdx >= cupObj.rounds.length || cupObj.userEliminated) return;
+
+  const oppId = findUserCupOpponent(cupObj, state.userClubId);
+  if (!oppId) return;
+
+  const roundLabel = cupObj.roundNames[nextRIdx];
+  const insertPos = Math.min(state.calendar.length, state.dayIndex + 3);
+  state.calendar.splice(insertPos, 0, {
+    day: 0, type: "MATCH", comp: `${cupTitle} (${roundLabel})`, compType: cupKey,
+    oppId, home: nextRIdx === 6 ? true : (nextRIdx % 2 === 0), done: false, result: null
+  });
+  renumberCalendarDays();
+  state.inbox.push(`CUP DRAW: ${state.clubs[state.userClubId].name} will face ${state.clubs[oppId].name} in the ${cupTitle} ${roundLabel}!`);
+}
+
 function simulateGlobalWorldMatchday(activeCompType) {
   Object.values(state.clubs).forEach(c => {
     if (c.id === state.userClubId && activeCompType === "LEAGUE") return;
@@ -2481,7 +2644,7 @@ function simulateGlobalWorldMatchday(activeCompType) {
     creditTeamMatchStats(c, gf, ga, "LEAGUE");
   });
 
-  if (state.dayIndex % 3 === 0) {
+  if (state.matchCounter % 3 === 0) {
     ["UCL", "UEL"].forEach(compKey => {
       const teams = Object.values(state.clubs).filter(c => c.euComp === compKey && !(c.id === state.userClubId && activeCompType === compKey));
       teams.forEach(c => {
@@ -2493,13 +2656,13 @@ function simulateGlobalWorldMatchday(activeCompType) {
     });
   }
 
-  const cupCheckpoints = [2, 6, 10, 14, 18, 22, 26];
-  const cpIdx = cupCheckpoints.indexOf(state.dayIndex);
+  const cupCheckpoints = [2, 5, 8, 11, 14, 17, 20];
+  const cpIdx = cupCheckpoints.indexOf(state.matchCounter);
   if (cpIdx !== -1) {
-    if (state.cupBrackets.fa.currentRound <= cpIdx && (state.cupBrackets.fa.userEliminated || activeCompType !== "FACUP")) {
+    if (state.cupBrackets.fa.currentRound <= cpIdx && state.cupBrackets.fa.userEliminated) {
       advance92CupRound(state.cupBrackets.fa, null, false, "");
     }
-    if (state.cupBrackets.carabao.currentRound <= cpIdx && (state.cupBrackets.carabao.userEliminated || activeCompType !== "CARABAO")) {
+    if (state.cupBrackets.carabao.currentRound <= cpIdx && state.cupBrackets.carabao.userEliminated) {
       advance92CupRound(state.cupBrackets.carabao, null, false, "");
     }
   }
@@ -2511,6 +2674,7 @@ function recordMatchOutcome(ev, myGoals, oppGoals, wasLiveMatch, livePlayerEvent
   ev.done = true;
   ev.result = ev.home ? `${myGoals} - ${oppGoals}` : `${oppGoals} - ${myGoals}`;
 
+  state.matchCounter = (state.matchCounter || 0) + 1;
   state.trainingAvailable = true;
   myClub.squad.forEach(p => { if (p.suspendedMatches > 0) p.suspendedMatches--; });
 
@@ -2570,7 +2734,7 @@ function recordMatchOutcome(ev, myGoals, oppGoals, wasLiveMatch, livePlayerEvent
       if (myTier > oppTier) {
         myClub.squad.forEach(p => { p.morale = Math.min(2, p.morale + 2); });
         ms.reputation = Math.min(100, ms.reputation + 4);
-        state.inbox.push(`GIANT-KILLING UPSET! ${myClub.name} knocked out ${oppClub.name}! Squad morale surged (+2) and Manager Reputation jumped +4!`);
+        state.inbox.push(`GIANT-KILLING UPSET! ${myClub.name} knocked out ${oppClub.name}! Squad morale +2 and Reputation +4!`);
       }
       if (cupObj.winnerId === myClub.id) {
         state.cupWinnerId = myClub.id;
@@ -2578,6 +2742,8 @@ function recordMatchOutcome(ev, myGoals, oppGoals, wasLiveMatch, livePlayerEvent
         ms.trophies.push(`${cupName} (${state.year}/${String(state.year+1).slice(-2)})`);
         ms.reputation = Math.min(100, ms.reputation + 5);
         state.inbox.push(`WEMBLEY CHAMPIONS: ${myClub.name} won the ${cupName} and qualified for next season's UEFA Europa League!`);
+      } else {
+        scheduleNextUserCupMatch(ev.compType);
       }
     } else {
       state.inbox.push(`${cupName}: ${oppClub.name} eliminated ${myClub.name} (${myGoals}-${oppGoals}).`);
@@ -2616,7 +2782,7 @@ function showPostMatchRatingsModal(myClub, oppClub, myGoals, oppGoals) {
     <span class="badge b-og">MAN OF THE MATCH: ${motm.p.name} (${motm.rtg} / 10)</span>
     <div style="margin:12px 0; max-height:310px; overflow-y:auto;">
       <table>
-        <thead><tr><th>Pos</th><th>Player</th><th>Match Rating</th><th>Form</th></tr></thead>
+        <thead><tr><th>Pos</th><th>Player</th><th>Rating</th><th>Form</th></tr></thead>
         <tbody>${rated.map((item, idx) => `
           <tr class="${idx === 0 ? 'my-row' : ''}">
             <td><strong>${item.p.pos}</strong></td>
@@ -2657,7 +2823,7 @@ function processWeeklyInjuriesAndContracts() {
         if (severe && p.age >= 31 && c.squad.length > 13) {
           c.squad.splice(i, 1);
           if (c.id === state.userClubId) {
-            state.inbox.push(`CAREER-ENDING INJURY: ${p.name} (${p.age}) suffered a severe injury and retired immediately.`);
+            state.inbox.push(`CAREER-ENDING INJURY: ${p.name} (${p.age}) retired immediately.`);
           }
         } else {
           p.injuryWeeks = rand(1, 3);
@@ -2690,7 +2856,7 @@ function advanceToNextSeason() {
     state.unemployed = true;
     state.userClubId = null;
     state.mgrStats.reputation = Math.max(15, state.mgrStats.reputation - 14);
-    state.inbox.push(`SACKED! ${club.name} fired ${state.manager} after achieving ${metCount}/6 objectives (Season ${state.season} required ${req}/6). You are now UNEMPLOYED—sim days until a new job vacancy opens!`);
+    state.inbox.push(`SACKED! ${club.name} fired ${state.manager} after achieving ${metCount}/6 objectives (Season ${state.season} required ${req}/6).`);
     rolloverSeasonData();
     return;
   }
@@ -2713,7 +2879,7 @@ function rolloverSeasonData() {
       player: bWinner.name, playerClub: bWinner.clubName,
       manager: mWinner.manager, mgrClub: mWinner.clubName
     });
-    state.inbox.push(`ANNUAL AWARDS (${seasonLabel}): 🏆 Ballon d'Or Winner: ${bWinner.name} (${bWinner.clubName}) • 👔 Manager of the Year: ${mWinner.manager} (${mWinner.clubName})!`);
+    state.inbox.push(`ANNUAL AWARDS (${seasonLabel}): 🏆 Ballon d'Or: ${bWinner.name} (${bWinner.clubName}) • 👔 Manager: ${mWinner.manager} (${mWinner.clubName})!`);
   }
 
   state.season++;
@@ -2756,7 +2922,7 @@ function rolloverSeasonData() {
         p.ovr = Math.min(95, p.ovr + rand(2, 4));
         parent.squad.push(p);
         if (parent.id === state.userClubId) {
-          state.inbox.push(`LOAN RETURN: ${p.name} returned from loan at ${c.name} and grew to ${p.ovr} OVR!`);
+          state.inbox.push(`LOAN RETURN: ${p.name} returned from ${c.name} at ${p.ovr} OVR!`);
         }
       }
     }
@@ -2806,12 +2972,11 @@ function rolloverSeasonData() {
     state.inbox.push(`RETIREMENTS (${state.year}): ${retirements.join(", ")} hung up their boots.`);
   }
 
-  generateSporadicSeasonCalendar();
+  generateDynamicSeasonCalendar();
   saveCareer(false);
   refreshHub();
 }
 
-// INFINITE QUICK SIM WITH REALISTIC RATING CURVE & UPSET PROBABILITY
 function simNextMatch() {
   const ev = state.calendar[state.dayIndex];
   if (!ev || ev.type !== "MATCH") return;
@@ -2820,13 +2985,12 @@ function simNextMatch() {
   const myPow = myClub.squad.slice(0,11).reduce((s,p) => s + p.ovr + p.morale, 0) / 11;
   const oppPow = oppClub.squad.slice(0,11).reduce((s,p) => s + p.ovr, 0) / 11;
 
-  // Realistic rating edge with upset variance (82 OVR can beat 90 OVR ~18% of the time)
   const ratingEdge = (myPow - oppPow) * 0.14;
   const upsetRoll = (Math.random() - 0.5) * 2.4;
   const net = ratingEdge + upsetRoll;
 
-  let myGoals = Math.max(0, Math.round(1.15 + Math.max(-0.8, net) + (Math.random() * 1.4 - 0.5)));
-  let oppGoals = Math.max(0, Math.round(1.15 + Math.max(-0.8, -net) + (Math.random() * 1.4 - 0.5)));
+  let myGoals = Math.max(0, Math.round(1.25 + Math.max(-0.8, net) + (Math.random() * 1.5 - 0.5)));
+  let oppGoals = Math.max(0, Math.round(1.25 + Math.max(-0.8, -net) + (Math.random() * 1.5 - 0.5)));
 
   if ((ev.compType === "FACUP" || ev.compType === "CARABAO") && myGoals === oppGoals) {
     if (Math.random() < (0.5 + ratingEdge * 0.1)) myGoals++; else oppGoals++;
@@ -2836,11 +3000,7 @@ function simNextMatch() {
 }
 
 /* ============================================================================
-   10. WATCH MATCH — PURE AI VS AI BROADCAST ENGINE
-       - Zero manual player controls or aim arrows
-       - Rating-weighted AI decisions (90 OVR controls tempo; 82 OVR can upset)
-       - Individual Player Plans actively shape AI runs, passes & shots
-       - Live 1x / 2x / 4x Speed, Mentality Switch, Subs & Instant Result
+   10. END-TO-END WATCH MATCH (AI VS AI BROADCAST ENGINE)
    ============================================================================ */
 let match = null;
 
@@ -2886,13 +3046,13 @@ function launchMatchCanvas(ev, myClub, oppClub, durationSec) {
 
   myClub.squad.slice(0, 11).forEach((p, idx) => {
     const coord = p.posCoord || DEFAULT_COORDS["433"][idx];
-    const hx = 65 + ((100 - coord.y) / 100) * 405;
+    const hx = 65 + ((100 - coord.y) / 100) * 415;
     const hy = 55 + (coord.x / 100) * (P_H - 110);
     players.push({
       id: p.id, name: p.name, ovr: p.ovr + (p.morale || 0) * 1.5, team: "home", isGK: idx === 0,
       plan: p.plan || defaultPlanForPos(p.pos),
       x: hx, y: hy, homeX: hx, homeY: hy, vx: 0, vy: 0,
-      wanderX: 0, wanderY: 0, wanderTimer: Math.random() * 2,
+      wanderX: 0, wanderY: 0, wanderTimer: Math.random() * 1.5,
       tackleTimer: 0, tackleCooldown: 0, isSliding: false, stunTimer: 0,
       yellows: 0, sentOff: false, gkDiveTimer: 0
     });
@@ -2900,13 +3060,13 @@ function launchMatchCanvas(ev, myClub, oppClub, durationSec) {
 
   oppClub.squad.slice(0, 11).forEach((p, idx) => {
     const coord = DEFAULT_COORDS["433"][idx];
-    const ax = P_W - (65 + ((100 - coord.y) / 100) * 405);
+    const ax = P_W - (65 + ((100 - coord.y) / 100) * 415);
     const ay = 55 + (coord.x / 100) * (P_H - 110);
     players.push({
       id: p.id, name: p.name, ovr: p.ovr, team: "away", isGK: idx === 0,
       plan: defaultPlanForPos(p.pos),
       x: ax, y: ay, homeX: ax, homeY: ay, vx: 0, vy: 0,
-      wanderX: 0, wanderY: 0, wanderTimer: Math.random() * 2,
+      wanderX: 0, wanderY: 0, wanderTimer: Math.random() * 1.5,
       tackleTimer: 0, tackleCooldown: 0, isSliding: false, stunTimer: 0,
       yellows: 0, sentOff: false, gkDiveTimer: 0
     });
@@ -2945,24 +3105,28 @@ function showMatchBanner(text) {
 
 function resolveTackleCollision(tackler) {
   const ball = match.ball;
-  const reach = tackler.isSliding ? 42 : 31;
+  const reach = tackler.isSliding ? 38 : 28;
   const victim = ball.owner;
 
   if (victim && victim.team !== tackler.team) {
     const dist = Math.hypot(tackler.x - victim.x, tackler.y - victim.y);
     if (dist <= reach) {
-      // Higher OVR defenders time tackles cleaner; lower OVR defenders foul slightly more
-      const skillMod = Math.max(-0.08, Math.min(0.08, (victim.ovr - tackler.ovr) * 0.008));
-      const foulChance = (tackler.isSliding ? 0.30 : 0.13) + skillMod;
+      const evasionChance = Math.max(0.15, Math.min(0.62, 0.30 + (victim.ovr - tackler.ovr) * 0.025));
+      if (Math.random() < evasionChance) {
+        tackler.stunTimer = 0.7;
+        return;
+      }
+
+      const foulChance = tackler.isSliding ? 0.28 : 0.11;
       if (Math.random() < foulChance) {
         triggerFoulAndCard(tackler, victim);
         return;
       }
-      victim.stunTimer = tackler.isSliding ? 1.0 : 0.65;
+      victim.stunTimer = tackler.isSliding ? 0.9 : 0.55;
       ball.owner = tackler;
       ball.lastTouchTeam = tackler.team;
       ball.vx = 0; ball.vy = 0;
-      showMatchBanner(tackler.isSliding ? `${tackler.name} SLIDE TACKLE!` : `${tackler.name} WINS BALL!`);
+      showMatchBanner(tackler.isSliding ? `${tackler.name} SLIDE TACKLE!` : `${tackler.name} INTERCEPTS!`);
     }
   } else if (!victim && Math.hypot(tackler.x - ball.x, tackler.y - ball.y) <= reach) {
     ball.owner = tackler;
@@ -2980,7 +3144,7 @@ function triggerFoulAndCard(fouler, victim) {
     fouler.sentOff = true;
     cardText = `🟥 STRAIGHT RED CARD! ${fouler.name} SENT OFF!`;
     if (fouler.team === "home") match.liveEvents.push({ type: "RED", playerId: fouler.id });
-  } else if (cardRoll < 0.65) {
+  } else if (cardRoll < 0.62) {
     fouler.yellows++;
     if (fouler.yellows >= 2) {
       fouler.sentOff = true;
@@ -2992,8 +3156,8 @@ function triggerFoulAndCard(fouler, victim) {
     }
   }
 
-  const inHomeBox = victim.team === "away" && victim.x <= 150 && Math.abs(victim.y - match.P_H/2) <= 120;
-  const inAwayBox = victim.team === "home" && victim.x >= match.P_W - 150 && Math.abs(victim.y - match.P_H/2) <= 120;
+  const inHomeBox = victim.team === "away" && victim.x <= 165 && Math.abs(victim.y - match.P_H/2) <= 130;
+  const inAwayBox = victim.team === "home" && victim.x >= match.P_W - 165 && Math.abs(victim.y - match.P_H/2) <= 130;
 
   if (inHomeBox || inAwayBox) {
     cardText += " — PENALTY KICK!";
@@ -3014,9 +3178,9 @@ function triggerFoulAndCard(fouler, victim) {
   match.players.filter(p => p.team === fouler.team && !p.isGK && !p.sentOff).forEach(d => {
     const dx = d.x - ball.x, dy = d.y - ball.y;
     const dist = Math.hypot(dx, dy);
-    if (dist < 85 && dist > 0) {
-      d.x += (dx / dist) * 85;
-      d.y += (dy / dist) * 85;
+    if (dist < 95 && dist > 0) {
+      d.x += (dx / dist) * 95;
+      d.y += (dy / dist) * 95;
     }
   });
 
@@ -3030,8 +3194,8 @@ function handleOutOfBoundsRestart() {
   const gk = players.find(p => p.team === restartTeam && p.isGK);
 
   if (ball.y <= 20 || ball.y >= P_H - 20) {
-    const ty = ball.y <= 20 ? 28 : P_H - 28;
-    const tx = Math.max(40, Math.min(P_W - 40, ball.x));
+    const ty = ball.y <= 20 ? 30 : P_H - 30;
+    const tx = Math.max(45, Math.min(P_W - 45, ball.x));
     const thrower = fieldPlayers.sort((a,b) => Math.hypot(a.x - tx, a.y - ty) - Math.hypot(b.x - tx, b.y - ty))[0];
     if (thrower) {
       thrower.x = tx; thrower.y = ty;
@@ -3050,10 +3214,10 @@ function handleOutOfBoundsRestart() {
       ball.owner = taker; ball.lastTouchTeam = "home";
       showMatchBanner(`GOAL KICK (${match.myClub.name})`);
     } else {
-      const cornerY = ball.y < P_H / 2 ? 28 : P_H - 28;
+      const cornerY = ball.y < P_H / 2 ? 30 : P_H - 30;
       const taker = fieldPlayers[0];
-      taker.x = 28; taker.y = cornerY;
-      ball.x = 28; ball.y = cornerY; ball.vx = 0; ball.vy = 0;
+      taker.x = 32; taker.y = cornerY;
+      ball.x = 32; ball.y = cornerY; ball.vx = 0; ball.vy = 0;
       ball.owner = taker; ball.lastTouchTeam = "away";
       showMatchBanner(`CORNER KICK (${match.oppClub.name})`);
     }
@@ -3068,10 +3232,10 @@ function handleOutOfBoundsRestart() {
       ball.owner = taker; ball.lastTouchTeam = "away";
       showMatchBanner(`GOAL KICK (${match.oppClub.name})`);
     } else {
-      const cornerY = ball.y < P_H / 2 ? 28 : P_H - 28;
+      const cornerY = ball.y < P_H / 2 ? 30 : P_H - 30;
       const taker = fieldPlayers[0];
-      taker.x = P_W - 28; taker.y = cornerY;
-      ball.x = P_W - 28; ball.y = cornerY; ball.vx = 0; ball.vy = 0;
+      taker.x = P_W - 32; taker.y = cornerY;
+      ball.x = P_W - 32; ball.y = cornerY; ball.vx = 0; ball.vy = 0;
       ball.owner = taker; ball.lastTouchTeam = "home";
       showMatchBanner(`CORNER KICK (${match.myClub.name})`);
     }
@@ -3120,7 +3284,6 @@ function updateAiBroadcastPhysics(dt) {
   if (ball.lastTouchTeam === "home") match.homePossSec += dt;
   else match.awayPossSec += dt;
 
-  // Designate ONLY 1 active presser per defending team so neither AI team crowds the ball
   const defendingTeam = ball.lastTouchTeam === "home" ? "away" : "home";
   let activePresser = null, bestPressDist = 9999;
   players.filter(p => p.team === defendingTeam && !p.isGK && !p.sentOff).forEach(p => {
@@ -3143,28 +3306,28 @@ function updateAiBroadcastPhysics(dt) {
       return;
     }
 
-    const baseSpd = 152 + (p.ovr - 65) * 1.45;
+    const baseSpd = 175 + (p.ovr - 65) * 1.65;
 
     if (p.isGK) {
-      const goalX = p.team === "home" ? 40 : P_W - 40;
+      const goalX = p.team === "home" ? 36 : P_W - 36;
       const isSweeper = p.plan === "Sweeper Keeper";
       let targetX = goalX;
-      let targetY = Math.max(P_H/2 - 58, Math.min(P_H/2 + 58, ball.y));
+      let targetY = Math.max(P_H/2 - 52, Math.min(P_H/2 + 52, ball.y));
 
-      const ballApproaching = !ball.owner && ((p.team === "home" && ball.vx < -140) || (p.team === "away" && ball.vx > 140));
+      const ballApproaching = !ball.owner && ((p.team === "home" && ball.vx < -180) || (p.team === "away" && ball.vx > 180));
       if (ballApproaching) {
         const timeToGoal = Math.abs((goalX - ball.x) / ball.vx);
         const predictedY = ball.y + ball.vy * timeToGoal;
-        targetY = Math.max(P_H/2 - 62, Math.min(P_H/2 + 62, predictedY));
-        if (Math.abs(targetY - p.y) > 20 && p.gkDiveTimer <= 0) {
-          p.gkDiveTimer = 0.48;
+        targetY = Math.max(P_H/2 - 56, Math.min(P_H/2 + 56, predictedY));
+        if (Math.abs(targetY - p.y) > 22 && p.gkDiveTimer <= 0) {
+          p.gkDiveTimer = 0.42;
         }
-      } else if (ball.owner && ball.owner.team !== p.team && Math.abs(ball.owner.x - goalX) < (isSweeper ? 185 : 130)) {
-        targetX = goalX + (p.team === "home" ? (isSweeper ? 68 : 36) : (isSweeper ? -68 : -36));
+      } else if (ball.owner && ball.owner.team !== p.team && Math.abs(ball.owner.x - goalX) < (isSweeper ? 185 : 120)) {
+        targetX = goalX + (p.team === "home" ? (isSweeper ? 65 : 32) : (isSweeper ? -65 : -32));
         targetY = ball.owner.y;
       }
 
-      const gkSpd = (182 + (p.ovr - 70) * 2.5) * (p.gkDiveTimer > 0 ? 1.6 : 1.0);
+      const gkSpd = (148 + (p.ovr - 70) * 1.8) * (p.gkDiveTimer > 0 ? 1.38 : 1.0);
       const dx = targetX - p.x, dy = targetY - p.y;
       const d = Math.hypot(dx, dy);
       if (d > 2) {
@@ -3172,82 +3335,82 @@ function updateAiBroadcastPhysics(dt) {
         p.y += (dy / d) * gkSpd * dt;
       }
     } else {
-      // SPORADIC OFF-THE-BALL MOVEMENT GOVERNED BY INDIVIDUAL PLAYER PLAN & MENTALITY
       p.wanderTimer -= dt;
       if (p.wanderTimer <= 0) {
-        p.wanderTimer = 1.1 + Math.random() * 1.6;
-        p.wanderX = rand(-46, 54);
-        p.wanderY = rand(-42, 42);
+        p.wanderTimer = 0.9 + Math.random() * 1.3;
+        p.wanderX = rand(-40, 50);
+        p.wanderY = rand(-48, 48);
       }
 
       const isAttacking = ball.lastTouchTeam === p.team;
       const dir = p.team === "home" ? 1 : -1;
+
       let planPush = 0;
-      if (p.plan === "Stay Back" || p.plan === "Anchor Hold") planPush = -45;
-      if (p.plan === "Overlap Wingback" || p.plan === "Box-to-Box") planPush = isAttacking ? 80 : -20;
-      if (p.plan === "Get In Behind") planPush = isAttacking ? 125 : 15;
-      if (p.plan === "Playmaker Roam") planPush = isAttacking ? 55 : 0;
+      if (p.plan === "Stay Back" || p.plan === "Anchor Hold") planPush = -110;
+      if (p.plan === "Overlap Wingback" || p.plan === "Box-to-Box") planPush = isAttacking ? 95 : -25;
+      if (p.plan === "Get In Behind") planPush = isAttacking ? 155 : 25;
+      if (p.plan === "Playmaker Roam") planPush = isAttacking ? 70 : 0;
 
       const mentShift = p.team === "home"
-        ? (match.homeMentality === "Attacking" ? 65 : match.homeMentality === "Defensive" ? -60 : 0)
+        ? (match.homeMentality === "Attacking" ? 80 : match.homeMentality === "Defensive" ? -75 : 0)
         : 0;
 
-      let tx = p.homeX + (isAttacking ? dir * (70 + planPush + mentShift) : -dir * 35) + p.wanderX;
-      let ty = p.homeY + (p.plan === "Cut Inside & Shoot" && isAttacking ? (P_H/2 - p.homeY) * 0.45 : 0) + p.wanderY;
+      let tx = p.homeX + (isAttacking ? dir * (245 + planPush + mentShift) : -dir * 45) + p.wanderX;
+      let ty = p.homeY + (p.plan === "Cut Inside & Shoot" && isAttacking ? (P_H/2 - p.homeY) * 0.55 : 0) + p.wanderY;
 
-      // Active AI Presser closes down the ball carrier and tackles
       if (p === activePresser && ball.owner !== p) {
         tx = ball.x;
         ty = ball.y;
-        if (ball.owner && ball.owner.team !== p.team && bestPressDist < 42 && p.tackleCooldown <= 0) {
-          const isSlide = bestPressDist > 26 && Math.random() < 0.34;
+        if (ball.owner && ball.owner.team !== p.team && bestPressDist < 38 && p.tackleCooldown <= 0) {
+          const isSlide = bestPressDist > 24 && Math.random() < 0.28;
           const ang = Math.atan2(ball.owner.y - p.y, ball.owner.x - p.x);
-          p.vx = Math.cos(ang) * (isSlide ? 435 : 305);
-          p.vy = Math.sin(ang) * (isSlide ? 435 : 305);
-          p.tackleTimer = isSlide ? 0.32 : 0.2;
-          p.tackleCooldown = 1.25;
+          p.vx = Math.cos(ang) * (isSlide ? 420 : 295);
+          p.vy = Math.sin(ang) * (isSlide ? 420 : 295);
+          p.tackleTimer = isSlide ? 0.30 : 0.18;
+          p.tackleCooldown = 1.65;
           p.isSliding = isSlide;
         }
       }
 
-      // AI BALL CARRIER LOGIC (BOTH HOME & AWAY TEAMS)
       if (ball.owner === p) {
         const oppGoalX = p.team === "home" ? P_W - 20 : 20;
         const distToGoal = Math.abs(oppGoalX - p.x);
-        tx = oppGoalX - dir * 95;
-        ty = P_H / 2 + p.wanderY * 1.1;
 
-        // Higher OVR players make sharper pass & shot decisions, while lower OVR can still finish clinical chances
-        const shootRange = p.plan === "Cut Inside & Shoot" ? 290 : 245;
-        const shootChance = (0.032 + (p.ovr - 75) * 0.0012);
-        const passChance = (0.028 + (p.ovr - 75) * 0.0015);
+        tx = oppGoalX - dir * 75;
+        ty = P_H / 2 + Math.sin(match.elapsed * 2 + p.ovr) * 75;
+
+        const shootRange = p.plan === "Cut Inside & Shoot" ? 310 : 275;
+        const shootChance = 0.055 + (p.ovr - 75) * 0.0018;
+        const passChance = 0.036 + (p.ovr - 75) * 0.0016;
 
         if (distToGoal < shootRange && Math.random() < shootChance) {
-          // Clinical Shot toward goal corners scaled by OVR
-          const accuracy = Math.max(24, 66 - (p.ovr - 65) * 1.2);
-          const aimY = P_H / 2 + rand(-accuracy, accuracy);
+          const cornerSign = Math.random() < 0.5 ? -1 : 1;
+          const aimY = P_H / 2 + cornerSign * rand(32, 62);
           const ang = Math.atan2(aimY - p.y, oppGoalX - p.x);
-          const shotSpd = 620 + (p.ovr - 70) * 4.5;
+          const shotSpd = 760 + (p.ovr - 70) * 5.5;
           ball.owner = null;
           ball.lastTouchTeam = p.team;
           ball.lastPasserId = p.id;
-          ball.passGrace = 0.18;
+          ball.passGrace = 0.20;
           ball.x = p.x + Math.cos(ang) * 18;
           ball.y = p.y + Math.sin(ang) * 18;
           ball.vx = Math.cos(ang) * shotSpd;
           ball.vy = Math.sin(ang) * shotSpd;
         } else if (Math.random() < passChance) {
-          const mates = players.filter(m => m.team === p.team && m !== p && !m.sentOff && Math.hypot(m.x - p.x, m.y - p.y) > 45);
-          if (mates.length) {
-            // Prefer forward/open teammates
-            mates.sort((a,b) => ((b.x - a.x) * dir) - (Math.random() * 120));
-            const mate = mates[0];
-            const ang = Math.atan2(mate.y - p.y, mate.x - p.x);
-            const passSpd = 490 + (p.ovr - 70) * 3;
+          const mates = players.filter(m => m.team === p.team && m !== p && !m.sentOff && Math.hypot(m.x - p.x, m.y - p.y) > 55);
+          const forwardMates = mates.filter(m => (m.x - p.x) * dir > 35);
+          const targetPool = forwardMates.length ? forwardMates : mates;
+
+          if (targetPool.length) {
+            targetPool.sort((a,b) => ((b.x - a.x) * dir) - (Math.random() * 140));
+            const mate = targetPool[0];
+            const leadX = Math.max(30, Math.min(P_W - 30, mate.x + dir * 35));
+            const ang = Math.atan2(mate.y - p.y, leadX - p.x);
+            const passSpd = 580 + (p.ovr - 70) * 3.5;
             ball.owner = null;
             ball.lastTouchTeam = p.team;
             ball.lastPasserId = p.id;
-            ball.passGrace = 0.22;
+            ball.passGrace = 0.24;
             ball.x = p.x + Math.cos(ang) * 18;
             ball.y = p.y + Math.sin(ang) * 18;
             ball.vx = Math.cos(ang) * passSpd;
@@ -3256,11 +3419,12 @@ function updateAiBroadcastPhysics(dt) {
         }
       }
 
+      const moveSpd = (ball.owner === p) ? baseSpd * 0.96 : baseSpd * 0.90;
       const dx = tx - p.x, dy = ty - p.y;
       const d = Math.hypot(dx, dy);
-      if (d > 5) {
-        p.x += (dx / d) * (baseSpd * 0.86) * dt;
-        p.y += (dy / d) * (baseSpd * 0.86) * dt;
+      if (d > 4) {
+        p.x += (dx / d) * moveSpd * dt;
+        p.y += (dy / d) * moveSpd * dt;
       }
     }
 
@@ -3274,23 +3438,23 @@ function updateAiBroadcastPhysics(dt) {
   } else {
     ball.x += ball.vx * dt;
     ball.y += ball.vy * dt;
-    ball.vx *= 0.985;
-    ball.vy *= 0.985;
+    ball.vx *= 0.992;
+    ball.vy *= 0.992;
 
     for (const p of players) {
       if (p.sentOff || p.stunTimer > 0) continue;
       if (ball.passGrace > 0 && p.id === ball.lastPasserId) continue;
 
-      const catchRadius = p.isGK ? (p.gkDiveTimer > 0 ? 31 : 24) : 20;
+      const catchRadius = p.isGK ? (p.gkDiveTimer > 0 ? 27 : 21) : 20;
       if (Math.hypot(p.x - ball.x, p.y - ball.y) < catchRadius) {
         const shotSpeed = Math.hypot(ball.vx, ball.vy);
-        if (p.isGK && shotSpeed > 470 && Math.random() < 0.34) {
-          ball.vx = (p.team === "home" ? 1 : -1) * rand(140, 230);
-          ball.vy = rand(-175, 175);
+        if (p.isGK && shotSpeed > 520 && Math.random() < 0.38) {
+          ball.vx = (p.team === "home" ? 1 : -1) * rand(150, 240);
+          ball.vy = rand(-185, 185);
           ball.lastTouchTeam = p.team;
           showMatchBanner(`${p.name} PARRIES THE SHOT!`);
         } else {
-          if (p.isGK && shotSpeed > 420) showMatchBanner(`GREAT SAVE BY ${p.name.toUpperCase()}!`);
+          if (p.isGK && shotSpeed > 480) showMatchBanner(`GREAT SAVE BY ${p.name.toUpperCase()}!`);
           ball.owner = p;
           ball.lastTouchTeam = p.team;
           ball.vx = 0; ball.vy = 0;
@@ -3299,15 +3463,15 @@ function updateAiBroadcastPhysics(dt) {
       }
     }
 
-    const inGoalMouth = Math.abs(ball.y - P_H / 2) < 65;
+    const inGoalMouth = Math.abs(ball.y - P_H / 2) < 68;
     if (ball.x >= P_W - 18 && inGoalMouth) {
       match.homeGoals++;
       if (ball.lastPasserId) match.liveEvents.push({ type: "GOAL", playerId: ball.lastPasserId });
-      showMatchBanner(`GOAL! ${match.myClub.name} SCORES!`);
+      showMatchBanner(`⚽ GOAL! ${match.myClub.name} SCORES!`);
       resetKickoff("home");
     } else if (ball.x <= 18 && inGoalMouth) {
       match.awayGoals++;
-      showMatchBanner(`GOAL! ${match.oppClub.name} SCORES!`);
+      showMatchBanner(`⚽ GOAL! ${match.oppClub.name} SCORES!`);
       resetKickoff("away");
     } else if (ball.x < 20 || ball.x > P_W - 20 || ball.y < 20 || ball.y > P_H - 20) {
       handleOutOfBoundsRestart();
@@ -3326,7 +3490,7 @@ function renderMatchCanvas() {
   const offX = (canvas.width - match.P_W * scale) / 2;
   const offY = (canvas.height - match.P_H * scale) / 2;
 
-  ctx.fillStyle = "#070d14";
+  ctx.fillStyle = "#060a11";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   ctx.save();
@@ -3334,21 +3498,21 @@ function renderMatchCanvas() {
   ctx.scale(scale, scale);
 
   for (let i = 0; i < 10; i++) {
-    ctx.fillStyle = i % 2 === 0 ? "#155e32" : "#186b39";
+    ctx.fillStyle = i % 2 === 0 ? "#115e38" : "#156f42";
     ctx.fillRect(i * (match.P_W / 10), 0, match.P_W / 10, match.P_H);
   }
 
-  ctx.strokeStyle = "rgba(255,255,255,0.7)";
+  ctx.strokeStyle = "rgba(255,255,255,0.68)";
   ctx.lineWidth = 3;
   ctx.strokeRect(20, 20, match.P_W - 40, match.P_H - 40);
   ctx.beginPath(); ctx.moveTo(match.P_W/2, 20); ctx.lineTo(match.P_W/2, match.P_H - 20); ctx.stroke();
   ctx.beginPath(); ctx.arc(match.P_W/2, match.P_H/2, 70, 0, Math.PI*2); ctx.stroke();
-  ctx.strokeRect(20, match.P_H/2 - 120, 130, 240);
-  ctx.strokeRect(match.P_W - 150, match.P_H/2 - 120, 130, 240);
+  ctx.strokeRect(20, match.P_H/2 - 125, 135, 250);
+  ctx.strokeRect(match.P_W - 155, match.P_H/2 - 125, 135, 250);
 
-  ctx.fillStyle = "rgba(255,255,255,0.35)";
-  ctx.fillRect(4, match.P_H/2 - 65, 16, 130);
-  ctx.fillRect(match.P_W - 20, match.P_H/2 - 65, 16, 130);
+  ctx.fillStyle = "rgba(255,255,255,0.38)";
+  ctx.fillRect(4, match.P_H/2 - 68, 16, 136);
+  ctx.fillRect(match.P_W - 20, match.P_H/2 - 68, 16, 136);
 
   match.players.forEach(p => {
     if (p.sentOff) return;
@@ -3404,11 +3568,11 @@ function openMatchSubModal() {
   const club = match.myClub;
   const box = document.getElementById("modal-box");
   box.innerHTML = `
-    <h2>In-Match Tactical Substitutions</h2>
-    <p class="sub-meta">Swap a bench player onto the pitch without losing your custom formation.</p>
+    <h2>Tactical Substitutions</h2>
+    <p class="sub-meta">Bring on fresh legs without changing your shape.</p>
     <div style="margin:12px 0; max-height:300px; overflow-y:auto;">
       ${club.squad.slice(11).map((benchP, bIdx) => `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px; background:var(--panel-2); margin-bottom:6px; border-radius:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px; background:var(--surface-2); margin-bottom:6px; border-radius:8px;">
           <span><strong>${benchP.pos}</strong> ${benchP.name} (${benchP.ovr} OVR)</span>
           <button class="btn-primary" style="padding:4px 10px;" onclick="execLiveSub(${11 + bIdx})">Sub On</button>
         </div>
@@ -3499,13 +3663,13 @@ function renderPenaltyShootoutModal() {
     <h2>Knockout Penalty Shootout!</h2>
     <span class="badge b-warn">FULL TIME: ${pk.homeGoals} – ${pk.awayGoals} • PENALTIES: ${pk.myPens} – ${pk.oppPens}</span>
     <div class="press-q">
-      <strong>Round ${pk.round} — ${pk.phase === "SHOOT" ? `SELECT PENALTY DIRECTION (${myClub.name})` : `DIRECT KEEPER DIVE (${oppClub.name} Shooting)`}:</strong>
-      <div style="margin-top:8px; font-size:0.84rem; color:var(--muted);">${pk.log.slice(-4).join("<br>") || "Choose a corner below!"}</div>
+      <strong>Round ${pk.round} — ${pk.phase === "SHOOT" ? `AIM PENALTY (${myClub.name})` : `DIVE KEEPER (${oppClub.name} Shooting)`}:</strong>
+      <div style="margin-top:8px; font-size:0.84rem; color:var(--muted);">${pk.log.slice(-4).join("<br>") || "Choose a direction below!"}</div>
     </div>
     <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;">
-      <button class="btn-primary" onclick="stepPenaltyShootout('LEFT')">⬅️ Left Corner</button>
-      <button class="btn-blue" onclick="stepPenaltyShootout('CENTER')">⬆️ Down the Middle</button>
-      <button class="btn-primary" onclick="stepPenaltyShootout('RIGHT')">➡️ Right Corner</button>
+      <button class="btn-primary" onclick="stepPenaltyShootout('LEFT')">⬅️ Left</button>
+      <button class="btn-blue" onclick="stepPenaltyShootout('CENTER')">⬆️ Center</button>
+      <button class="btn-primary" onclick="stepPenaltyShootout('RIGHT')">➡️ Right</button>
     </div>
   `;
 }
@@ -3519,9 +3683,9 @@ function stepPenaltyShootout(choice) {
     const scored = choice !== aiChoice || Math.random() < 0.25;
     if (scored) {
       pk.myPens++;
-      pk.log.push(`⚽ Round ${pk.round} (${state.clubs[state.userClubId].name}): SCORED! (Aimed ${choice}, Keeper dove ${aiChoice})`);
+      pk.log.push(`⚽ Round ${pk.round} (${state.clubs[state.userClubId].name}): SCORED! (${choice})`);
     } else {
-      pk.log.push(`🧤 Round ${pk.round} (${state.clubs[state.userClubId].name}): SAVED! (Keeper guessed ${aiChoice})`);
+      pk.log.push(`🧤 Round ${pk.round} (${state.clubs[state.userClubId].name}): SAVED! (Keeper dove ${aiChoice})`);
     }
     pk.phase = "SAVE";
     renderPenaltyShootoutModal();
@@ -3529,9 +3693,9 @@ function stepPenaltyShootout(choice) {
     const saved = choice === aiChoice && Math.random() < 0.72;
     if (!saved) {
       pk.oppPens++;
-      pk.log.push(`❌ Round ${pk.round} (${state.clubs[pk.ev.oppId].name}): SCORED (Shot ${aiChoice}, Keeper dove ${choice})`);
+      pk.log.push(`❌ Round ${pk.round} (${state.clubs[pk.ev.oppId].name}): SCORED (${aiChoice})`);
     } else {
-      pk.log.push(`🧤 Round ${pk.round} (${state.clubs[pk.ev.oppId].name}): SAVED BY YOUR KEEPER! (${choice})`);
+      pk.log.push(`🧤 Round ${pk.round} (${state.clubs[pk.ev.oppId].name}): SAVED BY YOUR KEEPER!`);
     }
 
     if (pk.round >= 5 && pk.myPens !== pk.oppPens) {
